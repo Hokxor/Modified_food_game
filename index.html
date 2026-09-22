@@ -3,269 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dorm Chef: Eat Better, Spend Less</title>
+  <title>Dorm Pantry Dash - Eat Better, Spend Less</title>
   <style>
     :root {
-      /* Palette variables - change these to match your visual guide */
-      --primary-color: #2e7d32;   /* Main Brand Green */
-      --secondary-color: #fbc02d; /* Accent Gold */
-      --bg-color: #f4f6f8;        /* Soft Background Neutral */
-      --card-bg: #ffffff;
+      --primary-color: #2e7d32;   /* Healthy Green */
+      --secondary-color: #fbc02d; /* Wallet Gold */
+      --bg-color: #f4f6f8;        /* Soft Clean Neutral */
       --text-color: #1a1a1a;
       --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      padding: 20px;
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: var(--font-family);
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       min-height: 100vh;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 20px;
     }
 
     h1 {
       color: var(--primary-color);
-      margin: 0 0 5px 0;
+      margin-bottom: 5px;
     }
 
-    .game-container {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border: 2px solid var(--primary-color);
-    }
-
-    .scoreboard {
+    #stats-board {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      gap: 20px;
+      font-size: 1.1rem;
       font-weight: bold;
-      background: var(--bg-color);
-      padding: 10px 15px;
-      border-radius: 8px;
+      margin-bottom: 15px;
     }
 
-    .recipe-card {
-      border: 2px dashed var(--secondary-color);
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      margin-bottom: 20px;
-      background: #fffdf5;
+    .stat {
+      background: #ffffff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    .recipe-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--primary-color);
-    }
-
-    .needed-ingredients {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .ingredient-tag {
-      background: #e0e0e0;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.9rem;
-    }
-
-    .ingredient-tag.matched {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .pantry-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .ingredient-btn {
-      background: var(--bg-color);
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.1s, background 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .ingredient-btn:hover {
-      transform: scale(1.03);
-      border-color: var(--primary-color);
-    }
-
-    .cooking-tip-box {
-      background: #e8f5e9;
-      border-left: 4px solid var(--primary-color);
-      padding: 10px;
-      font-size: 0.85rem;
-      border-radius: 4px;
-      min-height: 50px;
+    canvas {
+      background: #ffffff;
+      border: 3px solid var(--primary-color);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Dorm Chef</h1>
-    <p>Build healthy, low-cost meals step-by-step!</p>
-  </header>
+  <h1>Dorm Pantry Dash</h1>
+  <p>Catch healthy, low-cost food. Avoid expensive takeout!</p>
 
-  <div class="game-container">
-    <div class="scoreboard">
-      <div>Meals Made: <span id="meals-count">0</span></div>
-      <div>Money Saved: $<span id="saved-count">0.00</span></div>
-    </div>
-
-    <div class="recipe-card">
-      <div style="font-size: 0.8rem; text-transform: uppercase; color: #666;">Current Recipe</div>
-      <div class="recipe-title" id="recipe-name">Loading...</div>
-      <p id="recipe-instructions" style="font-size: 0.85rem; color: #555; margin: 5px 0;"></p>
-      <div class="needed-ingredients" id="needed-container"></div>
-    </div>
-
-    <div style="font-weight: bold; margin-bottom: 10px;">Select Pantry Ingredients:</div>
-    <div class="pantry-grid" id="pantry-grid"></div>
-
-    <div class="cooking-tip-box" id="tip-box">
-      <strong>Chef Tip:</strong> Click the correct ingredients to complete the recipe!
-    </div>
+  <div id="stats-board">
+    <div class="stat">Health Score: <span id="score">0</span></div>
+    <div class="stat">Budget Remaining: $<span id="budget">50</span></div>
   </div>
 
+  <canvas id="gameCanvas" width="400" height="500"></canvas>
+
   <script>
-    // Database of budget recipes & tips
-    const recipes = [
-      {
-        name: "Budget Black Bean Quesadilla",
-        instructions: "Combine tortilla, canned beans, and cheese for a 5-minute protein meal.",
-        required: ["Tortilla", "Black Beans", "Cheese"],
-        costSaved: 6.50,
-        tip: "Canned black beans cost around $0.90 per pan and offer 7g of protein per serving without needing prep work!"
-      },
-      {
-        name: "Dorm Veggie Stir-Fry",
-        instructions: "Combine rice, frozen veggies, and soy sauce for a fiber-rich meal.",
-        required: ["Rice", "Frozen Veggies", "Soy Sauce"],
-        costSaved: 8.00,
-        tip: "Frozen vegetables are flash-frozen at peak freshness and often cheaper than fresh produce that might spoil."
-      },
-      {
-        name: "Power Oatmeal Bowl",
-        instructions: "Combine oats, banana, and peanut butter for sustained morning energy.",
-        required: ["Oats", "Banana", "Peanut Butter"],
-        costSaved: 4.50,
-        tip: "Buying rolled oats in bulk costs under $0.20 per bowl compared to $3.00 breakfast pastries."
-      }
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    
+    let score = 0;
+    let budget = 50;
+    
+    // Player basket
+    const player = { x: 175, y: 450, width: 60, height: 15, speed: 7, dx: 0 };
+    const items = [];
+    
+    // Food Items (Replace emojis with custom images in V2)
+    const itemTypes = [
+      { label: "🍌", type: "good", pts: 10, cost: -1 },
+      { label: "🥣", type: "good", pts: 15, cost: -2 },
+      { label: "🥦", type: "good", pts: 10, cost: -1 },
+      { label: "🍔", type: "bad", pts: -10, cost: 12 },
+      { label: "🧋", type: "bad", pts: -5, cost: 7 }
     ];
 
-    // Master list of available pantry items
-    const pantryItems = [
-      { name: "Tortilla", icon: "🫓" },
-      { name: "Black Beans", icon: "🫘" },
-      { name: "Cheese", icon: "🧀" },
-      { name: "Rice", icon: "🍚" },
-      { name: "Frozen Veggies", icon: "🥦" },
-      { name: "Soy Sauce", icon: "🥢" },
-      { name: "Oats", icon: "🥣" },
-      { name: "Banana", icon: "🍌" },
-      { name: "Peanut Butter", icon: "🥜" }
-    ];
-
-    let currentRecipeIndex = 0;
-    let selectedIngredients = [];
-    let mealsCompleted = 0;
-    let totalSaved = 0.0;
-
-    function loadRecipe() {
-      const recipe = recipes[currentRecipeIndex];
-      document.getElementById("recipe-name").innerText = recipe.name;
-      document.getElementById("recipe-instructions").innerText = recipe.instructions;
-      
-      selectedIngredients = [];
-      renderNeededIngredients();
-    }
-
-    function renderNeededIngredients() {
-      const recipe = recipes[currentRecipeIndex];
-      const container = document.getElementById("needed-container");
-      container.innerHTML = "";
-
-      recipe.required.forEach(item => {
-        const span = document.createElement("span");
-        span.className = "ingredient-tag" + (selectedIngredients.includes(item) ? " matched" : "");
-        span.innerText = item;
-        container.appendChild(span);
+    function spawnItem() {
+      const template = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+      items.push({
+        x: Math.random() * (canvas.width - 30),
+        y: 0,
+        size: 24,
+        speed: 2 + Math.random() * 2,
+        ...template
       });
     }
 
-    function renderPantry() {
-      const grid = document.getElementById("pantry-grid");
-      grid.innerHTML = "";
+    function update() {
+      player.x += player.dx;
+      if (player.x < 0) player.x = 0;
+      if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
 
-      pantryItems.forEach(item => {
-        const btn = document.createElement("button");
-        btn.className = "ingredient-btn";
-        btn.innerHTML = `<span>${item.icon}</span><span>${item.name}</span>`;
-        btn.onclick = () => selectIngredient(item.name);
-        grid.appendChild(btn);
-      });
-    }
+      for (let i = items.length - 1; i >= 0; i--) {
+        let item = items[i];
+        item.y += item.speed;
 
-    function selectIngredient(name) {
-      const recipe = recipes[currentRecipeIndex];
-
-      if (recipe.required.includes(name) && !selectedIngredients.includes(name)) {
-        selectedIngredients.push(name);
-        renderNeededIngredients();
-
-        // Check if recipe complete
-        if (selectedIngredients.length === recipe.required.length) {
-          mealsCompleted++;
-          totalSaved += recipe.costSaved;
-
-          document.getElementById("meals-count").innerText = mealsCompleted;
-          document.getElementById("saved-count").innerText = totalSaved.toFixed(2);
-          document.getElementById("tip-box").innerHTML = `<strong>Cooking Secret:</strong> ${recipe.tip}`;
-
-          // Move to next recipe
-          currentRecipeIndex = (currentRecipeIndex + 1) % recipes.length;
-          setTimeout(loadRecipe, 1500);
+        // Collision Check
+        if (
+          item.y + item.size >= player.y &&
+          item.x + item.size >= player.x &&
+          item.x <= player.x + player.width
+        ) {
+          score += item.pts;
+          budget -= item.cost;
+          document.getElementById("score").innerText = score;
+          document.getElementById("budget").innerText = budget;
+          items.splice(i, 1);
+          continue;
         }
-      } else if (!recipe.required.includes(name)) {
-        document.getElementById("tip-box").innerHTML = `<strong>Oops!</strong> ${name} isn't needed for this recipe. Try another!`;
+
+        if (item.y > canvas.height) items.splice(i, 1);
       }
     }
 
-    // Initialize Game
-    renderPantry();
-    loadRecipe();
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw Basket
+      ctx.fillStyle = "#2e7d32";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      // Draw Items
+      ctx.font = "22px Arial";
+      items.forEach(item => {
+        ctx.fillText(item.label, item.x, item.y);
+      });
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") player.dx = -player.speed;
+      if (e.key === "ArrowRight") player.dx = player.speed;
+    });
+
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
+    });
+
+    setInterval(spawnItem, 900);
+    loop();
   </script>
 </body>
 </html>
