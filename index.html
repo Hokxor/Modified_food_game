@@ -3,157 +3,340 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dorm Pantry Dash - Eat Better, Spend Less</title>
+  <title>Dorm Room Tycoon | Eat Better, Spend Less</title>
   <style>
     :root {
-      --primary-color: #2e7d32;   /* Healthy Green */
-      --secondary-color: #fbc02d; /* Wallet Gold */
-      --bg-color: #f4f6f8;        /* Soft Clean Neutral */
-      --text-color: #1a1a1a;
-      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* COOLER PALETTE */
+      --color-dark: #121212;   /* Gamers' Dark Mode */
+      --color-slate: #1f2937;  /* UI Background Cards */
+      --color-acc-1: #4ade80;  /* "Health Green" Accent */
+      --color-acc-2: #fbbf24;  /* "Gold Budget" Accent */
+      --color-text-p: #e5e7eb; /* Primary Text */
+      --color-text-s: #9ca3af; /* Secondary Text */
+      --font-stack: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: var(--font-family);
+      padding: 0;
+      background-color: var(--color-dark);
+      color: var(--color-text-p);
+      font-family: var(--font-stack);
+      line-height: 1.5;
+    }
+
+    /* TOP BAR STATS */
+    header {
+      background-color: var(--color-slate);
+      padding: 10px 20px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      position: sticky; top: 0; z-index: 100;
     }
 
-    h1 {
-      color: var(--primary-color);
-      margin-bottom: 5px;
+    h1 { color: var(--color-acc-1); font-size: 1.2rem; margin: 0; }
+
+    #stat-bars { display: flex; gap: 15px; font-size: 0.9rem; }
+    .stat-badge {
+      background: var(--color-dark);
+      padding: 5px 10px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .val-g { color: var(--color-acc-1); font-weight: bold; }
+    .val-y { color: var(--color-acc-2); font-weight: bold; }
+
+    /* MAIN CONTAINER */
+    .app-container {
+      max-width: 900px; margin: 20px auto; padding: 0 20px;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 20px;
     }
 
-    #stats-board {
-      display: flex;
-      gap: 20px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 15px;
+    /* LEFT SIDE: KITCHEN DASHBOARD */
+    .kitchen-control {
+      background-color: var(--color-slate);
+      padding: 20px; border-radius: 10px;
+      position: sticky; top: 70px; height: calc(100vh - 90px);
     }
 
-    .stat {
-      background: #ffffff;
-      padding: 8px 16px;
-      border-radius: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    #visual-kitchen {
+      height: 150px; background-color: var(--color-dark);
+      border-radius: 8px; border: 2px solid var(--color-acc-1);
+      margin-bottom: 20px; font-size: 4rem;
+      display: flex; justify-content: center; align-items: center;
     }
 
-    canvas {
-      background: #ffffff;
-      border: 3px solid var(--primary-color);
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    #next-upgrade-btn {
+      width: 100%; background: var(--color-acc-2); color: var(--color-dark);
+      border: none; padding: 12px; border-radius: 6px; font-weight: bold;
+      cursor: pointer; transition: 0.2s;
+    }
+    #next-upgrade-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    #next-upgrade-btn:hover:not(:disabled) { transform: translateY(-2px); }
+
+    /* RIGHT SIDE: ACTIONS & RECIPES */
+    .main-game { display: flex; flex-direction: column; gap: 20px; }
+
+    /* STUDY/ENERGY SECTION */
+    .action-panel {
+      background-color: var(--color-slate);
+      padding: 15px; border-radius: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    #energy-bar-bg { width: 100px; height: 10px; background: #333; border-radius: 5px; overflow: hidden; }
+    #energy-bar-fill { height: 100%; width: 100%; background: #ef4444; transition: width 0.3s; }
+
+    #study-btn {
+      background-color: #3b82f6; color: white; border: none;
+      padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    }
+
+    /* RECIPE GRID */
+    .recipe-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;
+    }
+
+    .recipe-card {
+      background-color: var(--color-slate);
+      border-radius: 8px; padding: 15px;
+      border: 2px solid transparent; transition: 0.2s;
+      opacity: 0.9;
+    }
+    .recipe-card:hover:not(.locked) { border-color: var(--color-acc-1); transform: translateY(-2px); }
+    .recipe-card.locked { opacity: 0.3; cursor: not-allowed; }
+
+    .r-title { font-weight: bold; color: white; margin-bottom: 5px; }
+    .r-stats { font-size: 0.8rem; color: var(--color-text-s); margin-bottom: 10px; }
+    
+    .cook-btn {
+      width: 100%; padding: 8px; border: none; border-radius: 4px;
+      cursor: pointer; font-weight: bold;
+    }
+    .cook-btn:not(:disabled) { background-color: var(--color-acc-1); color: var(--color-dark); }
+    .cook-btn:disabled { background: #333; color: #666; }
+
+    /* TIP POPUP */
+    #tip-pop {
+      position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
+      background: var(--color-acc-1); color: var(--color-dark);
+      padding: 15px 30px; border-radius: 50px; font-weight: bold;
+      transition: bottom 0.5s ease-out; box-shadow: 0 4px 15px rgba(0,255,0,0.2);
     }
   </style>
 </head>
 <body>
 
-  <h1>Dorm Pantry Dash</h1>
-  <p>Catch healthy, low-cost food. Avoid expensive takeout!</p>
+  <header>
+    <h1>Dorm Room Tycoon</h1>
+    <div id="stat-bars">
+      <div class="stat-badge">Day: <span class="val-g" id="game-day">1</span></div>
+      <div class="stat-badge">Cooking Skill: <span class="val-g">Lvl <span id="game-skill">1</span></span></div>
+      <div class="stat-badge">Budget Saved: <span class="val-y">$<span id="game-budget">0</span></span></div>
+    </div>
+  </header>
 
-  <div id="stats-board">
-    <div class="stat">Health Score: <span id="score">0</span></div>
-    <div class="stat">Budget Remaining: $<span id="budget">50</span></div>
+  <div class="app-container">
+    <aside class="kitchen-control">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-s); margin-bottom: 5px;">My Kitchen Setup</div>
+      <div id="visual-kitchen">🔥</div>
+      <div id="kitchen-name" style="color:white; font-weight: bold; text-align: center;">Camp Hot Plate</div>
+      <p style="font-size: 0.8rem; color: var(--color-text-s); text-align: center; margin: 10px 0;">This basic heat lets you cook simple chilies and eggs.</p>
+      
+      <div style="margin-top: auto;">
+        <p style="font-size: 0.8rem; margin-bottom: 5px;">Next Upgrade: <span id="upgrade-cost-text" style="color: var(--color-acc-2);"></span></p>
+        <button id="next-upgrade-btn" onclick="buyUpgrade()" disabled>Upgrade Kitchen</button>
+      </div>
+    </aside>
+
+    <main class="main-game">
+      <div class="action-panel">
+        <div>
+          <div style="font-weight: bold;">Energy for Cookin'</div>
+          <div style="font-size: 0.8rem; color: var(--color-text-s); margin-bottom: 5px;">Don't cook while exhausted!</div>
+          <div id="energy-bar-bg"><div id="energy-bar-fill"></div></div>
+        </div>
+        <button id="study-btn" onclick="recoverEnergy()">Recover Energy (-5 Skill Pts)</button>
+      </div>
+
+      <h2 style="margin: 0;">Recipe Book</h2>
+      <div class="recipe-grid" id="recipe-book">
+        <!-- JS inserts recipes here -->
+      </div>
+    </main>
   </div>
 
-  <canvas id="gameCanvas" width="400" height="500"></canvas>
+  <div id="tip-pop">Cooking Mastered! Tip: Canned beans = cheap protein.</div>
 
   <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    
-    let score = 0;
-    let budget = 50;
-    
-    // Player basket
-    const player = { x: 175, y: 450, width: 60, height: 15, speed: 7, dx: 0 };
-    const items = [];
-    
-    // Food Items (Replace emojis with custom images in V2)
-    const itemTypes = [
-      { label: "🍌", type: "good", pts: 10, cost: -1 },
-      { label: "🥣", type: "good", pts: 15, cost: -2 },
-      { label: "🥦", type: "good", pts: 10, cost: -1 },
-      { label: "🍔", type: "bad", pts: -10, cost: 12 },
-      { label: "🧋", type: "bad", pts: -5, cost: 7 }
+    // --- GAME DATA ---
+    const kitchenUpgrades = [
+      { id: 0, name: "Camp Hot Plate", icon: "🔥", cost: 0, levelReq: 1 },
+      { id: 1, name: "Community Microwave", icon: "📟", cost: 50, levelReq: 2 },
+      { id: 2, name: "Induction Burner", icon: "🥘", cost: 120, levelReq: 5 },
+      { id: 3, name: "Dorm Air Fryer", icon: "🎰", cost: 300, levelReq: 8 }
     ];
 
-    function spawnItem() {
-      const template = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-      items.push({
-        x: Math.random() * (canvas.width - 30),
-        y: 0,
-        size: 24,
-        speed: 2 + Math.random() * 2,
-        ...template
+    const recipes = [
+      { id: 0, name: "Hot Plate Chili", icon: "🥣", skill: 10, save: 8, energy: 20, kitchen: 0, tip: "Chef Secret: Bulk-buy spices like chili powder; they last all semester!" },
+      { id: 1, name: "Budget Eggs & Tortilla", icon: "🫓", skill: 12, save: 7, energy: 15, kitchen: 0, tip: "Dorm Prep: Buy a carton of 12 eggs for under $3 for weeks of easy protein." },
+      { id: 2, name: "Ramen 'Upgraded'", icon: "🍜", skill: 15, save: 5, energy: 10, kitchen: 1, tip: "Eat Better: Add a handful of frozen spinach to boiling ramen for instant fiber." },
+      { id: 3, name: "Microwave Mug Meal", icon: "☕", skill: 18, save: 9, energy: 15, kitchen: 1, tip: "Chef Secret: You can cook a whole egg/cheese scrambler in a mug in 90 seconds!" },
+      { id: 4, name: "Veggie Stir-Fry", icon: "🥦", skill: 25, save: 12, energy: 25, kitchen: 2, tip: "Save Money: Buying bags of frozen mixed vegetables is flash-frozen at peak freshness." },
+      { id: 5, name: "Fried Chicken Tenders", icon: "🍗", skill: 35, save: 15, energy: 30, kitchen: 3, tip: "Air Fryer Hack: Tofu becomes incredibly crispy in an air fryer with 90% less oil." }
+    ];
+
+    // --- GAME STATE ---
+    let gameState = {
+      day: 1,
+      budget: 0,
+      skillPoints: 0,
+      skillLevel: 1,
+      energy: 100,
+      kitchenLevel: 0 // Index into kitchenUpgrades
+    };
+
+    // --- DOM ELEMENTS ---
+    const dom = {
+      day: document.getElementById('game-day'),
+      budget: document.getElementById('game-budget'),
+      skill: document.getElementById('game-skill'),
+      energyBar: document.getElementById('energy-bar-fill'),
+      kitchenIcon: document.getElementById('visual-kitchen'),
+      kitchenName: document.getElementById('kitchen-name'),
+      upgradeBtn: document.getElementById('next-upgrade-btn'),
+      upgradeCostText: document.getElementById('upgrade-cost-text'),
+      recipeGrid: document.getElementById('recipe-book'),
+      tip: document.getElementById('tip-pop')
+    };
+
+    // --- CORE LOOP & RENDER ---
+    function updateUI() {
+      // Stats
+      dom.day.innerText = gameState.day;
+      dom.budget.innerText = gameState.budget.toFixed(2);
+      dom.skill.innerText = gameState.skillLevel;
+      dom.energyBar.style.width = gameState.energy + '%';
+      
+      // Kitchen status
+      const currentKitchen = kitchenUpgrades[gameState.kitchenLevel];
+      dom.kitchenIcon.innerText = currentKitchen.icon;
+      dom.kitchenName.innerText = currentKitchen.name;
+
+      // Upgrade button status
+      const nextKitchen = kitchenUpgrades[gameState.kitchenLevel + 1];
+      if (nextKitchen) {
+        dom.upgradeCostText.innerText = `$${nextKitchen.cost} (Level ${nextKitchen.levelReq} required)`;
+        dom.upgradeBtn.disabled = !(gameState.budget >= nextKitchen.cost && gameState.skillLevel >= nextKitchen.levelReq);
+      } else {
+        dom.upgradeCostText.innerText = "MAXED";
+        dom.upgradeBtn.disabled = true;
+      }
+
+      renderRecipes();
+    }
+
+    function renderRecipes() {
+      dom.recipeGrid.innerHTML = '';
+
+      recipes.forEach(recipe => {
+        const isKitchenReqMet = gameState.kitchenLevel >= recipe.kitchen;
+        const isEnergyMet = gameState.energy >= recipe.energy;
+        const canCook = isKitchenReqMet && isEnergyMet;
+
+        const card = document.createElement('div');
+        card.className = `recipe-card ${isKitchenReqMet ? '' : 'locked'}`;
+
+        const requiredKitchen = kitchenUpgrades[recipe.kitchen].name;
+
+        card.innerHTML = `
+          <div class="r-title">${recipe.icon} ${recipe.name}</div>
+          <div class="r-stats">
+            +${recipe.skill} Skill Pts<br>
+            +$${recipe.save.toFixed(2)} Saved vs. Takeout<br>
+            Requires: ${isKitchenReqMet ? '<span style="color:#fff;">'+requiredKitchen+'</span>' : '<span style="color:#ef4444;">'+requiredKitchen+'</span>'}
+          </div>
+          <button class="cook-btn" 
+                  onclick="cookRecipe(${recipe.id})" 
+                  ${canCook ? '' : 'disabled'}>
+            ${isEnergyMet ? 'Cook (-'+recipe.energy+' Energy)' : 'Exhausted (-'+recipe.energy+' E req.)'}
+          </button>
+        `;
+        
+        dom.recipeGrid.appendChild(card);
       });
     }
 
-    function update() {
-      player.x += player.dx;
-      if (player.x < 0) player.x = 0;
-      if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
-
-      for (let i = items.length - 1; i >= 0; i--) {
-        let item = items[i];
-        item.y += item.speed;
-
-        // Collision Check
-        if (
-          item.y + item.size >= player.y &&
-          item.x + item.size >= player.x &&
-          item.x <= player.x + player.width
-        ) {
-          score += item.pts;
-          budget -= item.cost;
-          document.getElementById("score").innerText = score;
-          document.getElementById("budget").innerText = budget;
-          items.splice(i, 1);
-          continue;
+    // --- ACTIONS ---
+    function cookRecipe(id) {
+      const recipe = recipes.find(r => r.id === id);
+      if (gameState.energy >= recipe.energy) {
+        // Apply Rewards
+        gameState.budget += recipe.save;
+        gameState.skillPoints += recipe.skill;
+        gameState.energy -= recipe.energy;
+        
+        // Skill Level Up Logic (Simple exponential)
+        const nextLevelPoints = Math.pow(gameState.skillLevel, 2) * 20;
+        if (gameState.skillPoints >= nextLevelPoints) {
+          gameState.skillLevel++;
         }
 
-        if (item.y > canvas.height) items.splice(i, 1);
+        // Advance Day
+        gameState.day++;
+        
+        showTip(`Dish Done! ${recipe.tip}`);
+        updateUI();
       }
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw Basket
-      ctx.fillStyle = "#2e7d32";
-      ctx.fillRect(player.x, player.y, player.width, player.height);
+    function recoverEnergy() {
+      // Trading skill points for energy (simplified 'studying/rest' trade-off)
+      const cost = 5;
+      if (gameState.skillPoints >= cost && gameState.energy < 100) {
+        gameState.skillPoints -= cost;
+        gameState.energy = 100;
+        
+        // Check if loss lowered skill level
+        const currentLevelPoints = Math.pow(gameState.skillLevel - 1, 2) * 20;
+        if (gameState.skillPoints < currentLevelPoints && gameState.skillLevel > 1) {
+            gameState.skillLevel--;
+        }
 
-      // Draw Items
-      ctx.font = "22px Arial";
-      items.forEach(item => {
-        ctx.fillText(item.label, item.x, item.y);
-      });
+        gameState.day++;
+        showTip("Took a rest day to re-energize. Used some skill time.");
+        updateUI();
+      } else {
+        showTip("Not enough skill points to trade for energy!");
+      }
     }
 
-    function loop() {
-      update();
-      draw();
-      requestAnimationFrame(loop);
+    function buyUpgrade() {
+      const nextKitchen = kitchenUpgrades[gameState.kitchenLevel + 1];
+      if (nextKitchen && gameState.budget >= nextKitchen.cost && gameState.skillLevel >= nextKitchen.levelReq) {
+        gameState.budget -= nextKitchen.cost;
+        gameState.kitchenLevel++;
+        showTip(`Kitchen Upgraded to ${nextKitchen.name}! New recipes unlocked.`);
+        updateUI();
+      }
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") player.dx = -player.speed;
-      if (e.key === "ArrowRight") player.dx = player.speed;
-    });
+    // --- VISUAL FX ---
+    function showTip(text) {
+      dom.tip.innerText = text;
+      dom.tip.style.bottom = '30px';
+      setTimeout(() => {
+        dom.tip.style.bottom = '-150px';
+      }, 5000);
+    }
 
-    document.addEventListener("keyup", (e) => {
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
-    });
-
-    setInterval(spawnItem, 900);
-    loop();
+    // --- INITIALIZE ---
+    // Give some starting skill points
+    gameState.skillPoints = 0; 
+    updateUI();
   </script>
 </body>
 </html>
