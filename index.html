@@ -1,28 +1,412 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 50px;
-            text-align: center;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        h1 {
-            color: #0066cc;
-        }
-        p {
-            font-size: 1.1rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eat Better, Spend Less | Student Meal & Budget Planner</title>
+  <style>
+    :root {
+      /* Healthy Harvest Palette from Visual Guide */
+      --color-navy: #001C2A;
+      --color-green: #18803C;
+      --color-orange: #FCA911;
+      --color-soft-blue: #C9E2E9;
+      --color-white: #FDFDFD;
+      --color-card-dark: #0A2635;
+      
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-navy);
+      color: var(--color-white);
+      font-family: var(--font-main);
+      padding: 20px 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Mobile-first app wrapper matching panel 3 UI wireframes */
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--color-navy);
+      border-radius: 24px;
+      border: 1px solid rgba(201, 226, 233, 0.2);
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--color-orange);
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: var(--color-soft-blue);
+    }
+
+    /* Interactive Filters Panel */
+    .filter-card {
+      background-color: var(--color-card-dark);
+      border: 1px solid var(--color-soft-blue);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .filter-title {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--color-orange);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-group {
+      margin-bottom: 12px;
+    }
+
+    .filter-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--color-green);
+    }
+
+    /* Recipe Feed & Layered Cascade Cards */
+    .recipe-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .recipe-card {
+      background-color: var(--color-card-dark);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 226, 233, 0.15);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .recipe-card:hover {
+      border-color: var(--color-green);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .recipe-name {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: var(--color-white);
+    }
+
+    .badge {
+      background-color: var(--color-green);
+      color: var(--color-white);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .badge-orange {
+      background-color: var(--color-orange);
+      color: var(--color-navy);
+    }
+
+    /* Visual Ingredient Cascade representation */
+    .ingredient-cascade {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 10px 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-top: 1px dashed rgba(201, 226, 233, 0.1);
+      border-bottom: 1px dashed rgba(201, 226, 233, 0.1);
+    }
+
+    .cascade-icon {
+      background: var(--color-navy);
+      border: 1px solid var(--color-soft-blue);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .card-body {
+      padding: 14px;
+      font-size: 0.85rem;
+      color: var(--color-soft-blue);
+    }
+
+    .card-actions {
+      padding: 0 14px 14px 14px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--color-green);
+      color: var(--color-white);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--color-soft-blue);
+      color: var(--color-soft-blue);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Budget & Grocery Planner Summary Panel */
+    .planner-panel {
+      background: linear-gradient(135deg, var(--color-green), #0d5025);
+      border-radius: 16px;
+      padding: 16px;
+      color: var(--color-white);
+    }
+
+    .planner-panel h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .grocery-list {
+      margin-top: 10px;
+      padding-left: 18px;
+      font-size: 0.85rem;
+    }
+
+    .grocery-list li {
+      margin-bottom: 4px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is a clean, standard <strong>index.html</strong> template to get you started.</p>
+
+  <div class="app-shell">
+    <header>
+      <h1>Eat Better, Spend Less</h1>
+      <p>Interactive Meal & Budget Finder for Students</p>
+    </header>
+
+    <!-- Priority Filters Section -->
+    <section class="filter-card">
+      <div class="filter-title">Filter by Priorities</div>
+      
+      <div class="filter-group">
+        <div class="filter-label">
+          <span>Max Cost per Meal:</span>
+          <span style="color: var(--color-orange); font-weight: bold;">$<span id="cost-val">3.00</span></span>
+        </div>
+        <input type="range" id="cost-slider" min="1.00" max="5.00" step="0.25" value="3.00" oninput="updateFilters()">
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-label">
+          <span>Max Cook Time:</span>
+          <span style="color: var(--color-orange); font-weight: bold;"><span id="time-val">15</span> mins</span>
+        </div>
+        <input type="range" id="time-slider" min="5" max="30" step="5" value="15" oninput="updateFilters()">
+      </div>
+    </section>
+
+    <!-- Recipe Cards Feed -->
+    <main class="recipe-list" id="recipe-container">
+      <!-- JavaScript Populates Dynamic Recipe Cards Here -->
+    </main>
+
+    <!-- Weekly Planner & Budget Calculator -->
+    <section class="planner-panel">
+      <h3>Weekly Meal Plan & Grocery List</h3>
+      <div>Selected Meals: <strong id="plan-count">0</strong></div>
+      <div>Estimated Weekly Cost: <strong id="plan-cost">$0.00</strong></div>
+      
+      <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px;">
+        <strong>Auto-Generated Grocery List:</strong>
+        <ul class="grocery-list" id="grocery-container">
+          <li>Select recipes above to generate your list...</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Database matching college needs and layered ingredient visual stacks
+    const recipes = [
+      {
+        id: 1,
+        name: "5-Min Black Bean Quesadilla",
+        cost: 1.25,
+        time: 5,
+        cascade: ["🫓", "🫘", "🧀"],
+        ingredients: ["Tortilla", "Canned Black Beans", "Shredded Cheese"],
+        tip: "Dorm Hack: Rinsing canned beans removes extra sodium and keeps them fresh."
+      },
+      {
+        id: 2,
+        name: "Upgraded Veggie Peanut Noodles",
+        cost: 1.80,
+        time: 10,
+        cascade: ["🍜", "🥦", "🥜"],
+        ingredients: ["Ramen Noodles", "Frozen Veggies", "Peanut Butter"],
+        tip: "Grocery Tip: Store-brand peanut butter is high in protein for under $0.20 per serving."
+      },
+      {
+        id: 3,
+        name: "One-Bowl Oats & Banana Power Prep",
+        cost: 0.85,
+        time: 5,
+        cascade: ["🥣", "🍌", "🍯"],
+        ingredients: ["Rolled Oats", "Banana", "Honey"],
+        tip: "Budget Tip: Buying rolled oats in tub containers saves 60% compared to instant packets."
+      },
+      {
+        id: 4,
+        name: "Sheet Pan Fried Rice & Eggs",
+        cost: 2.50,
+        time: 20,
+        cascade: ["🍚", "🥚", "🥕"],
+        ingredients: ["Microwave Rice", "Eggs", "Frozen Mixed Veggies"],
+        tip: "Efficiency Tip: Use day-old rice from the fridge for crispy fried rice texture."
+      }
+    ];
+
+    let selectedMeals = [];
+
+    function renderRecipes() {
+      const maxCost = parseFloat(document.getElementById("cost-slider").value);
+      const maxTime = parseInt(document.getElementById("time-slider").value);
+      const container = document.getElementById("recipe-container");
+
+      container.innerHTML = "";
+
+      const filtered = recipes.filter(r => r.cost <= maxCost && r.time <= maxTime);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--color-soft-blue); padding: 20px;">No recipes fit those exact filters. Try adjusting your sliders!</div>`;
+        return;
+      }
+
+      filtered.forEach(recipe => {
+        const isSelected = selectedMeals.some(m => m.id === recipe.id);
+        const card = document.createElement("article");
+        card.className = "recipe-card";
+
+        card.innerHTML = `
+          <div class="card-header">
+            <div class="recipe-name">${recipe.name}</div>
+            <span class="badge">$${recipe.cost.toFixed(2)}</span>
+          </div>
+
+          <!-- Layered Ingredient Cascade -->
+          <div class="ingredient-cascade">
+            <span style="font-size: 0.75rem; color: var(--color-soft-blue); margin-right: 4px;">Ingredients:</span>
+            ${recipe.cascade.map(icon => `<div class="cascade-icon">${icon}</div>`).join('')}
+            <span class="badge badge-orange" style="margin-left: auto;">${recipe.time} mins</span>
+          </div>
+
+          <div class="card-body">
+            <strong>Cooking Skill:</strong> ${recipe.tip}
+          </div>
+
+          <div class="card-actions">
+            <button class="btn ${isSelected ? 'btn-secondary' : 'btn-primary'}" onclick="toggleMeal(${recipe.id})">
+              ${isSelected ? '✓ Added to Plan' : '+ Add to Meal Plan'}
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function updateFilters() {
+      document.getElementById("cost-val").innerText = parseFloat(document.getElementById("cost-slider").value).toFixed(2);
+      document.getElementById("time-val").innerText = document.getElementById("time-slider").value;
+      renderRecipes();
+    }
+
+    function toggleMeal(id) {
+      const recipe = recipes.find(r => r.id === id);
+      const index = selectedMeals.findIndex(m => m.id === id);
+
+      if (index > -1) {
+        selectedMeals.splice(index, 1);
+      } else {
+        selectedMeals.push(recipe);
+      }
+
+      updatePlanner();
+      renderRecipes();
+    }
+
+    function updatePlanner() {
+      document.getElementById("plan-count").innerText = selectedMeals.length;
+      
+      const totalCost = selectedMeals.reduce((sum, item) => sum + item.cost, 0);
+      document.getElementById("plan-cost").innerText = `$${totalCost.toFixed(2)}`;
+
+      const groceryContainer = document.getElementById("grocery-container");
+      
+      if (selectedMeals.length === 0) {
+        groceryContainer.innerHTML = `<li>Select recipes above to generate your list...</li>`;
+        return;
+      }
+
+      // Compile unique list of grocery items
+      const allIngredients = selectedMeals.flatMap(m => m.ingredients);
+      const uniqueIngredients = [...new Set(allIngredients)];
+
+      groceryContainer.innerHTML = uniqueIngredients.map(item => `<li>${item}</li>`).join('');
+    }
+
+    // Initial Execution
+    renderRecipes();
+  </script>
 </body>
 </html>
