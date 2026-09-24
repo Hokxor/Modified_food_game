@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Pantry Rush | Precision Food Catch</title>
+  <title>Pattern Pantry Catch | Accessible Food Match</title>
   <style>
     :root {
       --color-navy: #001C2A;
       --color-orange: #FCA911;
       --color-green: #18803C;
-      --color-yellow: #F59E0B;
-      --color-salmon: #FF7A59;
       --color-soft-blue: #C9E2E9;
       --color-white: #FFFFFF;
       --color-red: #D32F2F;
@@ -29,7 +27,7 @@
       align-items: center;
       justify-content: center;
       padding: 15px;
-      background-image: radial-gradient(rgba(201, 226, 233, 0.1) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(201, 226, 233, 0.15) 1.5px, transparent 1.5px);
       background-size: 20px 20px;
     }
 
@@ -40,7 +38,7 @@
       border: 4px solid var(--color-navy);
       border-radius: 20px;
       padding: 20px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.6);
       color: var(--color-navy);
       display: flex;
       flex-direction: column;
@@ -62,7 +60,7 @@
 
     header p {
       font-size: 0.85rem;
-      color: #555;
+      color: #333;
       font-weight: bold;
     }
 
@@ -71,28 +69,35 @@
       justify-content: space-between;
       background: var(--color-navy);
       color: var(--color-white);
-      padding: 10px 12px;
+      padding: 12px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
 
     .hud-badge {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
 
-    .val-orange { color: var(--color-orange); }
-    .val-green { color: #4ADE80; }
+    .val-target {
+      background: var(--color-orange);
+      color: var(--color-navy);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 900;
+    }
 
-    /* Canvas Container & Overlays */
+    .val-score { color: #4ADE80; font-size: 1.1rem; }
+
+    /* Canvas Container */
     .canvas-container {
       position: relative;
       width: 100%;
       aspect-ratio: 4/5;
       background-color: var(--color-soft-blue);
-      border: 3px solid var(--color-navy);
+      border: 4px solid var(--color-navy);
       border-radius: 12px;
       overflow: hidden;
     }
@@ -103,11 +108,11 @@
       display: block;
     }
 
-    /* Game Over Modal Screen */
+    /* Game Over Overlay */
     .overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 28, 42, 0.92);
+      background: rgba(0, 28, 42, 0.94);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -119,52 +124,49 @@
     }
 
     .overlay h2 {
-      font-size: 2rem;
-      color: var(--color-red);
+      font-size: 2.2rem;
+      color: #FF5252;
       margin-bottom: 8px;
     }
 
     .overlay p {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: var(--color-soft-blue);
       margin-bottom: 15px;
     }
 
     .stats-summary {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.12);
       padding: 12px 20px;
       border-radius: 10px;
       margin-bottom: 20px;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .btn-restart {
       background: var(--color-orange);
       color: var(--color-navy);
-      border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: bold;
+      border: 3px solid var(--color-navy);
+      padding: 12px 26px;
+      font-size: 1.1rem;
+      font-weight: 900;
       border-radius: 10px;
       cursor: pointer;
-      transition: transform 0.1s;
     }
 
-    .btn-restart:active {
-      transform: scale(0.95);
-    }
+    .btn-restart:active { transform: scale(0.95); }
 
-    /* Cooking Tip Box */
     .tip-box {
       background-color: var(--color-orange);
       color: var(--color-navy);
       padding: 12px;
       border-radius: 10px;
-      border: 2px solid var(--color-navy);
+      border: 3px solid var(--color-navy);
       font-size: 0.85rem;
       font-weight: bold;
       text-align: center;
-      min-height: 52px;
+      min-height: 55px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -173,7 +175,7 @@
     .controls-hint {
       text-align: center;
       font-size: 0.75rem;
-      color: #666;
+      color: #444;
       font-weight: bold;
     }
   </style>
@@ -183,36 +185,36 @@
   <div class="game-card">
     <header>
       <h1>Pattern Pantry Catch</h1>
-      <p>Precision Food Matching Challenge</p>
+      <p>Accessible Shape & Label Matching</p>
     </header>
 
     <div class="hud-bar">
       <div class="hud-badge">Lives: <span id="lives-display">❤️ ❤️ ❤️</span></div>
-      <div class="hud-badge">Target: <span class="val-orange" id="target-item">Broccoli 🥦</span></div>
-      <div class="hud-badge">Score: <span class="val-green" id="score">0</span></div>
+      <div class="hud-badge">Target: <span class="val-target" id="target-item">BANANA 🍌</span></div>
+      <div class="hud-badge">Score: <span class="val-score" id="score">0</span></div>
     </div>
 
     <div class="canvas-container">
       <canvas id="gameCanvas" width="400" height="500"></canvas>
       
-      <!-- Game Over Overlay -->
+      <!-- Game Over Modal -->
       <div class="overlay" id="gameOverScreen" style="display: none;">
-        <h2>GAME OVER!</h2>
-        <p>You took 3 damages from catching wrong ingredients.</p>
+        <h2>GAME OVER</h2>
+        <p>You took 3 damages from catching incorrect items.</p>
         <div class="stats-summary">
           <div>Final Score: <strong id="final-score" style="color: var(--color-orange);">0</strong></div>
           <div>Budget Saved: <strong id="final-budget" style="color: #4ADE80;">$0.00</strong></div>
         </div>
-        <button class="btn-restart" onclick="resetGame()">PLAY AGAIN</button>
+        <button class="btn-restart" onclick="resetGame()">TRY AGAIN</button>
       </div>
     </div>
 
     <div class="tip-box" id="tip-display">
-      ⚠️ <strong>Rule:</strong> Catch ONLY the target food shown above! Unmatched food causes damage!
+      👁️ <strong>High-Contrast Mode:</strong> Read the bold text pills or check shapes to catch the target!
     </div>
 
     <div class="controls-hint">
-      Touch/Drag screen or use ⬅️ ➡️ arrow keys to position your bowl!
+      Drag screen or use ⬅️ ➡️ arrow keys to position your catch basket!
     </div>
   </div>
 
@@ -224,135 +226,178 @@
     let budgetSaved = 0;
     let lives = 3;
     let gameOver = false;
-    let spawnInterval = null;
     
-    // Basket Player
     const player = {
-      x: 160,
+      x: 150,
       y: 430,
-      width: 80,
-      height: 35,
+      width: 100,
+      height: 38,
       speed: 8,
       dx: 0
     };
 
-    // Recipe Target Goals
+    // Recipe Target Goals with distinct visual shapes & names
     const recipeTargets = [
-      { name: "Broccoli 🥦", type: "broccoli", tip: "💡 Broccoli is packed with Vitamin C and fiber. Buy frozen to prevent spoilage!" },
-      { name: "Salmon 🐟", type: "salmon", tip: "💡 Canned or frozen salmon gives you essential Omega-3s at half the fresh market price." },
-      { name: "Rice Bowl 🍚", type: "rice", tip: "💡 Whole grain rice bought in 5lb bags costs less than $0.15 per serving!" },
-      { name: "Boiled Egg 🥚", type: "egg", tip: "💡 Eggs are the cheapest high-quality protein source for dorm cooking." }
+      { id: "banana", name: "BANANA 🍌", tip: "🍌 Bananas: High potassium staple for under $0.25 per serving!" },
+      { id: "toast", name: "TOAST 🍞", tip: "🍞 Whole Wheat Toast: Complex carbs that keep you full during long lectures." },
+      { id: "carrot", name: "CARROT 🥕", tip: "🥕 Carrots: Packed with Vitamin A and stay fresh in dorm fridges for weeks." },
+      { id: "apple", name: "APPLE 🍎", tip: "🍎 Apples: Perfect portable snack loaded with fiber to beat mid-day fatigue." }
     ];
 
     let currentTargetIdx = 0;
     let fallingItems = [];
 
-    // --- VECTOR DRAWING FUNCTIONS ---
-    function drawBroccoli(x, y) {
+    // --- ACCESSIBLE HIGH-CONTRAST DRAWING FUNCTIONS ---
+
+    // Generic label pill renderer to guarantee text readability for all vision types
+    function drawLabelBadge(text, x, y, isTrap = false) {
       ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
+      ctx.font = "bold 11px sans-serif";
+      const textWidth = ctx.measureText(text).width;
+      const pad = 6;
       
-      ctx.fillStyle = "#C9E2E9";
-      ctx.fillRect(x + 10, y + 15, 10, 12);
-      ctx.strokeRect(x + 10, y + 15, 10, 12);
-
-      ctx.fillStyle = "#18803C";
-      ctx.beginPath();
-      ctx.arc(x + 7, y + 12, 9, 0, Math.PI * 2);
-      ctx.arc(x + 15, y + 6, 11, 0, Math.PI * 2);
-      ctx.arc(x + 23, y + 12, 9, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawSalmon(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
-      ctx.fillStyle = "#FF7A59";
-
-      ctx.beginPath();
-      ctx.ellipse(x + 15, y + 12, 16, 10, Math.PI / 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
+      // Pill Background
+      ctx.fillStyle = isTrap ? "#D32F2F" : "#001C2A";
       ctx.strokeStyle = "#FFFFFF";
       ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x + 8, y + 8);
-      ctx.lineTo(x + 18, y + 16);
-      ctx.moveTo(x + 14, y + 6);
-      ctx.lineTo(x + 24, y + 14);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawRiceBowl(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
       
-      ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
-      ctx.arc(x + 15, y + 12, 12, Math.PI, 0);
+      ctx.roundRect(x - pad, y + 32, textWidth + (pad * 2), 18, 5);
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = "#001C2A";
-      ctx.beginPath();
-      ctx.arc(x + 15, y + 12, 14, 0, Math.PI);
-      ctx.fill();
-      ctx.stroke();
+      // Text
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText(text, x, y + 45);
       ctx.restore();
     }
 
-    function drawEgg(x, y) {
+    // 1. Crescent Banana
+    function drawBanana(x, y) {
       ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
-      
-      ctx.fillStyle = "#FFFFFF";
-      ctx.beginPath();
-      ctx.ellipse(x + 15, y + 12, 13, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = "#F59E0B";
-      ctx.beginPath();
-      ctx.arc(x + 15, y + 12, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawTrap(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 4;
       ctx.strokeStyle = "#001C2A";
       ctx.fillStyle = "#FCA911";
-      ctx.fillRect(x + 5, y + 5, 20, 20);
-      ctx.strokeRect(x + 5, y + 5, 20, 20);
-      
-      ctx.fillStyle = "#001C2A";
-      ctx.font = "bold 12px sans-serif";
-      ctx.fillText("$15", x + 6, y + 19);
+
+      ctx.beginPath();
+      ctx.moveTo(x + 5, y + 10);
+      ctx.quadraticCurveTo(x + 20, y + 35, x + 35, y + 25);
+      ctx.quadraticCurveTo(x + 20, y + 22, x + 5, y + 10);
+      ctx.fill();
+      ctx.stroke();
       ctx.restore();
+
+      drawLabelBadge("BANANA 🍌", x - 8, y);
+    }
+
+    // 2. Square Toast Slice
+    function drawToast(x, y) {
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#001C2A";
+      
+      // Crust / Slice Body
+      ctx.fillStyle = "#D97706";
+      ctx.beginPath();
+      ctx.roundRect(x + 4, y + 4, 32, 28, [8, 8, 3, 3]);
+      ctx.fill();
+      ctx.stroke();
+
+      // Inner Bread
+      ctx.fillStyle = "#FEF3C7";
+      ctx.fillRect(x + 8, y + 10, 24, 18);
+      ctx.restore();
+
+      drawLabelBadge("TOAST 🍞", x - 6, y);
+    }
+
+    // 3. Triangular Wedge Carrot
+    function drawCarrot(x, y) {
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#001C2A";
+      
+      // Leaf Top
+      ctx.fillStyle = "#18803C";
+      ctx.fillRect(x + 16, y + 2, 8, 8);
+      ctx.strokeRect(x + 16, y + 2, 8, 8);
+
+      // Carrot Triangle Wedge
+      ctx.fillStyle = "#EA580C";
+      ctx.beginPath();
+      ctx.moveTo(x + 6, y + 10);
+      ctx.lineTo(x + 34, y + 10);
+      ctx.lineTo(x + 20, y + 34);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      drawLabelBadge("CARROT 🥕", x - 8, y);
+    }
+
+    // 4. Round Apple with Leaf
+    function drawApple(x, y) {
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#001C2A";
+      ctx.fillStyle = "#DC2626";
+
+      // Apple Circle Notch
+      ctx.beginPath();
+      ctx.arc(x + 14, y + 20, 12, 0, Math.PI * 2);
+      ctx.arc(x + 24, y + 20, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Leaf
+      ctx.fillStyle = "#18803C";
+      ctx.beginPath();
+      ctx.ellipse(x + 22, y + 6, 6, 3, Math.PI / 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      drawLabelBadge("APPLE 🍎", x - 5, y);
+    }
+
+    // 5. Takeout Box Hazard Trap
+    function drawTrap(x, y) {
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#001C2A";
+      ctx.fillStyle = "#475569";
+
+      // Square Box
+      ctx.fillRect(x + 5, y + 5, 30, 26);
+      ctx.strokeRect(x + 5, y + 5, 30, 26);
+
+      // Red Hazard X
+      ctx.strokeStyle = "#FF5252";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x + 10, y + 10);
+      ctx.lineTo(x + 30, y + 26);
+      ctx.moveTo(x + 30, y + 10);
+      ctx.lineTo(x + 10, y + 26);
+      ctx.stroke();
+      ctx.restore();
+
+      drawLabelBadge("❌ $15 TRAP", x - 12, y, true);
     }
 
     // --- GAME ENGINE ---
     function spawnItem() {
       if (gameOver) return;
 
-      const types = ["broccoli", "salmon", "rice", "egg", "trap"];
+      const types = ["banana", "toast", "carrot", "apple", "trap"];
       const selectedType = types[Math.floor(Math.random() * types.length)];
       
       fallingItems.push({
-        x: Math.random() * (canvas.width - 40),
-        y: -30,
+        x: Math.random() * (canvas.width - 60) + 10,
+        y: -40,
         type: selectedType,
-        speed: 2.5 + Math.random() * 2
+        speed: 2.2 + Math.random() * 1.8
       });
     }
 
@@ -369,7 +414,7 @@
       document.getElementById("final-score").innerText = score;
       document.getElementById("final-budget").innerText = `$${budgetSaved.toFixed(2)}`;
       document.getElementById("gameOverScreen").style.display = "flex";
-      document.getElementById("tip-display").innerHTML = "❌ <strong>Game Over!</strong> You ran out of lives.";
+      document.getElementById("tip-display").innerHTML = "❌ <strong>Game Over:</strong> Ran out of lives!";
     }
 
     function resetGame() {
@@ -382,7 +427,7 @@
 
       document.getElementById("score").innerText = "0";
       document.getElementById("target-item").innerText = recipeTargets[0].name;
-      document.getElementById("tip-display").innerHTML = "⚡ <strong>New Game Started:</strong> Catch the exact target food shown!";
+      document.getElementById("tip-display").innerHTML = "⚡ <strong>New Game:</strong> Catch ONLY the target item shown above!";
       document.getElementById("gameOverScreen").style.display = "none";
       
       updateLivesUI();
@@ -401,15 +446,15 @@
         const item = fallingItems[i];
         item.y += item.speed;
 
-        // Collision Check
+        // Catch Collision Box
         if (
-          item.y + 25 >= player.y &&
-          item.x + 25 >= player.x &&
+          item.y + 40 >= player.y &&
+          item.x + 35 >= player.x &&
           item.x <= player.x + player.width
         ) {
           const currentTarget = recipeTargets[currentTargetIdx];
 
-          if (item.type === currentTarget.type) {
+          if (item.type === currentTarget.id) {
             // MATCHED TARGET!
             score += 150;
             budgetSaved += 3.50;
@@ -419,15 +464,15 @@
             currentTargetIdx = (currentTargetIdx + 1) % recipeTargets.length;
             document.getElementById("target-item").innerText = recipeTargets[currentTargetIdx].name;
           } else {
-            // UNMATCHED ITEM / TRAP CAUGHT -> DAMAGE DEALT!
+            // UNMATCHED ITEM / TRAP DEALS DAMAGE
             lives--;
-            score = Math.max(0, score - 50); // Lose points
+            score = Math.max(0, score - 50);
 
             if (item.type === "trap") {
               budgetSaved = Math.max(0, budgetSaved - 5.00);
-              document.getElementById("tip-display").innerHTML = "💸 <strong>DAMAGE!</strong> Hit a $15 Delivery Trap! -1 Life & -$5.00!";
+              document.getElementById("tip-display").innerHTML = "💥 <strong>TRAP CAUGHT!</strong> Lost 1 Life & -$5.00!";
             } else {
-              document.getElementById("tip-display").innerHTML = `⚠️ <strong>DAMAGE!</strong> Wrong food caught! Needed ${currentTarget.name}. -1 Life!`;
+              document.getElementById("tip-display").innerHTML = `⚠️ <strong>WRONG CATCH!</strong> Needed ${currentTarget.name}. Lost 1 Life!`;
             }
 
             updateLivesUI();
@@ -438,12 +483,11 @@
           }
 
           document.getElementById("score").innerText = score;
-
           fallingItems.splice(i, 1);
           continue;
         }
 
-        // Remove offscreen items safely without penalty
+        // Offscreen removal
         if (item.y > canvas.height) fallingItems.splice(i, 1);
       }
     }
@@ -451,23 +495,28 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw Player Basket
+      // Player Catch Basket (High-Contrast Navy Container)
       ctx.save();
       ctx.fillStyle = "#001C2A";
-      ctx.strokeStyle = (lives === 1) ? "#D32F2F" : "#FCA911"; // Red highlight on last life
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = (lives === 1) ? "#FF5252" : "#FCA911";
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.roundRect(player.x, player.y, player.width, player.height, [0, 0, 15, 15]);
+      ctx.roundRect(player.x, player.y, player.width, player.height, [0, 0, 12, 12]);
       ctx.fill();
       ctx.stroke();
+
+      // Basket Rim & Center Marker
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 12px sans-serif";
+      ctx.fillText("📥 CATCH HERE", player.x + 8, player.y + 24);
       ctx.restore();
 
-      // Draw Falling Vector Items
+      // Render Falling Items
       fallingItems.forEach(item => {
-        if (item.type === "broccoli") drawBroccoli(item.x, item.y);
-        else if (item.type === "salmon") drawSalmon(item.x, item.y);
-        else if (item.type === "rice") drawRiceBowl(item.x, item.y);
-        else if (item.type === "egg") drawEgg(item.x, item.y);
+        if (item.type === "banana") drawBanana(item.x, item.y);
+        else if (item.type === "toast") drawToast(item.x, item.y);
+        else if (item.type === "carrot") drawCarrot(item.x, item.y);
+        else if (item.type === "apple") drawApple(item.x, item.y);
         else if (item.type === "trap") drawTrap(item.x, item.y);
       });
     }
@@ -488,7 +537,7 @@
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
     });
 
-    // Touch / Mouse Dragging
+    // Touch / Drag Navigation
     let isDragging = false;
     canvas.addEventListener("mousedown", e => { isDragging = true; movePlayerTo(e); });
     canvas.addEventListener("mousemove", e => { if (isDragging) movePlayerTo(e); });
@@ -505,8 +554,7 @@
       player.x = mouseX - player.width / 2;
     }
 
-    // Start Spawners & Loop
-    spawnInterval = setInterval(spawnItem, 800);
+    setInterval(spawnItem, 850);
     gameLoop();
   </script>
 </body>
