@@ -3,18 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Pantry Rush | Eat Better, Spend Less</title>
+  <title>Pattern Pantry Catch | Eat Better, Spend Less</title>
   <style>
     :root {
-      /* High-Contrast Palette from AI Visual Guide */
       --color-navy: #001C2A;
       --color-orange: #FCA911;
       --color-green: #18803C;
-      --color-yellow: #F59E0B;
-      --color-salmon: #FF7A59;
       --color-soft-blue: #C9E2E9;
       --color-white: #FFFFFF;
-      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,21 +18,19 @@
     body {
       background-color: var(--color-navy);
       color: var(--color-white);
-      font-family: var(--font-stack);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       padding: 15px;
-      /* High-Contrast SVG Pattern Background */
       background-image: radial-gradient(rgba(201, 226, 233, 0.1) 1px, transparent 1px);
       background-size: 20px 20px;
     }
 
     .game-card {
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       background: var(--color-white);
       border: 4px solid var(--color-navy);
       border-radius: 20px;
@@ -48,48 +42,21 @@
       gap: 15px;
     }
 
-    header {
-      text-align: center;
-      border-bottom: 3px dashed var(--color-navy);
-      padding-bottom: 10px;
-    }
-
-    header h1 {
-      font-size: 1.5rem;
-      color: var(--color-navy);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    header p {
-      font-size: 0.85rem;
-      color: #555;
-      font-weight: bold;
-    }
+    header { text-align: center; border-bottom: 3px dashed var(--color-navy); padding-bottom: 10px; }
+    header h1 { font-size: 1.4rem; color: var(--color-navy); text-transform: uppercase; }
 
     .hud-bar {
       display: flex;
       justify-content: space-between;
       background: var(--color-navy);
       color: var(--color-white);
-      padding: 10px 15px;
-      border-radius: 12px;
+      padding: 10px;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
-    .hud-badge {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .val-orange { color: var(--color-orange); }
-    .val-green { color: #4ADE80; }
-
-    /* Canvas Container */
     .canvas-container {
-      position: relative;
       width: 100%;
       aspect-ratio: 4/5;
       background-color: var(--color-soft-blue);
@@ -98,33 +65,21 @@
       overflow: hidden;
     }
 
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    canvas { width: 100%; height: 100%; display: block; }
 
-    /* Cooking Tip Box */
     .tip-box {
       background-color: var(--color-orange);
       color: var(--color-navy);
-      padding: 12px;
-      border-radius: 10px;
+      padding: 10px;
+      border-radius: 8px;
       border: 2px solid var(--color-navy);
       font-size: 0.85rem;
       font-weight: bold;
       text-align: center;
-      min-height: 50px;
+      min-height: 45px;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .controls-hint {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #666;
-      font-weight: bold;
     }
   </style>
 </head>
@@ -133,13 +88,13 @@
   <div class="game-card">
     <header>
       <h1>Pattern Pantry Catch</h1>
-      <p>Eat Better, Spend Less</p>
+      <p style="font-size: 0.8rem; font-weight: bold;">Student Budget Cooking Game</p>
     </header>
 
     <div class="hud-bar">
-      <div class="hud-badge">Score: <span class="val-green" id="score">0</span></div>
-      <div class="hud-badge">Target: <span class="val-orange" id="target-item">Broccoli 🥦</span></div>
-      <div class="hud-badge">Budget Saved: <span class="val-green" id="budget">$0.00</span></div>
+      <div>Score: <span id="score" style="color: #4ADE80;">0</span></div>
+      <div>Target: <span id="target-item" style="color: var(--color-orange);">Broccoli 🥦</span></div>
+      <div>Saved: <span id="budget" style="color: #4ADE80;">$0.00</span></div>
     </div>
 
     <div class="canvas-container">
@@ -147,11 +102,7 @@
     </div>
 
     <div class="tip-box" id="tip-display">
-      💡 Use Left/Right Arrow keys or drag/touch screen to move your bowl!
-    </div>
-
-    <div class="controls-hint">
-      Touch/Drag or use ⬅️ ➡️ arrow keys to catch high-contrast healthy ingredients!
+      💡 Drag screen or use ⬅️ ➡️ arrow keys to catch high-contrast healthy ingredients!
     </div>
   </div>
 
@@ -162,212 +113,102 @@
     let score = 0;
     let budgetSaved = 0;
     
-    // Basket / Bowl Player
-    const player = {
-      x: 160,
-      y: 430,
-      width: 80,
-      height: 35,
-      speed: 8,
-      dx: 0
-    };
-
-    // Recipe Target Goals
+    const player = { x: 160, y: 440, width: 80, height: 30, dx: 0 };
     const recipeTargets = [
-      { name: "Broccoli 🥦", type: "broccoli", tip: "💡 Broccoli is packed with Vitamin C and fiber. Buy frozen to prevent spoilage!" },
-      { name: "Salmon 🐟", type: "salmon", tip: "💡 Canned or frozen salmon gives you essential Omega-3s at half the fresh market price." },
-      { name: "Rice Bowl 🍚", type: "rice", tip: "💡 Whole grain rice bought in 5lb bags costs less than $0.15 per serving!" },
-      { name: "Boiled Egg 🥚", type: "egg", tip: "💡 Eggs are the cheapest high-quality protein source for dorm cooking." }
+      { name: "Broccoli 🥦", type: "broccoli", tip: "💡 Frozen broccoli retains nutrients and costs half as much as fresh." },
+      { name: "Salmon 🐟", type: "salmon", tip: "💡 Canned salmon provides quick omega-3 protein for easy dorm meals." },
+      { name: "Rice Bowl 🍚", type: "rice", tip: "💡 Bulk rice is an affordable foundation for any student meal." },
+      { name: "Boiled Egg 🥚", type: "egg", tip: "💡 Eggs are one of the most cost-effective proteins available." }
     ];
 
     let currentTargetIdx = 0;
     const fallingItems = [];
 
-    // --- VECTOR DRAWING FUNCTIONS (Matching AI Pattern Visual) ---
     function drawBroccoli(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A"; // Dark Navy Outline
-      
-      // Stem
-      ctx.fillStyle = "#C9E2E9";
-      ctx.fillRect(x + 10, y + 15, 10, 12);
-      ctx.strokeRect(x + 10, y + 15, 10, 12);
-
-      // Florets
-      ctx.fillStyle = "#18803C"; // Green
+      ctx.fillStyle = "#18803C";
       ctx.beginPath();
-      ctx.arc(x + 7, y + 12, 9, 0, Math.PI * 2);
-      ctx.arc(x + 15, y + 6, 11, 0, Math.PI * 2);
-      ctx.arc(x + 23, y + 12, 9, 0, Math.PI * 2);
+      ctx.arc(x + 15, y + 10, 12, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-      ctx.restore();
     }
 
     function drawSalmon(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
-      ctx.fillStyle = "#FF7A59"; // Salmon Pink/Orange
-
+      ctx.fillStyle = "#FF7A59";
       ctx.beginPath();
-      ctx.ellipse(x + 15, y + 12, 16, 10, Math.PI / 6, 0, Math.PI * 2);
+      ctx.ellipse(x + 15, y + 10, 15, 8, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-
-      // White Marbling lines
-      ctx.strokeStyle = "#FFFFFF";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x + 8, y + 8);
-      ctx.lineTo(x + 18, y + 16);
-      ctx.moveTo(x + 14, y + 6);
-      ctx.lineTo(x + 24, y + 14);
-      ctx.stroke();
-      ctx.restore();
     }
 
     function drawRiceBowl(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
-      
-      // Rice mound
       ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
-      ctx.arc(x + 15, y + 12, 12, Math.PI, 0);
+      ctx.arc(x + 15, y + 10, 10, Math.PI, 0);
       ctx.fill();
-      ctx.stroke();
-
-      // Bowl base
-      ctx.fillStyle = "#001C2A";
-      ctx.beginPath();
-      ctx.arc(x + 15, y + 12, 14, 0, Math.PI);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
     }
 
     function drawEgg(x, y) {
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
-      
-      // Egg White
       ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
-      ctx.ellipse(x + 15, y + 12, 13, 10, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 15, y + 10, 12, 8, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-
-      // Yolk
       ctx.fillStyle = "#F59E0B";
       ctx.beginPath();
-      ctx.arc(x + 15, y + 12, 5, 0, Math.PI * 2);
+      ctx.arc(x + 15, y + 10, 4, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-      ctx.restore();
     }
 
-    function drawTrap(x, y) {
-      // Overpriced takeout trap
-      ctx.save();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A";
-      ctx.fillStyle = "#FCA911";
-      ctx.fillRect(x + 5, y + 5, 20, 20);
-      ctx.strokeRect(x + 5, y + 5, 20, 20);
-      
-      ctx.fillStyle = "#001C2A";
-      ctx.font = "bold 12px sans-serif";
-      ctx.fillText("$15", x + 6, y + 19);
-      ctx.restore();
-    }
-
-    // --- GAME ENGINE ---
     function spawnItem() {
-      const types = ["broccoli", "salmon", "rice", "egg", "trap"];
-      const selectedType = types[Math.floor(Math.random() * types.length)];
-      
+      const types = ["broccoli", "salmon", "rice", "egg"];
       fallingItems.push({
-        x: Math.random() * (canvas.width - 40),
-        y: -30,
-        type: selectedType,
-        speed: 2.5 + Math.random() * 2
+        x: Math.random() * (canvas.width - 30),
+        y: -20,
+        type: types[Math.floor(Math.random() * types.length)],
+        speed: 3
       });
     }
 
     function update() {
-      // Player Movement
       player.x += player.dx;
       if (player.x < 0) player.x = 0;
       if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
 
-      // Item Movement & Collision
       for (let i = fallingItems.length - 1; i >= 0; i--) {
         const item = fallingItems[i];
         item.y += item.speed;
 
-        // Catch Collision Check
         if (
-          item.y + 25 >= player.y &&
-          item.x + 25 >= player.x &&
+          item.y + 20 >= player.y &&
+          item.x + 20 >= player.x &&
           item.x <= player.x + player.width
         ) {
           const currentTarget = recipeTargets[currentTargetIdx];
 
           if (item.type === currentTarget.type) {
-            // Correct Target Caught!
-            score += 150;
-            budgetSaved += 3.50;
-            
+            score += 100;
+            budgetSaved += 2.50;
             document.getElementById("tip-display").innerHTML = currentTarget.tip;
-
-            // Rotate Target Goal
             currentTargetIdx = (currentTargetIdx + 1) % recipeTargets.length;
             document.getElementById("target-item").innerText = recipeTargets[currentTargetIdx].name;
-          } else if (item.type === "trap") {
-            // Takeout Trap
-            budgetSaved = Math.max(0, budgetSaved - 5.00);
-            document.getElementById("tip-display").innerHTML = "💸 <strong>Takeout Penalty!</strong> Lost $5.00 to high delivery fees!";
-          } else {
-            score += 20; // Minor bonus for other healthy food
           }
 
           document.getElementById("score").innerText = score;
           document.getElementById("budget").innerText = `$${budgetSaved.toFixed(2)}`;
-
           fallingItems.splice(i, 1);
-          continue;
+        } else if (item.y > canvas.height) {
+          fallingItems.splice(i, 1);
         }
-
-        // Remove offscreen items
-        if (item.y > canvas.height) fallingItems.splice(i, 1);
       }
     }
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw Player Basket (High-Contrast Navy Bowl)
-      ctx.save();
       ctx.fillStyle = "#001C2A";
-      ctx.strokeStyle = "#FCA911";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.roundRect(player.x, player.y, player.width, player.height, [0, 0, 15, 15]);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
+      ctx.fillRect(player.x, player.y, player.width, player.height);
 
-      // Draw Falling Vector Items
       fallingItems.forEach(item => {
         if (item.type === "broccoli") drawBroccoli(item.x, item.y);
         else if (item.type === "salmon") drawSalmon(item.x, item.y);
         else if (item.type === "rice") drawRiceBowl(item.x, item.y);
         else if (item.type === "egg") drawEgg(item.x, item.y);
-        else if (item.type === "trap") drawTrap(item.x, item.y);
       });
     }
 
@@ -377,34 +218,19 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // --- CONTROLS (Keyboard & Touch/Mouse) ---
     document.addEventListener("keydown", e => {
-      if (e.key === "ArrowLeft") player.dx = -player.speed;
-      if (e.key === "ArrowRight") player.dx = player.speed;
+      if (e.key === "ArrowLeft") player.dx = -7;
+      if (e.key === "ArrowRight") player.dx = 7;
     });
 
-    document.addEventListener("keyup", e => {
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
-    });
+    document.addEventListener("keyup", () => player.dx = 0);
 
-    // Touch / Mouse Dragging for Mobile Responsiveness
-    let isDragging = false;
-    canvas.addEventListener("mousedown", e => { isDragging = true; movePlayerTo(e); });
-    canvas.addEventListener("mousemove", e => { if (isDragging) movePlayerTo(e); });
-    document.addEventListener("mouseup", () => isDragging = false);
-
-    canvas.addEventListener("touchstart", e => { movePlayerTo(e.touches[0]); });
-    canvas.addEventListener("touchmove", e => { movePlayerTo(e.touches[0]); });
-
-    function movePlayerTo(e) {
+    canvas.addEventListener("touchmove", e => {
       const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const mouseX = (e.clientX - rect.left) * scaleX;
-      player.x = mouseX - player.width / 2;
-    }
+      player.x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width) - player.width / 2;
+    });
 
-    // Start Spawners & Loop
-    setInterval(spawnItem, 800);
+    setInterval(spawnItem, 1000);
     gameLoop();
   </script>
 </body>
