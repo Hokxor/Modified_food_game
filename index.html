@@ -3,582 +3,511 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Pantry Catch: Fresh Harvest Edition</title>
+  <title>Pattern Pantry Rush | Precision Food Catch</title>
   <style>
     :root {
-      --bg-color: #F8F9FA;
-      --card-bg: #FFFFFF;
-      --text-dark: #0D1C2A;
-      --navy: #0D1C2A;
-      --gold: #FCA311;
-      --green: #388E3C;
-      --orange: #FF7A59;
-      --red: #D32F2F;
-      --gray: #E5E5E5;
-      --shadow: rgba(13, 28, 42, 0.12);
+      --color-navy: #001C2A;
+      --color-orange: #FCA911;
+      --color-green: #18803C;
+      --color-yellow: #F59E0B;
+      --color-salmon: #FF7A59;
+      --color-soft-blue: #C9E2E9;
+      --color-white: #FFFFFF;
+      --color-red: #D32F2F;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-dark);
+      background-color: var(--color-navy);
+      color: var(--color-white);
+      font-family: var(--font-stack);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 16px;
+      padding: 15px;
+      background-image: radial-gradient(rgba(201, 226, 233, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
     }
 
-    .game-container {
+    .game-card {
       width: 100%;
-      max-width: 440px;
-      background: var(--card-bg);
-      border: 3.5px solid var(--navy);
+      max-width: 480px;
+      background: var(--color-white);
+      border: 4px solid var(--color-navy);
       border-radius: 20px;
-      box-shadow: 0 12px 28px var(--shadow);
-      overflow: hidden;
+      padding: 20px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+      color: var(--color-navy);
       display: flex;
       flex-direction: column;
+      gap: 15px;
     }
 
     header {
-      padding: 16px;
-      background-color: #FFF9EB;
-      border-bottom: 3.5px solid var(--navy);
       text-align: center;
+      border-bottom: 3px dashed var(--color-navy);
+      padding-bottom: 10px;
     }
 
     header h1 {
-      font-size: 1.35rem;
-      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--color-navy);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--navy);
+      letter-spacing: 1px;
     }
 
     header p {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: #555;
-      margin-top: 4px;
-      font-weight: 600;
+      font-weight: bold;
     }
 
     .hud-bar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      background: #FFFFFF;
-      border-bottom: 3.5px solid var(--navy);
-      font-weight: 700;
-      font-size: 0.9rem;
+      background: var(--color-navy);
+      color: var(--color-white);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 0.85rem;
     }
 
-    .hud-card {
+    .hud-badge {
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: #F0F4F8;
-      padding: 6px 12px;
-      border-radius: 10px;
-      border: 2px solid var(--navy);
+      gap: 4px;
+    }
+
+    .val-orange { color: var(--color-orange); }
+    .val-green { color: #4ADE80; }
+
+    /* Canvas Container & Overlays */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/5;
+      background-color: var(--color-soft-blue);
+      border: 3px solid var(--color-navy);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     canvas {
-      display: block;
       width: 100%;
-      height: 380px;
-      background-color: #FCFBF7;
-      touch-action: none;
-      cursor: pointer;
+      height: 100%;
+      display: block;
     }
 
-    .info-footer {
-      padding: 14px 16px;
-      background: #FFF9EB;
-      border-top: 3.5px solid var(--navy);
-      min-height: 80px;
+    /* Game Over Modal Screen */
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 28, 42, 0.92);
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-white);
+      text-align: center;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .overlay h2 {
+      font-size: 2rem;
+      color: var(--color-red);
+      margin-bottom: 8px;
+    }
+
+    .overlay p {
+      font-size: 0.9rem;
+      color: var(--color-soft-blue);
+      margin-bottom: 15px;
+    }
+
+    .stats-summary {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .btn-restart {
+      background: var(--color-orange);
+      color: var(--color-navy);
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .btn-restart:active {
+      transform: scale(0.95);
+    }
+
+    /* Cooking Tip Box */
+    .tip-box {
+      background-color: var(--color-orange);
+      color: var(--color-navy);
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid var(--color-navy);
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-align: center;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
       justify-content: center;
     }
 
-    .info-footer .label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      color: var(--navy);
-    }
-
-    .info-footer .content {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-top: 2px;
-      line-height: 1.3;
-    }
-
-    .controls-overlay {
-      padding: 12px;
-      background: var(--card-bg);
-      display: flex;
-      gap: 10px;
-      border-top: 2px solid var(--gray);
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--navy);
-      background-color: var(--gold);
-      border: 3px solid var(--navy);
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 0 var(--navy);
-      transition: all 0.1s ease;
-      text-transform: uppercase;
-    }
-
-    .btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 0 0 var(--navy);
-    }
-
-    .btn-secondary {
-      background-color: #E2E8F0;
+    .controls-hint {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<div class="game-container">
-  <header>
-    <h1>Pantry Catch: Fresh Harvest</h1>
-    <p>Catch Fresh Produce & Healthy Staples on a Budget!</p>
-  </header>
+  <div class="game-card">
+    <header>
+      <h1>Pattern Pantry Catch</h1>
+      <p>Precision Food Matching Challenge</p>
+    </header>
 
-  <div class="hud-bar">
-    <div class="hud-card">
-      <span>🪙 Savings:</span>
-      <span id="score" style="color: var(--green);">$0.00</span>
+    <div class="hud-bar">
+      <div class="hud-badge">Lives: <span id="lives-display">❤️ ❤️ ❤️</span></div>
+      <div class="hud-badge">Target: <span class="val-orange" id="target-item">Broccoli 🥦</span></div>
+      <div class="hud-badge">Score: <span class="val-green" id="score">0</span></div>
     </div>
-    <div class="hud-card">
-      <span>❤️ Lives:</span>
-      <span id="lives">❤️❤️❤️</span>
+
+    <div class="canvas-container">
+      <canvas id="gameCanvas" width="400" height="500"></canvas>
+      
+      <!-- Game Over Overlay -->
+      <div class="overlay" id="gameOverScreen" style="display: none;">
+        <h2>GAME OVER!</h2>
+        <p>You took 3 damages from catching wrong ingredients.</p>
+        <div class="stats-summary">
+          <div>Final Score: <strong id="final-score" style="color: var(--color-orange);">0</strong></div>
+          <div>Budget Saved: <strong id="final-budget" style="color: #4ADE80;">$0.00</strong></div>
+        </div>
+        <button class="btn-restart" onclick="resetGame()">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <div class="tip-box" id="tip-display">
+      ⚠️ <strong>Rule:</strong> Catch ONLY the target food shown above! Unmatched food causes damage!
+    </div>
+
+    <div class="controls-hint">
+      Touch/Drag screen or use ⬅️ ➡️ arrow keys to position your bowl!
     </div>
   </div>
 
-  <canvas id="gameCanvas" width="400" height="380"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-  <div class="info-footer">
-    <div class="label" id="tip-title">Campus Nutrition Insight</div>
-    <div class="content" id="tip-body">Drag or tap left/right to move your basket. Catch fresh fruits and veggies while dodging processed junk traps!</div>
-  </div>
-
-  <div class="controls-overlay">
-    <button class="btn btn-secondary" id="leftBtn">◀ Left</button>
-    <button class="btn" id="startBtn">Play / Restart</button>
-    <button class="btn btn-secondary" id="rightBtn">Right ▶</button>
-  </div>
-</div>
-
-<script>
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-
-  // HUD Elements
-  const scoreEl = document.getElementById('score');
-  const livesEl = document.getElementById('lives');
-  const tipTitleEl = document.getElementById('tip-title');
-  const tipBodyEl = document.getElementById('tip-body');
-  const startBtn = document.getElementById('startBtn');
-  const leftBtn = document.getElementById('leftBtn');
-  const rightBtn = document.getElementById('rightBtn');
-
-  // Game State
-  let score = 0;
-  let lives = 3;
-  let isRunning = false;
-  let animationId = null;
-
-  // Basket Object
-  const basket = {
-    x: 160,
-    y: 320,
-    width: 80,
-    height: 42,
-    speed: 7,
-    dx: 0
-  };
-
-  // Healthy Produce & Staples Item Database
-  const items = [
-    { type: 'banana', name: 'Banana', cost: 0.25, isHealthy: true, tip: 'Bananas are nature\'s $0.25 snack—packed with potassium and energy for study sessions!' },
-    { type: 'carrot', name: 'Carrots', cost: 0.40, isHealthy: true, tip: 'Carrots stay fresh in dorm fridges for weeks! Great crisp bite for hummus or dip.' },
-    { type: 'apple', name: 'Fresh Apple', cost: 0.50, isHealthy: true, tip: 'High in fiber & crisp antioxidants. Apples require zero prep and travel anywhere.' },
-    { type: 'broccoli', name: 'Broccoli', cost: 0.85, isHealthy: true, tip: 'Broccoli florets steamed in a microwave bowl make a fast, high-fiber veggie side.' },
-    { type: 'corn', name: 'Sweet Corn', cost: 0.65, isHealthy: true, tip: 'Canned or frozen sweet corn retains peak antioxidants and adds sweetness to bowls.' },
-    { type: 'avocado', name: 'Avocado', cost: 0.90, isHealthy: true, tip: 'Healthy monounsaturated fats keep you full through long evening lectures.' },
-    { type: 'egg', name: 'Boiled Egg', cost: 0.20, isHealthy: true, tip: 'Hard-boiled eggs are $0.20 protein bombs. Prep 6 at once for instant weekly snacks.' },
-    { type: 'salmon', name: 'Canned Salmon', cost: 1.75, isHealthy: true, tip: 'Canned salmon offers high Omega-3s at a fraction of fresh fillet prices.' },
-    { type: 'rice', name: 'Grain Bowl', cost: 0.30, isHealthy: true, tip: 'Brown rice or quinoa creates a nutrient-dense base for any fresh produce top.' },
-    { type: 'trap', name: 'Takeout Trap', cost: -3.50, isHealthy: false, tip: 'Fast food delivery markups and fees deplete your budget fast!' }
-  ];
-
-  let fallingItems = [];
-  let spawnTimer = 0;
-
-  // Sound Synth Generator
-  function playBeep(freq, type = 'sine', duration = 0.1) {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctxAudio = new AudioCtx();
-      const osc = ctxAudio.createOscillator();
-      const gain = ctxAudio.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      osc.connect(gain);
-      gain.connect(ctxAudio.destination);
-      osc.start();
-      gain.gain.exponentialRampToValueAtTime(0.00001, ctxAudio.currentTime + duration);
-      osc.stop(ctxAudio.currentTime + duration);
-    } catch (e) {}
-  }
-
-  // Draw Functions with High-Contrast Bold Vector Art
-  function drawBasket() {
-    ctx.save();
-    ctx.lineWidth = 3.5;
-    ctx.strokeStyle = '#0D1C2A';
+    let score = 0;
+    let budgetSaved = 0;
+    let lives = 3;
+    let gameOver = false;
+    let spawnInterval = null;
     
-    // Basket Base
-    ctx.fillStyle = '#FCA311';
-    ctx.beginPath();
-    ctx.roundRect(basket.x, basket.y + 12, basket.width, basket.height - 12, 8);
-    ctx.fill();
-    ctx.stroke();
+    // Basket Player
+    const player = {
+      x: 160,
+      y: 430,
+      width: 80,
+      height: 35,
+      speed: 8,
+      dx: 0
+    };
 
-    // Woven Weave Detail Lines
-    ctx.beginPath();
-    ctx.moveTo(basket.x + 20, basket.y + 12); ctx.lineTo(basket.x + 20, basket.y + basket.height);
-    ctx.moveTo(basket.x + 40, basket.y + 12); ctx.lineTo(basket.x + 40, basket.y + basket.height);
-    ctx.moveTo(basket.x + 60, basket.y + 12); ctx.lineTo(basket.x + 60, basket.y + basket.height);
-    ctx.stroke();
+    // Recipe Target Goals
+    const recipeTargets = [
+      { name: "Broccoli 🥦", type: "broccoli", tip: "💡 Broccoli is packed with Vitamin C and fiber. Buy frozen to prevent spoilage!" },
+      { name: "Salmon 🐟", type: "salmon", tip: "💡 Canned or frozen salmon gives you essential Omega-3s at half the fresh market price." },
+      { name: "Rice Bowl 🍚", type: "rice", tip: "💡 Whole grain rice bought in 5lb bags costs less than $0.15 per serving!" },
+      { name: "Boiled Egg 🥚", type: "egg", tip: "💡 Eggs are the cheapest high-quality protein source for dorm cooking." }
+    ];
 
-    // Basket Handle Accent
-    ctx.beginPath();
-    ctx.arc(basket.x + basket.width / 2, basket.y + 12, basket.width / 2.4, Math.PI, 0);
-    ctx.stroke();
+    let currentTargetIdx = 0;
+    let fallingItems = [];
 
-    ctx.restore();
-  }
+    // --- VECTOR DRAWING FUNCTIONS ---
+    function drawBroccoli(x, y) {
+      ctx.save();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#001C2A";
+      
+      ctx.fillStyle = "#C9E2E9";
+      ctx.fillRect(x + 10, y + 15, 10, 12);
+      ctx.strokeRect(x + 10, y + 15, 10, 12);
 
-  function drawItem(item) {
-    ctx.save();
-    ctx.translate(item.x, item.y);
-    ctx.lineWidth = 3.5;
-    ctx.strokeStyle = '#0D1C2A';
-    ctx.lineJoin = 'round';
-
-    switch (item.type) {
-      case 'banana':
-        ctx.fillStyle = '#FCA311';
-        ctx.beginPath();
-        ctx.moveTo(6, 8);
-        ctx.quadraticCurveTo(24, 10, 28, 28);
-        ctx.quadraticCurveTo(14, 30, 4, 16);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#388E3C';
-        ctx.fillRect(4, 8, 4, 4);
-        break;
-
-      case 'carrot':
-        ctx.fillStyle = '#388E3C'; // Leaf Top
-        ctx.beginPath();
-        ctx.arc(16, 6, 4, 0, Math.PI * 2);
-        ctx.arc(11, 8, 3, 0, Math.PI * 2);
-        ctx.arc(21, 8, 3, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        
-        ctx.fillStyle = '#FF7A59'; // Orange Body
-        ctx.beginPath();
-        ctx.moveTo(10, 10); ctx.lineTo(22, 10); ctx.lineTo(16, 32);
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'apple':
-        ctx.fillStyle = '#D32F2F'; // Red Apple
-        ctx.beginPath();
-        ctx.arc(11, 18, 9, 0, Math.PI * 2);
-        ctx.arc(21, 18, 9, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#388E3C'; // Green Leaf
-        ctx.fillRect(15, 5, 3, 5);
-        break;
-
-      case 'broccoli':
-        ctx.fillStyle = '#388E3C';
-        ctx.beginPath();
-        ctx.arc(10, 14, 8, 0, Math.PI * 2);
-        ctx.arc(22, 14, 8, 0, Math.PI * 2);
-        ctx.arc(16, 8, 9, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#E2E8F0';
-        ctx.fillRect(13, 20, 6, 12);
-        ctx.strokeRect(13, 20, 6, 12);
-        break;
-
-      case 'corn':
-        ctx.fillStyle = '#388E3C'; // Green Husk
-        ctx.beginPath();
-        ctx.ellipse(8, 20, 5, 11, Math.PI / 6, 0, Math.PI * 2);
-        ctx.ellipse(24, 20, 5, 11, -Math.PI / 6, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FCA311'; // Yellow Cob
-        ctx.beginPath();
-        ctx.ellipse(16, 17, 7, 12, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'avocado':
-        ctx.fillStyle = '#388E3C';
-        ctx.beginPath();
-        ctx.ellipse(16, 16, 11, 14, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FF7A59'; // Pit
-        ctx.beginPath();
-        ctx.arc(16, 18, 5, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'egg':
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.ellipse(16, 16, 11, 14, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FCA311'; // Yolk
-        ctx.beginPath();
-        ctx.arc(16, 16, 5, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'salmon':
-        ctx.fillStyle = '#FF7A59';
-        ctx.beginPath();
-        ctx.ellipse(16, 16, 14, 9, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.beginPath(); // Tail
-        ctx.moveTo(28, 16); ctx.lineTo(34, 10); ctx.lineTo(34, 22);
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'rice':
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.arc(16, 16, 13, 0, Math.PI);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#388E3C';
-        ctx.fillRect(10, 14, 12, 3);
-        break;
-
-      case 'trap':
-        ctx.fillStyle = '#D32F2F'; // Red Fast Food Box
-        ctx.beginPath();
-        ctx.rect(6, 10, 20, 20);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FCA311'; // Warning Icon
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('⚡', 9, 26);
-        break;
+      ctx.fillStyle = "#18803C";
+      ctx.beginPath();
+      ctx.arc(x + 7, y + 12, 9, 0, Math.PI * 2);
+      ctx.arc(x + 15, y + 6, 11, 0, Math.PI * 2);
+      ctx.arc(x + 23, y + 12, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
     }
 
-    ctx.restore();
-  }
+    function drawSalmon(x, y) {
+      ctx.save();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#001C2A";
+      ctx.fillStyle = "#FF7A59";
 
-  function spawnItem() {
-    const template = items[Math.floor(Math.random() * items.length)];
-    fallingItems.push({
-      ...template,
-      x: Math.random() * (canvas.width - 36) + 4,
-      y: -30,
-      speed: 2.2 + Math.random() * 1.8,
-      size: 32
+      ctx.beginPath();
+      ctx.ellipse(x + 15, y + 12, 16, 10, Math.PI / 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + 8, y + 8);
+      ctx.lineTo(x + 18, y + 16);
+      ctx.moveTo(x + 14, y + 6);
+      ctx.lineTo(x + 24, y + 14);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawRiceBowl(x, y) {
+      ctx.save();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#001C2A";
+      
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      ctx.arc(x + 15, y + 12, 12, Math.PI, 0);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#001C2A";
+      ctx.beginPath();
+      ctx.arc(x + 15, y + 12, 14, 0, Math.PI);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawEgg(x, y) {
+      ctx.save();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#001C2A";
+      
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      ctx.ellipse(x + 15, y + 12, 13, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#F59E0B";
+      ctx.beginPath();
+      ctx.arc(x + 15, y + 12, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawTrap(x, y) {
+      ctx.save();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#001C2A";
+      ctx.fillStyle = "#FCA911";
+      ctx.fillRect(x + 5, y + 5, 20, 20);
+      ctx.strokeRect(x + 5, y + 5, 20, 20);
+      
+      ctx.fillStyle = "#001C2A";
+      ctx.font = "bold 12px sans-serif";
+      ctx.fillText("$15", x + 6, y + 19);
+      ctx.restore();
+    }
+
+    // --- GAME ENGINE ---
+    function spawnItem() {
+      if (gameOver) return;
+
+      const types = ["broccoli", "salmon", "rice", "egg", "trap"];
+      const selectedType = types[Math.floor(Math.random() * types.length)];
+      
+      fallingItems.push({
+        x: Math.random() * (canvas.width - 40),
+        y: -30,
+        type: selectedType,
+        speed: 2.5 + Math.random() * 2
+      });
+    }
+
+    function updateLivesUI() {
+      let hearts = "";
+      for (let i = 0; i < 3; i++) {
+        hearts += (i < lives) ? "❤️ " : "🖤 ";
+      }
+      document.getElementById("lives-display").innerText = hearts.trim();
+    }
+
+    function triggerGameOver() {
+      gameOver = true;
+      document.getElementById("final-score").innerText = score;
+      document.getElementById("final-budget").innerText = `$${budgetSaved.toFixed(2)}`;
+      document.getElementById("gameOverScreen").style.display = "flex";
+      document.getElementById("tip-display").innerHTML = "❌ <strong>Game Over!</strong> You ran out of lives.";
+    }
+
+    function resetGame() {
+      score = 0;
+      budgetSaved = 0;
+      lives = 3;
+      gameOver = false;
+      fallingItems = [];
+      currentTargetIdx = 0;
+
+      document.getElementById("score").innerText = "0";
+      document.getElementById("target-item").innerText = recipeTargets[0].name;
+      document.getElementById("tip-display").innerHTML = "⚡ <strong>New Game Started:</strong> Catch the exact target food shown!";
+      document.getElementById("gameOverScreen").style.display = "none";
+      
+      updateLivesUI();
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      // Player Movement
+      player.x += player.dx;
+      if (player.x < 0) player.x = 0;
+      if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+      // Item Movement & Collision
+      for (let i = fallingItems.length - 1; i >= 0; i--) {
+        const item = fallingItems[i];
+        item.y += item.speed;
+
+        // Collision Check
+        if (
+          item.y + 25 >= player.y &&
+          item.x + 25 >= player.x &&
+          item.x <= player.x + player.width
+        ) {
+          const currentTarget = recipeTargets[currentTargetIdx];
+
+          if (item.type === currentTarget.type) {
+            // MATCHED TARGET!
+            score += 150;
+            budgetSaved += 3.50;
+            document.getElementById("tip-display").innerHTML = currentTarget.tip;
+
+            // Rotate Target Goal
+            currentTargetIdx = (currentTargetIdx + 1) % recipeTargets.length;
+            document.getElementById("target-item").innerText = recipeTargets[currentTargetIdx].name;
+          } else {
+            // UNMATCHED ITEM / TRAP CAUGHT -> DAMAGE DEALT!
+            lives--;
+            score = Math.max(0, score - 50); // Lose points
+
+            if (item.type === "trap") {
+              budgetSaved = Math.max(0, budgetSaved - 5.00);
+              document.getElementById("tip-display").innerHTML = "💸 <strong>DAMAGE!</strong> Hit a $15 Delivery Trap! -1 Life & -$5.00!";
+            } else {
+              document.getElementById("tip-display").innerHTML = `⚠️ <strong>DAMAGE!</strong> Wrong food caught! Needed ${currentTarget.name}. -1 Life!`;
+            }
+
+            updateLivesUI();
+
+            if (lives <= 0) {
+              triggerGameOver();
+            }
+          }
+
+          document.getElementById("score").innerText = score;
+
+          fallingItems.splice(i, 1);
+          continue;
+        }
+
+        // Remove offscreen items safely without penalty
+        if (item.y > canvas.height) fallingItems.splice(i, 1);
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Player Basket
+      ctx.save();
+      ctx.fillStyle = "#001C2A";
+      ctx.strokeStyle = (lives === 1) ? "#D32F2F" : "#FCA911"; // Red highlight on last life
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(player.x, player.y, player.width, player.height, [0, 0, 15, 15]);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Draw Falling Vector Items
+      fallingItems.forEach(item => {
+        if (item.type === "broccoli") drawBroccoli(item.x, item.y);
+        else if (item.type === "salmon") drawSalmon(item.x, item.y);
+        else if (item.type === "rice") drawRiceBowl(item.x, item.y);
+        else if (item.type === "egg") drawEgg(item.x, item.y);
+        else if (item.type === "trap") drawTrap(item.x, item.y);
+      });
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // --- CONTROLS ---
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowLeft") player.dx = -player.speed;
+      if (e.key === "ArrowRight") player.dx = player.speed;
     });
-  }
 
-  function update() {
-    if (!isRunning) return;
+    document.addEventListener("keyup", e => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
+    });
 
-    // Move Basket
-    basket.x += basket.dx;
-    if (basket.x < 0) basket.x = 0;
-    if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+    // Touch / Mouse Dragging
+    let isDragging = false;
+    canvas.addEventListener("mousedown", e => { isDragging = true; movePlayerTo(e); });
+    canvas.addEventListener("mousemove", e => { if (isDragging) movePlayerTo(e); });
+    document.addEventListener("mouseup", () => isDragging = false);
 
-    // Spawn Logic
-    spawnTimer++;
-    if (spawnTimer > 55) {
-      spawnItem();
-      spawnTimer = 0;
+    canvas.addEventListener("touchstart", e => { movePlayerTo(e.touches[0]); });
+    canvas.addEventListener("touchmove", e => { movePlayerTo(e.touches[0]); });
+
+    function movePlayerTo(e) {
+      if (gameOver) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const mouseX = (e.clientX - rect.left) * scaleX;
+      player.x = mouseX - player.width / 2;
     }
 
-    // Move & Check Items
-    for (let i = fallingItems.length - 1; i >= 0; i--) {
-      let item = fallingItems[i];
-      item.y += item.speed;
-
-      // Catch Collision Detection
-      if (
-        item.y + item.size >= basket.y &&
-        item.y <= basket.y + basket.height &&
-        item.x + item.size >= basket.x &&
-        item.x <= basket.x + basket.width
-      ) {
-        if (item.isHealthy) {
-          score += item.cost;
-          playBeep(587.33, 'triangle', 0.12); // Victory Tone
-          tipTitleEl.textContent = `🥑 Healthy Choice: ${item.name}`;
-        } else {
-          score = Math.max(0, score + item.cost);
-          lives--;
-          playBeep(180, 'sawtooth', 0.25); // Penalty Tone
-          tipTitleEl.textContent = `⚠️ Fast Food Trap!`;
-        }
-
-        tipBodyEl.textContent = item.tip;
-        scoreEl.textContent = `$${score.toFixed(2)}`;
-        livesEl.textContent = '❤️'.repeat(Math.max(0, lives));
-
-        fallingItems.splice(i, 1);
-
-        if (lives <= 0) {
-          endGame();
-        }
-        continue;
-      }
-
-      // Missed Item
-      if (item.y > canvas.height) {
-        fallingItems.splice(i, 1);
-      }
-    }
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw Subtle Grid Floor Line
-    ctx.strokeStyle = '#E5E5E5';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, 362); ctx.lineTo(400, 362);
-    ctx.stroke();
-
-    drawBasket();
-
-    fallingItems.forEach(drawItem);
-
-    if (!isRunning) {
-      ctx.fillStyle = 'rgba(13, 28, 42, 0.75)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 22px sans-serif';
-      ctx.textAlign = 'center';
-      if (lives <= 0) {
-        ctx.fillText('Game Over!', canvas.width / 2, 170);
-        ctx.font = '16px sans-serif';
-        ctx.fillText(`Total Pantry Savings: $${score.toFixed(2)}`, canvas.width / 2, 205);
-      } else {
-        ctx.fillText('Catch the Fresh Harvest!', canvas.width / 2, 180);
-        ctx.font = '14px sans-serif';
-        ctx.fillText('Tap Play to Start', canvas.width / 2, 210);
-      }
-    }
-  }
-
-  function loop() {
-    update();
-    draw();
-    if (isRunning) {
-      animationId = requestAnimationFrame(loop);
-    }
-  }
-
-  function startGame() {
-    score = 0;
-    lives = 3;
-    fallingItems = [];
-    isRunning = true;
-    scoreEl.textContent = '$0.00';
-    livesEl.textContent = '❤️❤️❤️';
-    tipTitleEl.textContent = 'Campus Nutrition Insight';
-    tipBodyEl.textContent = 'Catch bananas, carrots, apples, broccoli, corn, and eggs to build your fresh, low-cost pantry!';
-    if (animationId) cancelAnimationFrame(animationId);
-    loop();
-  }
-
-  function endGame() {
-    isRunning = false;
-    draw();
-  }
-
-  // Controls & Touch Listeners
-  startBtn.addEventListener('click', startGame);
-
-  leftBtn.addEventListener('mousedown', () => basket.dx = -basket.speed);
-  leftBtn.addEventListener('mouseup', () => basket.dx = 0);
-  leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); basket.dx = -basket.speed; });
-  leftBtn.addEventListener('touchend', () => basket.dx = 0);
-
-  rightBtn.addEventListener('mousedown', () => basket.dx = basket.speed);
-  rightBtn.addEventListener('mouseup', () => basket.dx = 0);
-  rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); basket.dx = basket.speed; });
-  rightBtn.addEventListener('touchend', () => basket.dx = 0);
-
-  // Direct Canvas Touch / Mouse Control
-  function handlePointer(e) {
-    if (!isRunning) return;
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const touchX = (clientX - rect.left) * (canvas.width / rect.width);
-    basket.x = touchX - basket.width / 2;
-  }
-
-  canvas.addEventListener('mousemove', (e) => {
-    if (e.buttons === 1) handlePointer(e);
-  });
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    handlePointer(e);
-  }, { passive: false });
-
-  // Keyboard Navigation
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') basket.dx = -basket.speed;
-    if (e.key === 'ArrowRight') basket.dx = basket.speed;
-  });
-  window.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') basket.dx = 0;
-  });
-
-  // Initial Render
-  draw();
-</script>
-
+    // Start Spawners & Loop
+    spawnInterval = setInterval(spawnItem, 800);
+    gameLoop();
+  </script>
 </body>
 </html>
