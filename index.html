@@ -3,410 +3,481 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eat Better, Spend Less | Student Meal & Budget Planner</title>
+  <title>Pantry Gambit | Eat Better, Spend Less</title>
   <style>
     :root {
-      /* Healthy Harvest Palette from Visual Guide */
+      /* Colors from Healthy Harvest Palette */
       --color-navy: #001C2A;
+      --color-card: #0A2635;
       --color-green: #18803C;
       --color-orange: #FCA911;
       --color-soft-blue: #C9E2E9;
       --color-white: #FDFDFD;
-      --color-card-dark: #0A2635;
-      
-      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --board-light: #1A3848;
+      --board-dark: #001C2A;
+      --highlight: #FCA911;
+      --valid-move: #18803C;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--color-navy);
       color: var(--color-white);
-      font-family: var(--font-main);
-      padding: 20px 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 20px;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
     }
 
-    /* Mobile-first app wrapper matching panel 3 UI wireframes */
-    .app-shell {
+    .game-wrapper {
       width: 100%;
-      max-width: 480px;
-      background-color: var(--color-navy);
-      border-radius: 24px;
-      border: 1px solid rgba(201, 226, 233, 0.2);
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .game-wrapper { grid-template-columns: 1fr; }
     }
 
     header {
+      grid-column: 1 / -1;
       text-align: center;
-      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(201, 226, 233, 0.2);
+      padding-bottom: 15px;
     }
 
-    header h1 {
-      font-size: 1.5rem;
-      color: var(--color-orange);
-      margin-bottom: 4px;
+    h1 { color: var(--color-orange); font-size: 1.8rem; }
+    p.sub { color: var(--color-soft-blue); font-size: 0.9rem; }
+
+    /* CHESSBOARD STYLING */
+    .board-container {
+      background-color: var(--color-card);
+      border-radius: 16px;
+      padding: 15px;
+      border: 1px solid rgba(201, 226, 233, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    header p {
-      font-size: 0.85rem;
-      color: var(--color-soft-blue);
+    #chessboard {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 1;
+      border: 3px solid var(--color-soft-blue);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    /* Interactive Filters Panel */
-    .filter-card {
-      background-color: var(--color-card-dark);
-      border: 1px solid var(--color-soft-blue);
+    .square {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+
+    .square.light { background-color: var(--board-light); }
+    .square.dark { background-color: var(--board-dark); }
+    
+    .square.selected {
+      background-color: var(--highlight) !important;
+    }
+
+    .square.valid-target::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background-color: var(--valid-move);
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    /* SIDEBAR / HUD */
+    .hud-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .card {
+      background-color: var(--color-card);
+      border: 1px solid rgba(201, 226, 233, 0.2);
       border-radius: 16px;
       padding: 16px;
-      margin-bottom: 20px;
     }
 
-    .filter-title {
-      font-size: 0.9rem;
-      font-weight: bold;
+    .card h3 {
       color: var(--color-orange);
-      margin-bottom: 12px;
+      font-size: 1rem;
+      margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .filter-group {
-      margin-bottom: 12px;
-    }
-
-    .filter-label {
+    .stat-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--color-green);
-    }
-
-    /* Recipe Feed & Layered Cascade Cards */
-    .recipe-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .recipe-card {
-      background-color: var(--color-card-dark);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(201, 226, 233, 0.15);
-      transition: transform 0.2s, border-color 0.2s;
-    }
-
-    .recipe-card:hover {
-      border-color: var(--color-green);
-      transform: translateY(-2px);
-    }
-
-    .card-header {
-      padding: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .recipe-name {
-      font-size: 1.05rem;
-      font-weight: bold;
-      color: var(--color-white);
-    }
-
-    .badge {
-      background-color: var(--color-green);
-      color: var(--color-white);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: bold;
-    }
-
-    .badge-orange {
-      background-color: var(--color-orange);
-      color: var(--color-navy);
-    }
-
-    /* Visual Ingredient Cascade representation */
-    .ingredient-cascade {
-      background-color: rgba(0, 0, 0, 0.2);
-      padding: 10px 14px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      border-top: 1px dashed rgba(201, 226, 233, 0.1);
-      border-bottom: 1px dashed rgba(201, 226, 233, 0.1);
-    }
-
-    .cascade-icon {
-      background: var(--color-navy);
-      border: 1px solid var(--color-soft-blue);
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin-bottom: 8px;
       font-size: 0.9rem;
     }
 
-    .card-body {
-      padding: 14px;
-      font-size: 0.85rem;
+    .piece-legend {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      font-size: 0.8rem;
       color: var(--color-soft-blue);
     }
 
-    .card-actions {
-      padding: 0 14px 14px 14px;
+    .legend-item {
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.2);
+      padding: 6px;
+      border-radius: 6px;
     }
 
-    .btn {
-      flex: 1;
-      padding: 10px;
+    .inventory {
+      display: flex;
+      gap: 8px;
+      min-height: 40px;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 1.4rem;
+    }
+
+    .tip-box {
+      background-color: var(--color-green);
+      color: var(--color-white);
+      font-size: 0.85rem;
+      padding: 12px;
+      border-radius: 10px;
+      line-height: 1.4;
+    }
+
+    .btn-reset {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--color-orange);
+      color: var(--color-navy);
       border: none;
       border-radius: 10px;
       font-weight: bold;
-      font-size: 0.85rem;
       cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .btn-primary {
-      background-color: var(--color-green);
-      color: var(--color-white);
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--color-soft-blue);
-      color: var(--color-soft-blue);
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Budget & Grocery Planner Summary Panel */
-    .planner-panel {
-      background: linear-gradient(135deg, var(--color-green), #0d5025);
-      border-radius: 16px;
-      padding: 16px;
-      color: var(--color-white);
-    }
-
-    .planner-panel h3 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-    }
-
-    .grocery-list {
-      margin-top: 10px;
-      padding-left: 18px;
-      font-size: 0.85rem;
-    }
-
-    .grocery-list li {
-      margin-bottom: 4px;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
 
-  <div class="app-shell">
+  <div class="game-wrapper">
     <header>
-      <h1>Eat Better, Spend Less</h1>
-      <p>Interactive Meal & Budget Finder for Students</p>
+      <h1>Pantry Gambit</h1>
+      <p class="sub">Tactical Chess Strategy for Healthy & Cheap Student Meals</p>
     </header>
 
-    <!-- Priority Filters Section -->
-    <section class="filter-card">
-      <div class="filter-title">Filter by Priorities</div>
-      
-      <div class="filter-group">
-        <div class="filter-label">
-          <span>Max Cost per Meal:</span>
-          <span style="color: var(--color-orange); font-weight: bold;">$<span id="cost-val">3.00</span></span>
-        </div>
-        <input type="range" id="cost-slider" min="1.00" max="5.00" step="0.25" value="3.00" oninput="updateFilters()">
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-label">
-          <span>Max Cook Time:</span>
-          <span style="color: var(--color-orange); font-weight: bold;"><span id="time-val">15</span> mins</span>
-        </div>
-        <input type="range" id="time-slider" min="5" max="30" step="5" value="15" oninput="updateFilters()">
-      </div>
-    </section>
-
-    <!-- Recipe Cards Feed -->
-    <main class="recipe-list" id="recipe-container">
-      <!-- JavaScript Populates Dynamic Recipe Cards Here -->
+    <!-- Left: Chessboard Grid -->
+    <main class="board-container">
+      <div id="chessboard"></div>
     </main>
 
-    <!-- Weekly Planner & Budget Calculator -->
-    <section class="planner-panel">
-      <h3>Weekly Meal Plan & Grocery List</h3>
-      <div>Selected Meals: <strong id="plan-count">0</strong></div>
-      <div>Estimated Weekly Cost: <strong id="plan-cost">$0.00</strong></div>
-      
-      <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px;">
-        <strong>Auto-Generated Grocery List:</strong>
-        <ul class="grocery-list" id="grocery-container">
-          <li>Select recipes above to generate your list...</li>
-        </ul>
+    <!-- Right: Game Controls & Recipe HUD -->
+    <aside class="hud-panel">
+      <!-- Objective Card -->
+      <div class="card">
+        <h3>Current Objective</h3>
+        <div style="font-size: 1.1rem; font-weight: bold;" id="recipe-title">Loading...</div>
+        <p style="font-size: 0.8rem; color: var(--color-soft-blue); margin: 6px 0;" id="recipe-desc"></p>
+        
+        <div style="font-size: 0.8rem; margin: 10px 0 4px 0;">Ingredients Needed:</div>
+        <div class="inventory" id="required-ingredients"></div>
+
+        <div style="font-size: 0.8rem; margin: 10px 0 4px 0;">Your Basket:</div>
+        <div class="inventory" id="collected-ingredients"></div>
       </div>
-    </section>
+
+      <!-- Stats Card -->
+      <div class="card">
+        <h3>Match Stats</h3>
+        <div class="stat-row">
+          <span>Moves Remaining:</span>
+          <strong id="moves-left" style="color: var(--color-orange);">15</strong>
+        </div>
+        <div class="stat-row">
+          <span>Budget Saved:</span>
+          <strong id="budget-saved" style="color: var(--color-green);">$0.00</strong>
+        </div>
+      </div>
+
+      <!-- Piece Movement Reference -->
+      <div class="card">
+        <h3>Chess Piece Mechanics</h3>
+        <div class="piece-legend">
+          <div class="legend-item"><span>♘</span> <strong>Microwave</strong> (Knight: L-Jump)</div>
+          <div class="legend-item"><span>♖</span> <strong>Pantry Cart</strong> (Rook: Straight)</div>
+          <div class="legend-item"><span>♗</span> <strong>Prep Knife</strong> (Bishop: Diagonal)</div>
+          <div class="legend-item"><span>♕</span> <strong>Chef</strong> (Queen: Any Direction)</div>
+        </div>
+      </div>
+
+      <!-- Cooking Tip Display -->
+      <div class="tip-box" id="cooking-tip">
+        💡 <strong>Strategy:</strong> Click a chess piece to see its valid moves. Capture ingredients to complete recipes before running out of turns!
+      </div>
+
+      <button class="btn-reset" onclick="initGame()">Restart Gambit</button>
+    </aside>
   </div>
 
   <script>
-    // Database matching college needs and layered ingredient visual stacks
+    // --- GAME DATA ---
     const recipes = [
       {
-        id: 1,
-        name: "5-Min Black Bean Quesadilla",
-        cost: 1.25,
-        time: 5,
-        cascade: ["🫓", "🫘", "🧀"],
-        ingredients: ["Tortilla", "Canned Black Beans", "Shredded Cheese"],
-        tip: "Dorm Hack: Rinsing canned beans removes extra sodium and keeps them fresh."
+        title: "Dorm Protein Bowl",
+        desc: "Collect Rice, Black Beans, and an Egg to cook a high-protein meal under $2.",
+        required: ["🍚", "🫘", "🥚"],
+        budgetReward: 8.50,
+        tip: "💡 Chef Tip: Canned black beans and eggs offer cheap protein without needing a full kitchen setup."
       },
       {
-        id: 2,
-        name: "Upgraded Veggie Peanut Noodles",
-        cost: 1.80,
-        time: 10,
-        cascade: ["🍜", "🥦", "🥜"],
-        ingredients: ["Ramen Noodles", "Frozen Veggies", "Peanut Butter"],
-        tip: "Grocery Tip: Store-brand peanut butter is high in protein for under $0.20 per serving."
-      },
-      {
-        id: 3,
-        name: "One-Bowl Oats & Banana Power Prep",
-        cost: 0.85,
-        time: 5,
-        cascade: ["🥣", "🍌", "🍯"],
-        ingredients: ["Rolled Oats", "Banana", "Honey"],
-        tip: "Budget Tip: Buying rolled oats in tub containers saves 60% compared to instant packets."
-      },
-      {
-        id: 4,
-        name: "Sheet Pan Fried Rice & Eggs",
-        cost: 2.50,
-        time: 20,
-        cascade: ["🍚", "🥚", "🥕"],
-        ingredients: ["Microwave Rice", "Eggs", "Frozen Mixed Veggies"],
-        tip: "Efficiency Tip: Use day-old rice from the fridge for crispy fried rice texture."
+        title: "5-Min Veggie Stir-Fry",
+        desc: "Collect Rice and Broccoli while avoiding expensive $15 Delivery traps!",
+        required: ["🍚", "🥦"],
+        budgetReward: 12.00,
+        tip: "💡 Chef Tip: Frozen broccoli is flash-frozen at peak nutrients and won't spoil in your mini-fridge!"
       }
     ];
 
-    let selectedMeals = [];
+    // Grid Symbols
+    const PIECES = {
+      KNIGHT: { icon: "♘", type: "knight" },
+      ROOK:   { icon: "♖", type: "rook" },
+      BISHOP: { icon: "♗", type: "bishop" },
+      QUEEN:  { icon: "♕", type: "queen" }
+    };
 
-    function renderRecipes() {
-      const maxCost = parseFloat(document.getElementById("cost-slider").value);
-      const maxTime = parseInt(document.getElementById("time-slider").value);
-      const container = document.getElementById("recipe-container");
+    const ITEMS = {
+      RICE: "🍚",
+      BEANS: "🫘",
+      EGG: "🥚",
+      BROCCOLI: "🥦",
+      TRAP: "🍔" // Takeout trap penalizes moves
+    };
 
-      container.innerHTML = "";
+    // --- STATE ---
+    let board = Array(8).fill(null).map(() => Array(8).fill(null));
+    let selectedSquare = null; // {r, c}
+    let validMoves = [];
+    let currentRecipeIdx = 0;
+    let collected = [];
+    let movesLeft = 15;
+    let budgetSaved = 0;
 
-      const filtered = recipes.filter(r => r.cost <= maxCost && r.time <= maxTime);
+    // --- INITIALIZATION ---
+    function initGame() {
+      movesLeft = 15;
+      collected = [];
+      selectedSquare = null;
+      validMoves = [];
+      
+      // Clear board
+      board = Array(8).fill(null).map(() => Array(8).fill(null));
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div style="text-align: center; color: var(--color-soft-blue); padding: 20px;">No recipes fit those exact filters. Try adjusting your sliders!</div>`;
+      // Place Chess Pieces (Player tools)
+      board[7][1] = { ...PIECES.KNIGHT };
+      board[7][3] = { ...PIECES.QUEEN };
+      board[7][5] = { ...PIECES.BISHOP };
+      board[7][7] = { ...PIECES.ROOK };
+
+      // Place Ingredients & Traps
+      board[2][1] = { item: ITEMS.RICE };
+      board[3][4] = { item: ITEMS.BEANS };
+      board[1][5] = { item: ITEMS.EGG };
+      board[4][2] = { item: ITEMS.BROCCOLI };
+      board[5][6] = { item: ITEMS.RICE };
+      
+      // Place Traps
+      board[4][3] = { item: ITEMS.TRAP };
+      board[2][5] = { item: ITEMS.TRAP };
+
+      updateHUD();
+      renderBoard();
+    }
+
+    function updateHUD() {
+      const recipe = recipes[currentRecipeIdx];
+      document.getElementById("recipe-title").innerText = recipe.title;
+      document.getElementById("recipe-desc").innerText = recipe.desc;
+      document.getElementById("moves-left").innerText = movesLeft;
+      document.getElementById("budget-saved").innerText = `$${budgetSaved.toFixed(2)}`;
+
+      // Render required icons
+      document.getElementById("required-ingredients").innerHTML = 
+        recipe.required.map(icon => `<span>${icon}</span>`).join(" ");
+
+      // Render collected icons
+      document.getElementById("collected-ingredients").innerHTML = 
+        collected.length > 0 ? collected.map(icon => `<span>${icon}</span>`).join(" ") : "<span style='font-size:0.8rem; color:#888;'>Basket Empty</span>";
+    }
+
+    // --- RENDER BOARD ---
+    function renderBoard() {
+      const boardEl = document.getElementById("chessboard");
+      boardEl.innerHTML = "";
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const square = document.createElement("div");
+          const isDark = (r + c) % 2 === 1;
+          square.className = `square ${isDark ? 'dark' : 'light'}`;
+          
+          if (selectedSquare && selectedSquare.r === r && selectedSquare.c === c) {
+            square.classList.add("selected");
+          }
+
+          if (validMoves.some(m => m.r === r && m.c === c)) {
+            square.classList.add("valid-target");
+          }
+
+          const cell = board[r][c];
+          if (cell) {
+            if (cell.icon) square.innerText = cell.icon; // Chess Piece
+            else if (cell.item) square.innerText = cell.item; // Food/Trap
+          }
+
+          square.onclick = () => handleSquareClick(r, c);
+          boardEl.appendChild(square);
+        }
+      }
+    }
+
+    // --- CLICK & MOVEMENT LOGIC ---
+    function handleSquareClick(r, c) {
+      if (movesLeft <= 0) return;
+
+      const clickedCell = board[r][c];
+
+      // If clicking a valid move destination
+      if (selectedSquare && validMoves.some(m => m.r === r && m.c === c)) {
+        movePiece(selectedSquare.r, selectedSquare.c, r, c);
         return;
       }
 
-      filtered.forEach(recipe => {
-        const isSelected = selectedMeals.some(m => m.id === recipe.id);
-        const card = document.createElement("article");
-        card.className = "recipe-card";
-
-        card.innerHTML = `
-          <div class="card-header">
-            <div class="recipe-name">${recipe.name}</div>
-            <span class="badge">$${recipe.cost.toFixed(2)}</span>
-          </div>
-
-          <!-- Layered Ingredient Cascade -->
-          <div class="ingredient-cascade">
-            <span style="font-size: 0.75rem; color: var(--color-soft-blue); margin-right: 4px;">Ingredients:</span>
-            ${recipe.cascade.map(icon => `<div class="cascade-icon">${icon}</div>`).join('')}
-            <span class="badge badge-orange" style="margin-left: auto;">${recipe.time} mins</span>
-          </div>
-
-          <div class="card-body">
-            <strong>Cooking Skill:</strong> ${recipe.tip}
-          </div>
-
-          <div class="card-actions">
-            <button class="btn ${isSelected ? 'btn-secondary' : 'btn-primary'}" onclick="toggleMeal(${recipe.id})">
-              ${isSelected ? '✓ Added to Plan' : '+ Add to Meal Plan'}
-            </button>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    function updateFilters() {
-      document.getElementById("cost-val").innerText = parseFloat(document.getElementById("cost-slider").value).toFixed(2);
-      document.getElementById("time-val").innerText = document.getElementById("time-slider").value;
-      renderRecipes();
-    }
-
-    function toggleMeal(id) {
-      const recipe = recipes.find(r => r.id === id);
-      const index = selectedMeals.findIndex(m => m.id === id);
-
-      if (index > -1) {
-        selectedMeals.splice(index, 1);
+      // Select piece
+      if (clickedCell && clickedCell.icon) {
+        selectedSquare = { r, c };
+        validMoves = calculateValidMoves(r, c, clickedCell.type);
       } else {
-        selectedMeals.push(recipe);
+        selectedSquare = null;
+        validMoves = [];
       }
 
-      updatePlanner();
-      renderRecipes();
+      renderBoard();
     }
 
-    function updatePlanner() {
-      document.getElementById("plan-count").innerText = selectedMeals.length;
-      
-      const totalCost = selectedMeals.reduce((sum, item) => sum + item.cost, 0);
-      document.getElementById("plan-cost").innerText = `$${totalCost.toFixed(2)}`;
+    function movePiece(fromR, fromC, toR, toC) {
+      const piece = board[fromR][fromC];
+      const target = board[toR][toC];
 
-      const groceryContainer = document.getElementById("grocery-container");
-      
-      if (selectedMeals.length === 0) {
-        groceryContainer.innerHTML = `<li>Select recipes above to generate your list...</li>`;
-        return;
+      // Process target landing
+      if (target && target.item) {
+        if (target.item === ITEMS.TRAP) {
+          movesLeft = Math.max(0, movesLeft - 3); // Penalty
+          document.getElementById("cooking-tip").innerHTML = "🚨 <strong>Takeout Trap!</strong> You lost 3 turns paying high delivery fees.";
+        } else {
+          collected.push(target.item);
+          document.getElementById("cooking-tip").innerHTML = `🧺 Captured <strong>${target.item}</strong>!`;
+        }
       }
 
-      // Compile unique list of grocery items
-      const allIngredients = selectedMeals.flatMap(m => m.ingredients);
-      const uniqueIngredients = [...new Set(allIngredients)];
+      // Move piece
+      board[toR][toC] = piece;
+      board[fromR][fromC] = null;
+      movesLeft--;
 
-      groceryContainer.innerHTML = uniqueIngredients.map(item => `<li>${item}</li>`).join('');
+      selectedSquare = null;
+      validMoves = [];
+
+      checkRecipeCompletion();
+      updateHUD();
+      renderBoard();
     }
 
-    // Initial Execution
-    renderRecipes();
+    // --- CHESS MOVEMENT RULES ---
+    function calculateValidMoves(r, c, type) {
+      const moves = [];
+
+      const addMove = (nr, nc) => {
+        if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+          const target = board[nr][nc];
+          // Can't land on another friendly chess piece
+          if (!target || !target.icon) {
+            moves.push({ r: nr, c: nc });
+            return true;
+          }
+        }
+        return false;
+      };
+
+      if (type === "knight") {
+        const offsets = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+        offsets.forEach(([dr, dc]) => addMove(r + dr, c + dc));
+      }
+
+      if (type === "rook" || type === "queen") {
+        const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+        dirs.forEach(([dr, dc]) => {
+          for (let step = 1; step < 8; step++) {
+            if (!addMove(r + dr * step, c + dc * step)) break;
+          }
+        });
+      }
+
+      if (type === "bishop" || type === "queen") {
+        const dirs = [[-1,-1],[-1,1],[1,-1],[1,1]];
+        dirs.forEach(([dr, dc]) => {
+          for (let step = 1; step < 8; step++) {
+            if (!addMove(r + dr * step, c + dc * step)) break;
+          }
+        });
+      }
+
+      return moves;
+    }
+
+    // --- RECIPE & GAME WIN CHECK ---
+    function checkRecipeCompletion() {
+      const recipe = recipes[currentRecipeIdx];
+      const hasAll = recipe.required.every(reqItem => collected.includes(reqItem));
+
+      if (hasAll) {
+        budgetSaved += recipe.budgetReward;
+        document.getElementById("cooking-tip").innerHTML = `🎉 <strong>Recipe Completed!</strong> ${recipe.tip}`;
+        
+        // Advance to next recipe
+        currentRecipeIdx = (currentRecipeIdx + 1) % recipes.length;
+        setTimeout(initGame, 2000);
+      } else if (movesLeft <= 0) {
+        document.getElementById("cooking-tip").innerHTML = "❌ <strong>Out of Moves!</strong> Click 'Restart Gambit' to try again.";
+      }
+    }
+
+    // Initialize Game on Load
+    initGame();
   </script>
 </body>
 </html>
