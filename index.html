@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Pantry Rush | Eat Better, Spend Less</title>
+  <title>Pattern Pantry Rush | Precision Food Catch</title>
   <style>
     :root {
-      /* High-Contrast Palette from AI Visual Guide */
       --color-navy: #001C2A;
       --color-orange: #FCA911;
       --color-green: #18803C;
@@ -14,6 +13,7 @@
       --color-salmon: #FF7A59;
       --color-soft-blue: #C9E2E9;
       --color-white: #FFFFFF;
+      --color-red: #D32F2F;
       --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -29,7 +29,6 @@
       align-items: center;
       justify-content: center;
       padding: 15px;
-      /* High-Contrast SVG Pattern Background */
       background-image: radial-gradient(rgba(201, 226, 233, 0.1) 1px, transparent 1px);
       background-size: 20px 20px;
     }
@@ -72,22 +71,22 @@
       justify-content: space-between;
       background: var(--color-navy);
       color: var(--color-white);
-      padding: 10px 15px;
+      padding: 10px 12px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .hud-badge {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
 
     .val-orange { color: var(--color-orange); }
     .val-green { color: #4ADE80; }
 
-    /* Canvas Container */
+    /* Canvas Container & Overlays */
     .canvas-container {
       position: relative;
       width: 100%;
@@ -104,6 +103,57 @@
       display: block;
     }
 
+    /* Game Over Modal Screen */
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 28, 42, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-white);
+      text-align: center;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .overlay h2 {
+      font-size: 2rem;
+      color: var(--color-red);
+      margin-bottom: 8px;
+    }
+
+    .overlay p {
+      font-size: 0.9rem;
+      color: var(--color-soft-blue);
+      margin-bottom: 15px;
+    }
+
+    .stats-summary {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .btn-restart {
+      background: var(--color-orange);
+      color: var(--color-navy);
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .btn-restart:active {
+      transform: scale(0.95);
+    }
+
     /* Cooking Tip Box */
     .tip-box {
       background-color: var(--color-orange);
@@ -114,7 +164,7 @@
       font-size: 0.85rem;
       font-weight: bold;
       text-align: center;
-      min-height: 50px;
+      min-height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -133,25 +183,36 @@
   <div class="game-card">
     <header>
       <h1>Pattern Pantry Catch</h1>
-      <p>Eat Better, Spend Less</p>
+      <p>Precision Food Matching Challenge</p>
     </header>
 
     <div class="hud-bar">
-      <div class="hud-badge">Score: <span class="val-green" id="score">0</span></div>
+      <div class="hud-badge">Lives: <span id="lives-display">❤️ ❤️ ❤️</span></div>
       <div class="hud-badge">Target: <span class="val-orange" id="target-item">Broccoli 🥦</span></div>
-      <div class="hud-badge">Budget Saved: <span class="val-green" id="budget">$0.00</span></div>
+      <div class="hud-badge">Score: <span class="val-green" id="score">0</span></div>
     </div>
 
     <div class="canvas-container">
       <canvas id="gameCanvas" width="400" height="500"></canvas>
+      
+      <!-- Game Over Overlay -->
+      <div class="overlay" id="gameOverScreen" style="display: none;">
+        <h2>GAME OVER!</h2>
+        <p>You took 3 damages from catching wrong ingredients.</p>
+        <div class="stats-summary">
+          <div>Final Score: <strong id="final-score" style="color: var(--color-orange);">0</strong></div>
+          <div>Budget Saved: <strong id="final-budget" style="color: #4ADE80;">$0.00</strong></div>
+        </div>
+        <button class="btn-restart" onclick="resetGame()">PLAY AGAIN</button>
+      </div>
     </div>
 
     <div class="tip-box" id="tip-display">
-      💡 Use Left/Right Arrow keys or drag/touch screen to move your bowl!
+      ⚠️ <strong>Rule:</strong> Catch ONLY the target food shown above! Unmatched food causes damage!
     </div>
 
     <div class="controls-hint">
-      Touch/Drag or use ⬅️ ➡️ arrow keys to catch high-contrast healthy ingredients!
+      Touch/Drag screen or use ⬅️ ➡️ arrow keys to position your bowl!
     </div>
   </div>
 
@@ -161,8 +222,11 @@
 
     let score = 0;
     let budgetSaved = 0;
+    let lives = 3;
+    let gameOver = false;
+    let spawnInterval = null;
     
-    // Basket / Bowl Player
+    // Basket Player
     const player = {
       x: 160,
       y: 430,
@@ -181,21 +245,19 @@
     ];
 
     let currentTargetIdx = 0;
-    const fallingItems = [];
+    let fallingItems = [];
 
-    // --- VECTOR DRAWING FUNCTIONS (Matching AI Pattern Visual) ---
+    // --- VECTOR DRAWING FUNCTIONS ---
     function drawBroccoli(x, y) {
       ctx.save();
       ctx.lineWidth = 3;
-      ctx.strokeStyle = "#001C2A"; // Dark Navy Outline
+      ctx.strokeStyle = "#001C2A";
       
-      // Stem
       ctx.fillStyle = "#C9E2E9";
       ctx.fillRect(x + 10, y + 15, 10, 12);
       ctx.strokeRect(x + 10, y + 15, 10, 12);
 
-      // Florets
-      ctx.fillStyle = "#18803C"; // Green
+      ctx.fillStyle = "#18803C";
       ctx.beginPath();
       ctx.arc(x + 7, y + 12, 9, 0, Math.PI * 2);
       ctx.arc(x + 15, y + 6, 11, 0, Math.PI * 2);
@@ -209,14 +271,13 @@
       ctx.save();
       ctx.lineWidth = 3;
       ctx.strokeStyle = "#001C2A";
-      ctx.fillStyle = "#FF7A59"; // Salmon Pink/Orange
+      ctx.fillStyle = "#FF7A59";
 
       ctx.beginPath();
       ctx.ellipse(x + 15, y + 12, 16, 10, Math.PI / 6, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
 
-      // White Marbling lines
       ctx.strokeStyle = "#FFFFFF";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -233,14 +294,12 @@
       ctx.lineWidth = 3;
       ctx.strokeStyle = "#001C2A";
       
-      // Rice mound
       ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
       ctx.arc(x + 15, y + 12, 12, Math.PI, 0);
       ctx.fill();
       ctx.stroke();
 
-      // Bowl base
       ctx.fillStyle = "#001C2A";
       ctx.beginPath();
       ctx.arc(x + 15, y + 12, 14, 0, Math.PI);
@@ -254,14 +313,12 @@
       ctx.lineWidth = 3;
       ctx.strokeStyle = "#001C2A";
       
-      // Egg White
       ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
       ctx.ellipse(x + 15, y + 12, 13, 10, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
 
-      // Yolk
       ctx.fillStyle = "#F59E0B";
       ctx.beginPath();
       ctx.arc(x + 15, y + 12, 5, 0, Math.PI * 2);
@@ -271,7 +328,6 @@
     }
 
     function drawTrap(x, y) {
-      // Overpriced takeout trap
       ctx.save();
       ctx.lineWidth = 3;
       ctx.strokeStyle = "#001C2A";
@@ -287,6 +343,8 @@
 
     // --- GAME ENGINE ---
     function spawnItem() {
+      if (gameOver) return;
+
       const types = ["broccoli", "salmon", "rice", "egg", "trap"];
       const selectedType = types[Math.floor(Math.random() * types.length)];
       
@@ -298,7 +356,41 @@
       });
     }
 
+    function updateLivesUI() {
+      let hearts = "";
+      for (let i = 0; i < 3; i++) {
+        hearts += (i < lives) ? "❤️ " : "🖤 ";
+      }
+      document.getElementById("lives-display").innerText = hearts.trim();
+    }
+
+    function triggerGameOver() {
+      gameOver = true;
+      document.getElementById("final-score").innerText = score;
+      document.getElementById("final-budget").innerText = `$${budgetSaved.toFixed(2)}`;
+      document.getElementById("gameOverScreen").style.display = "flex";
+      document.getElementById("tip-display").innerHTML = "❌ <strong>Game Over!</strong> You ran out of lives.";
+    }
+
+    function resetGame() {
+      score = 0;
+      budgetSaved = 0;
+      lives = 3;
+      gameOver = false;
+      fallingItems = [];
+      currentTargetIdx = 0;
+
+      document.getElementById("score").innerText = "0";
+      document.getElementById("target-item").innerText = recipeTargets[0].name;
+      document.getElementById("tip-display").innerHTML = "⚡ <strong>New Game Started:</strong> Catch the exact target food shown!";
+      document.getElementById("gameOverScreen").style.display = "none";
+      
+      updateLivesUI();
+    }
+
     function update() {
+      if (gameOver) return;
+
       // Player Movement
       player.x += player.dx;
       if (player.x < 0) player.x = 0;
@@ -309,7 +401,7 @@
         const item = fallingItems[i];
         item.y += item.speed;
 
-        // Catch Collision Check
+        // Collision Check
         if (
           item.y + 25 >= player.y &&
           item.x + 25 >= player.x &&
@@ -318,31 +410,40 @@
           const currentTarget = recipeTargets[currentTargetIdx];
 
           if (item.type === currentTarget.type) {
-            // Correct Target Caught!
+            // MATCHED TARGET!
             score += 150;
             budgetSaved += 3.50;
-            
             document.getElementById("tip-display").innerHTML = currentTarget.tip;
 
             // Rotate Target Goal
             currentTargetIdx = (currentTargetIdx + 1) % recipeTargets.length;
             document.getElementById("target-item").innerText = recipeTargets[currentTargetIdx].name;
-          } else if (item.type === "trap") {
-            // Takeout Trap
-            budgetSaved = Math.max(0, budgetSaved - 5.00);
-            document.getElementById("tip-display").innerHTML = "💸 <strong>Takeout Penalty!</strong> Lost $5.00 to high delivery fees!";
           } else {
-            score += 20; // Minor bonus for other healthy food
+            // UNMATCHED ITEM / TRAP CAUGHT -> DAMAGE DEALT!
+            lives--;
+            score = Math.max(0, score - 50); // Lose points
+
+            if (item.type === "trap") {
+              budgetSaved = Math.max(0, budgetSaved - 5.00);
+              document.getElementById("tip-display").innerHTML = "💸 <strong>DAMAGE!</strong> Hit a $15 Delivery Trap! -1 Life & -$5.00!";
+            } else {
+              document.getElementById("tip-display").innerHTML = `⚠️ <strong>DAMAGE!</strong> Wrong food caught! Needed ${currentTarget.name}. -1 Life!`;
+            }
+
+            updateLivesUI();
+
+            if (lives <= 0) {
+              triggerGameOver();
+            }
           }
 
           document.getElementById("score").innerText = score;
-          document.getElementById("budget").innerText = `$${budgetSaved.toFixed(2)}`;
 
           fallingItems.splice(i, 1);
           continue;
         }
 
-        // Remove offscreen items
+        // Remove offscreen items safely without penalty
         if (item.y > canvas.height) fallingItems.splice(i, 1);
       }
     }
@@ -350,10 +451,10 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw Player Basket (High-Contrast Navy Bowl)
+      // Draw Player Basket
       ctx.save();
       ctx.fillStyle = "#001C2A";
-      ctx.strokeStyle = "#FCA911";
+      ctx.strokeStyle = (lives === 1) ? "#D32F2F" : "#FCA911"; // Red highlight on last life
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.roundRect(player.x, player.y, player.width, player.height, [0, 0, 15, 15]);
@@ -377,7 +478,7 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // --- CONTROLS (Keyboard & Touch/Mouse) ---
+    // --- CONTROLS ---
     document.addEventListener("keydown", e => {
       if (e.key === "ArrowLeft") player.dx = -player.speed;
       if (e.key === "ArrowRight") player.dx = player.speed;
@@ -387,7 +488,7 @@
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
     });
 
-    // Touch / Mouse Dragging for Mobile Responsiveness
+    // Touch / Mouse Dragging
     let isDragging = false;
     canvas.addEventListener("mousedown", e => { isDragging = true; movePlayerTo(e); });
     canvas.addEventListener("mousemove", e => { if (isDragging) movePlayerTo(e); });
@@ -397,6 +498,7 @@
     canvas.addEventListener("touchmove", e => { movePlayerTo(e.touches[0]); });
 
     function movePlayerTo(e) {
+      if (gameOver) return;
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const mouseX = (e.clientX - rect.left) * scaleX;
@@ -404,7 +506,7 @@
     }
 
     // Start Spawners & Loop
-    setInterval(spawnItem, 800);
+    spawnInterval = setInterval(spawnItem, 800);
     gameLoop();
   </script>
 </body>
