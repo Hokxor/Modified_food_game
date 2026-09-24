@@ -3,340 +3,410 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dorm Room Tycoon | Eat Better, Spend Less</title>
+  <title>Eat Better, Spend Less | Student Meal & Budget Planner</title>
   <style>
     :root {
-      /* COOLER PALETTE */
-      --color-dark: #121212;   /* Gamers' Dark Mode */
-      --color-slate: #1f2937;  /* UI Background Cards */
-      --color-acc-1: #4ade80;  /* "Health Green" Accent */
-      --color-acc-2: #fbbf24;  /* "Gold Budget" Accent */
-      --color-text-p: #e5e7eb; /* Primary Text */
-      --color-text-s: #9ca3af; /* Secondary Text */
-      --font-stack: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      /* Healthy Harvest Palette from Visual Guide */
+      --color-navy: #001C2A;
+      --color-green: #18803C;
+      --color-orange: #FCA911;
+      --color-soft-blue: #C9E2E9;
+      --color-white: #FDFDFD;
+      --color-card-dark: #0A2635;
+      
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    * { box-sizing: border-box; }
-
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background-color: var(--color-dark);
-      color: var(--color-text-p);
-      font-family: var(--font-stack);
-      line-height: 1.5;
     }
 
-    /* TOP BAR STATS */
+    body {
+      background-color: var(--color-navy);
+      color: var(--color-white);
+      font-family: var(--font-main);
+      padding: 20px 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Mobile-first app wrapper matching panel 3 UI wireframes */
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--color-navy);
+      border-radius: 24px;
+      border: 1px solid rgba(201, 226, 233, 0.2);
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
     header {
-      background-color: var(--color-slate);
-      padding: 10px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--color-orange);
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: var(--color-soft-blue);
+    }
+
+    /* Interactive Filters Panel */
+    .filter-card {
+      background-color: var(--color-card-dark);
+      border: 1px solid var(--color-soft-blue);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .filter-title {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--color-orange);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-group {
+      margin-bottom: 12px;
+    }
+
+    .filter-label {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      position: sticky; top: 0; z-index: 100;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
     }
 
-    h1 { color: var(--color-acc-1); font-size: 1.2rem; margin: 0; }
-
-    #stat-bars { display: flex; gap: 15px; font-size: 0.9rem; }
-    .stat-badge {
-      background: var(--color-dark);
-      padding: 5px 10px; border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .val-g { color: var(--color-acc-1); font-weight: bold; }
-    .val-y { color: var(--color-acc-2); font-weight: bold; }
-
-    /* MAIN CONTAINER */
-    .app-container {
-      max-width: 900px; margin: 20px auto; padding: 0 20px;
-      display: grid; grid-template-columns: 1fr 2fr; gap: 20px;
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--color-green);
     }
 
-    /* LEFT SIDE: KITCHEN DASHBOARD */
-    .kitchen-control {
-      background-color: var(--color-slate);
-      padding: 20px; border-radius: 10px;
-      position: sticky; top: 70px; height: calc(100vh - 90px);
-    }
-
-    #visual-kitchen {
-      height: 150px; background-color: var(--color-dark);
-      border-radius: 8px; border: 2px solid var(--color-acc-1);
-      margin-bottom: 20px; font-size: 4rem;
-      display: flex; justify-content: center; align-items: center;
-    }
-
-    #next-upgrade-btn {
-      width: 100%; background: var(--color-acc-2); color: var(--color-dark);
-      border: none; padding: 12px; border-radius: 6px; font-weight: bold;
-      cursor: pointer; transition: 0.2s;
-    }
-    #next-upgrade-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    #next-upgrade-btn:hover:not(:disabled) { transform: translateY(-2px); }
-
-    /* RIGHT SIDE: ACTIONS & RECIPES */
-    .main-game { display: flex; flex-direction: column; gap: 20px; }
-
-    /* STUDY/ENERGY SECTION */
-    .action-panel {
-      background-color: var(--color-slate);
-      padding: 15px; border-radius: 10px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-
-    #energy-bar-bg { width: 100px; height: 10px; background: #333; border-radius: 5px; overflow: hidden; }
-    #energy-bar-fill { height: 100%; width: 100%; background: #ef4444; transition: width 0.3s; }
-
-    #study-btn {
-      background-color: #3b82f6; color: white; border: none;
-      padding: 8px 16px; border-radius: 6px; cursor: pointer;
-    }
-
-    /* RECIPE GRID */
-    .recipe-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;
+    /* Recipe Feed & Layered Cascade Cards */
+    .recipe-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .recipe-card {
-      background-color: var(--color-slate);
-      border-radius: 8px; padding: 15px;
-      border: 2px solid transparent; transition: 0.2s;
+      background-color: var(--color-card-dark);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 226, 233, 0.15);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .recipe-card:hover {
+      border-color: var(--color-green);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .recipe-name {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: var(--color-white);
+    }
+
+    .badge {
+      background-color: var(--color-green);
+      color: var(--color-white);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .badge-orange {
+      background-color: var(--color-orange);
+      color: var(--color-navy);
+    }
+
+    /* Visual Ingredient Cascade representation */
+    .ingredient-cascade {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 10px 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-top: 1px dashed rgba(201, 226, 233, 0.1);
+      border-bottom: 1px dashed rgba(201, 226, 233, 0.1);
+    }
+
+    .cascade-icon {
+      background: var(--color-navy);
+      border: 1px solid var(--color-soft-blue);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .card-body {
+      padding: 14px;
+      font-size: 0.85rem;
+      color: var(--color-soft-blue);
+    }
+
+    .card-actions {
+      padding: 0 14px 14px 14px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--color-green);
+      color: var(--color-white);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--color-soft-blue);
+      color: var(--color-soft-blue);
+    }
+
+    .btn:hover {
       opacity: 0.9;
     }
-    .recipe-card:hover:not(.locked) { border-color: var(--color-acc-1); transform: translateY(-2px); }
-    .recipe-card.locked { opacity: 0.3; cursor: not-allowed; }
 
-    .r-title { font-weight: bold; color: white; margin-bottom: 5px; }
-    .r-stats { font-size: 0.8rem; color: var(--color-text-s); margin-bottom: 10px; }
-    
-    .cook-btn {
-      width: 100%; padding: 8px; border: none; border-radius: 4px;
-      cursor: pointer; font-weight: bold;
+    /* Budget & Grocery Planner Summary Panel */
+    .planner-panel {
+      background: linear-gradient(135deg, var(--color-green), #0d5025);
+      border-radius: 16px;
+      padding: 16px;
+      color: var(--color-white);
     }
-    .cook-btn:not(:disabled) { background-color: var(--color-acc-1); color: var(--color-dark); }
-    .cook-btn:disabled { background: #333; color: #666; }
 
-    /* TIP POPUP */
-    #tip-pop {
-      position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
-      background: var(--color-acc-1); color: var(--color-dark);
-      padding: 15px 30px; border-radius: 50px; font-weight: bold;
-      transition: bottom 0.5s ease-out; box-shadow: 0 4px 15px rgba(0,255,0,0.2);
+    .planner-panel h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .grocery-list {
+      margin-top: 10px;
+      padding-left: 18px;
+      font-size: 0.85rem;
+    }
+
+    .grocery-list li {
+      margin-bottom: 4px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Dorm Room Tycoon</h1>
-    <div id="stat-bars">
-      <div class="stat-badge">Day: <span class="val-g" id="game-day">1</span></div>
-      <div class="stat-badge">Cooking Skill: <span class="val-g">Lvl <span id="game-skill">1</span></span></div>
-      <div class="stat-badge">Budget Saved: <span class="val-y">$<span id="game-budget">0</span></span></div>
-    </div>
-  </header>
+  <div class="app-shell">
+    <header>
+      <h1>Eat Better, Spend Less</h1>
+      <p>Interactive Meal & Budget Finder for Students</p>
+    </header>
 
-  <div class="app-container">
-    <aside class="kitchen-control">
-      <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-s); margin-bottom: 5px;">My Kitchen Setup</div>
-      <div id="visual-kitchen">🔥</div>
-      <div id="kitchen-name" style="color:white; font-weight: bold; text-align: center;">Camp Hot Plate</div>
-      <p style="font-size: 0.8rem; color: var(--color-text-s); text-align: center; margin: 10px 0;">This basic heat lets you cook simple chilies and eggs.</p>
+    <!-- Priority Filters Section -->
+    <section class="filter-card">
+      <div class="filter-title">Filter by Priorities</div>
       
-      <div style="margin-top: auto;">
-        <p style="font-size: 0.8rem; margin-bottom: 5px;">Next Upgrade: <span id="upgrade-cost-text" style="color: var(--color-acc-2);"></span></p>
-        <button id="next-upgrade-btn" onclick="buyUpgrade()" disabled>Upgrade Kitchen</button>
-      </div>
-    </aside>
-
-    <main class="main-game">
-      <div class="action-panel">
-        <div>
-          <div style="font-weight: bold;">Energy for Cookin'</div>
-          <div style="font-size: 0.8rem; color: var(--color-text-s); margin-bottom: 5px;">Don't cook while exhausted!</div>
-          <div id="energy-bar-bg"><div id="energy-bar-fill"></div></div>
+      <div class="filter-group">
+        <div class="filter-label">
+          <span>Max Cost per Meal:</span>
+          <span style="color: var(--color-orange); font-weight: bold;">$<span id="cost-val">3.00</span></span>
         </div>
-        <button id="study-btn" onclick="recoverEnergy()">Recover Energy (-5 Skill Pts)</button>
+        <input type="range" id="cost-slider" min="1.00" max="5.00" step="0.25" value="3.00" oninput="updateFilters()">
       </div>
 
-      <h2 style="margin: 0;">Recipe Book</h2>
-      <div class="recipe-grid" id="recipe-book">
-        <!-- JS inserts recipes here -->
+      <div class="filter-group">
+        <div class="filter-label">
+          <span>Max Cook Time:</span>
+          <span style="color: var(--color-orange); font-weight: bold;"><span id="time-val">15</span> mins</span>
+        </div>
+        <input type="range" id="time-slider" min="5" max="30" step="5" value="15" oninput="updateFilters()">
       </div>
+    </section>
+
+    <!-- Recipe Cards Feed -->
+    <main class="recipe-list" id="recipe-container">
+      <!-- JavaScript Populates Dynamic Recipe Cards Here -->
     </main>
+
+    <!-- Weekly Planner & Budget Calculator -->
+    <section class="planner-panel">
+      <h3>Weekly Meal Plan & Grocery List</h3>
+      <div>Selected Meals: <strong id="plan-count">0</strong></div>
+      <div>Estimated Weekly Cost: <strong id="plan-cost">$0.00</strong></div>
+      
+      <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px;">
+        <strong>Auto-Generated Grocery List:</strong>
+        <ul class="grocery-list" id="grocery-container">
+          <li>Select recipes above to generate your list...</li>
+        </ul>
+      </div>
+    </section>
   </div>
 
-  <div id="tip-pop">Cooking Mastered! Tip: Canned beans = cheap protein.</div>
-
   <script>
-    // --- GAME DATA ---
-    const kitchenUpgrades = [
-      { id: 0, name: "Camp Hot Plate", icon: "🔥", cost: 0, levelReq: 1 },
-      { id: 1, name: "Community Microwave", icon: "📟", cost: 50, levelReq: 2 },
-      { id: 2, name: "Induction Burner", icon: "🥘", cost: 120, levelReq: 5 },
-      { id: 3, name: "Dorm Air Fryer", icon: "🎰", cost: 300, levelReq: 8 }
-    ];
-
+    // Database matching college needs and layered ingredient visual stacks
     const recipes = [
-      { id: 0, name: "Hot Plate Chili", icon: "🥣", skill: 10, save: 8, energy: 20, kitchen: 0, tip: "Chef Secret: Bulk-buy spices like chili powder; they last all semester!" },
-      { id: 1, name: "Budget Eggs & Tortilla", icon: "🫓", skill: 12, save: 7, energy: 15, kitchen: 0, tip: "Dorm Prep: Buy a carton of 12 eggs for under $3 for weeks of easy protein." },
-      { id: 2, name: "Ramen 'Upgraded'", icon: "🍜", skill: 15, save: 5, energy: 10, kitchen: 1, tip: "Eat Better: Add a handful of frozen spinach to boiling ramen for instant fiber." },
-      { id: 3, name: "Microwave Mug Meal", icon: "☕", skill: 18, save: 9, energy: 15, kitchen: 1, tip: "Chef Secret: You can cook a whole egg/cheese scrambler in a mug in 90 seconds!" },
-      { id: 4, name: "Veggie Stir-Fry", icon: "🥦", skill: 25, save: 12, energy: 25, kitchen: 2, tip: "Save Money: Buying bags of frozen mixed vegetables is flash-frozen at peak freshness." },
-      { id: 5, name: "Fried Chicken Tenders", icon: "🍗", skill: 35, save: 15, energy: 30, kitchen: 3, tip: "Air Fryer Hack: Tofu becomes incredibly crispy in an air fryer with 90% less oil." }
+      {
+        id: 1,
+        name: "5-Min Black Bean Quesadilla",
+        cost: 1.25,
+        time: 5,
+        cascade: ["🫓", "🫘", "🧀"],
+        ingredients: ["Tortilla", "Canned Black Beans", "Shredded Cheese"],
+        tip: "Dorm Hack: Rinsing canned beans removes extra sodium and keeps them fresh."
+      },
+      {
+        id: 2,
+        name: "Upgraded Veggie Peanut Noodles",
+        cost: 1.80,
+        time: 10,
+        cascade: ["🍜", "🥦", "🥜"],
+        ingredients: ["Ramen Noodles", "Frozen Veggies", "Peanut Butter"],
+        tip: "Grocery Tip: Store-brand peanut butter is high in protein for under $0.20 per serving."
+      },
+      {
+        id: 3,
+        name: "One-Bowl Oats & Banana Power Prep",
+        cost: 0.85,
+        time: 5,
+        cascade: ["🥣", "🍌", "🍯"],
+        ingredients: ["Rolled Oats", "Banana", "Honey"],
+        tip: "Budget Tip: Buying rolled oats in tub containers saves 60% compared to instant packets."
+      },
+      {
+        id: 4,
+        name: "Sheet Pan Fried Rice & Eggs",
+        cost: 2.50,
+        time: 20,
+        cascade: ["🍚", "🥚", "🥕"],
+        ingredients: ["Microwave Rice", "Eggs", "Frozen Mixed Veggies"],
+        tip: "Efficiency Tip: Use day-old rice from the fridge for crispy fried rice texture."
+      }
     ];
 
-    // --- GAME STATE ---
-    let gameState = {
-      day: 1,
-      budget: 0,
-      skillPoints: 0,
-      skillLevel: 1,
-      energy: 100,
-      kitchenLevel: 0 // Index into kitchenUpgrades
-    };
-
-    // --- DOM ELEMENTS ---
-    const dom = {
-      day: document.getElementById('game-day'),
-      budget: document.getElementById('game-budget'),
-      skill: document.getElementById('game-skill'),
-      energyBar: document.getElementById('energy-bar-fill'),
-      kitchenIcon: document.getElementById('visual-kitchen'),
-      kitchenName: document.getElementById('kitchen-name'),
-      upgradeBtn: document.getElementById('next-upgrade-btn'),
-      upgradeCostText: document.getElementById('upgrade-cost-text'),
-      recipeGrid: document.getElementById('recipe-book'),
-      tip: document.getElementById('tip-pop')
-    };
-
-    // --- CORE LOOP & RENDER ---
-    function updateUI() {
-      // Stats
-      dom.day.innerText = gameState.day;
-      dom.budget.innerText = gameState.budget.toFixed(2);
-      dom.skill.innerText = gameState.skillLevel;
-      dom.energyBar.style.width = gameState.energy + '%';
-      
-      // Kitchen status
-      const currentKitchen = kitchenUpgrades[gameState.kitchenLevel];
-      dom.kitchenIcon.innerText = currentKitchen.icon;
-      dom.kitchenName.innerText = currentKitchen.name;
-
-      // Upgrade button status
-      const nextKitchen = kitchenUpgrades[gameState.kitchenLevel + 1];
-      if (nextKitchen) {
-        dom.upgradeCostText.innerText = `$${nextKitchen.cost} (Level ${nextKitchen.levelReq} required)`;
-        dom.upgradeBtn.disabled = !(gameState.budget >= nextKitchen.cost && gameState.skillLevel >= nextKitchen.levelReq);
-      } else {
-        dom.upgradeCostText.innerText = "MAXED";
-        dom.upgradeBtn.disabled = true;
-      }
-
-      renderRecipes();
-    }
+    let selectedMeals = [];
 
     function renderRecipes() {
-      dom.recipeGrid.innerHTML = '';
+      const maxCost = parseFloat(document.getElementById("cost-slider").value);
+      const maxTime = parseInt(document.getElementById("time-slider").value);
+      const container = document.getElementById("recipe-container");
 
-      recipes.forEach(recipe => {
-        const isKitchenReqMet = gameState.kitchenLevel >= recipe.kitchen;
-        const isEnergyMet = gameState.energy >= recipe.energy;
-        const canCook = isKitchenReqMet && isEnergyMet;
+      container.innerHTML = "";
 
-        const card = document.createElement('div');
-        card.className = `recipe-card ${isKitchenReqMet ? '' : 'locked'}`;
+      const filtered = recipes.filter(r => r.cost <= maxCost && r.time <= maxTime);
 
-        const requiredKitchen = kitchenUpgrades[recipe.kitchen].name;
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--color-soft-blue); padding: 20px;">No recipes fit those exact filters. Try adjusting your sliders!</div>`;
+        return;
+      }
+
+      filtered.forEach(recipe => {
+        const isSelected = selectedMeals.some(m => m.id === recipe.id);
+        const card = document.createElement("article");
+        card.className = "recipe-card";
 
         card.innerHTML = `
-          <div class="r-title">${recipe.icon} ${recipe.name}</div>
-          <div class="r-stats">
-            +${recipe.skill} Skill Pts<br>
-            +$${recipe.save.toFixed(2)} Saved vs. Takeout<br>
-            Requires: ${isKitchenReqMet ? '<span style="color:#fff;">'+requiredKitchen+'</span>' : '<span style="color:#ef4444;">'+requiredKitchen+'</span>'}
+          <div class="card-header">
+            <div class="recipe-name">${recipe.name}</div>
+            <span class="badge">$${recipe.cost.toFixed(2)}</span>
           </div>
-          <button class="cook-btn" 
-                  onclick="cookRecipe(${recipe.id})" 
-                  ${canCook ? '' : 'disabled'}>
-            ${isEnergyMet ? 'Cook (-'+recipe.energy+' Energy)' : 'Exhausted (-'+recipe.energy+' E req.)'}
-          </button>
+
+          <!-- Layered Ingredient Cascade -->
+          <div class="ingredient-cascade">
+            <span style="font-size: 0.75rem; color: var(--color-soft-blue); margin-right: 4px;">Ingredients:</span>
+            ${recipe.cascade.map(icon => `<div class="cascade-icon">${icon}</div>`).join('')}
+            <span class="badge badge-orange" style="margin-left: auto;">${recipe.time} mins</span>
+          </div>
+
+          <div class="card-body">
+            <strong>Cooking Skill:</strong> ${recipe.tip}
+          </div>
+
+          <div class="card-actions">
+            <button class="btn ${isSelected ? 'btn-secondary' : 'btn-primary'}" onclick="toggleMeal(${recipe.id})">
+              ${isSelected ? '✓ Added to Plan' : '+ Add to Meal Plan'}
+            </button>
+          </div>
         `;
-        
-        dom.recipeGrid.appendChild(card);
+
+        container.appendChild(card);
       });
     }
 
-    // --- ACTIONS ---
-    function cookRecipe(id) {
+    function updateFilters() {
+      document.getElementById("cost-val").innerText = parseFloat(document.getElementById("cost-slider").value).toFixed(2);
+      document.getElementById("time-val").innerText = document.getElementById("time-slider").value;
+      renderRecipes();
+    }
+
+    function toggleMeal(id) {
       const recipe = recipes.find(r => r.id === id);
-      if (gameState.energy >= recipe.energy) {
-        // Apply Rewards
-        gameState.budget += recipe.save;
-        gameState.skillPoints += recipe.skill;
-        gameState.energy -= recipe.energy;
-        
-        // Skill Level Up Logic (Simple exponential)
-        const nextLevelPoints = Math.pow(gameState.skillLevel, 2) * 20;
-        if (gameState.skillPoints >= nextLevelPoints) {
-          gameState.skillLevel++;
-        }
+      const index = selectedMeals.findIndex(m => m.id === id);
 
-        // Advance Day
-        gameState.day++;
-        
-        showTip(`Dish Done! ${recipe.tip}`);
-        updateUI();
-      }
-    }
-
-    function recoverEnergy() {
-      // Trading skill points for energy (simplified 'studying/rest' trade-off)
-      const cost = 5;
-      if (gameState.skillPoints >= cost && gameState.energy < 100) {
-        gameState.skillPoints -= cost;
-        gameState.energy = 100;
-        
-        // Check if loss lowered skill level
-        const currentLevelPoints = Math.pow(gameState.skillLevel - 1, 2) * 20;
-        if (gameState.skillPoints < currentLevelPoints && gameState.skillLevel > 1) {
-            gameState.skillLevel--;
-        }
-
-        gameState.day++;
-        showTip("Took a rest day to re-energize. Used some skill time.");
-        updateUI();
+      if (index > -1) {
+        selectedMeals.splice(index, 1);
       } else {
-        showTip("Not enough skill points to trade for energy!");
+        selectedMeals.push(recipe);
       }
+
+      updatePlanner();
+      renderRecipes();
     }
 
-    function buyUpgrade() {
-      const nextKitchen = kitchenUpgrades[gameState.kitchenLevel + 1];
-      if (nextKitchen && gameState.budget >= nextKitchen.cost && gameState.skillLevel >= nextKitchen.levelReq) {
-        gameState.budget -= nextKitchen.cost;
-        gameState.kitchenLevel++;
-        showTip(`Kitchen Upgraded to ${nextKitchen.name}! New recipes unlocked.`);
-        updateUI();
+    function updatePlanner() {
+      document.getElementById("plan-count").innerText = selectedMeals.length;
+      
+      const totalCost = selectedMeals.reduce((sum, item) => sum + item.cost, 0);
+      document.getElementById("plan-cost").innerText = `$${totalCost.toFixed(2)}`;
+
+      const groceryContainer = document.getElementById("grocery-container");
+      
+      if (selectedMeals.length === 0) {
+        groceryContainer.innerHTML = `<li>Select recipes above to generate your list...</li>`;
+        return;
       }
+
+      // Compile unique list of grocery items
+      const allIngredients = selectedMeals.flatMap(m => m.ingredients);
+      const uniqueIngredients = [...new Set(allIngredients)];
+
+      groceryContainer.innerHTML = uniqueIngredients.map(item => `<li>${item}</li>`).join('');
     }
 
-    // --- VISUAL FX ---
-    function showTip(text) {
-      dom.tip.innerText = text;
-      dom.tip.style.bottom = '30px';
-      setTimeout(() => {
-        dom.tip.style.bottom = '-150px';
-      }, 5000);
-    }
-
-    // --- INITIALIZE ---
-    // Give some starting skill points
-    gameState.skillPoints = 0; 
-    updateUI();
+    // Initial Execution
+    renderRecipes();
   </script>
 </body>
 </html>
