@@ -1,1323 +1,175 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Pattern Pantry Rush | Precision Food Catch</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pattern Pantry Catch | Eat Better, Spend Less</title>
   <style>
     :root {
-      --color-navy: #0D1C2A;
-      --color-green: #388E3C;
-      --color-green-bright: #4ADE80;
-      --color-orange: #FCA311;
+      --color-navy: #001C2A;
+      --color-orange: #FCA911;
+      --color-green: #18803C;
       --color-soft-blue: #C9E2E9;
       --color-white: #FFFFFF;
-      --color-salmon: #FF7A59;
-      --color-red: #E63946;
-      --color-yellow: #FFD166;
-      --font-stack: 'Fredoka', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap');
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--color-navy);
-      color: var(--color-navy);
-      font-family: var(--font-stack);
+      color: var(--color-white);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 12px;
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(201, 226, 233, 0.2) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(252, 163, 17, 0.18) 0%, transparent 45%),
-        radial-gradient(rgba(201, 226, 233, 0.12) 2px, transparent 2px);
-      background-size: 100% 100%, 100% 100%, 28px 28px;
-      overflow-x: hidden;
+      align-items: center;
+      padding: 15px;
+      background-image: radial-gradient(rgba(201, 226, 233, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
     }
 
     .game-card {
       width: 100%;
-      max-width: 500px;
+      max-width: 460px;
       background: var(--color-white);
       border: 4px solid var(--color-navy);
-      border-radius: 28px;
-      padding: 16px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+      color: var(--color-navy);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      position: relative;
+      gap: 15px;
     }
 
-    /* Header & Title Banner */
-    header {
-      text-align: center;
-      position: relative;
-      padding-bottom: 6px;
-      border-bottom: 3px dashed rgba(13, 28, 42, 0.15);
-    }
+    header { text-align: center; border-bottom: 3px dashed var(--color-navy); padding-bottom: 10px; }
+    header h1 { font-size: 1.4rem; color: var(--color-navy); text-transform: uppercase; }
 
-    .title-banner {
-      background: linear-gradient(135deg, #FCA311 0%, #FF8C00 100%);
-      color: var(--color-navy);
-      display: inline-block;
-      padding: 6px 18px;
-      border-radius: 22px;
-      border: 3.5px solid var(--color-navy);
-      box-shadow: 0 5px 0 var(--color-navy);
-      transform: rotate(-1deg);
-    }
-
-    .title-banner h1 {
-      font-size: 1.35rem;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
-    }
-
-    .hud-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.3fr 1fr;
-      gap: 8px;
-      align-items: stretch;
-    }
-
-    .hud-box {
+    .hud-bar {
+      display: flex;
+      justify-content: space-between;
       background: var(--color-navy);
       color: var(--color-white);
-      padding: 8px 10px;
-      border-radius: 16px;
-      border: 2.5px solid var(--color-navy);
-      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
       font-size: 0.85rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 0 rgba(0,0,0,0.25);
-    }
-
-    .target-highlight {
-      background: linear-gradient(135deg, #FFF3D6, #FFE5A3);
-      color: var(--color-navy);
-      border: 3px solid var(--color-orange);
-      animation: pulse-target 2s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulse-target {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(252, 163, 17, 0.4); }
-      100% { transform: scale(1.02); box-shadow: 0 0 0 8px rgba(252, 163, 17, 0); }
-    }
-
-    .target-bounce {
-      display: inline-block;
-      animation: bounce-icon 0.8s infinite alternate ease-in-out;
-    }
-
-    @keyframes bounce-icon {
-      from { transform: translateY(0); }
-      to { transform: translateY(-4px); }
     }
 
     .canvas-container {
-      position: relative;
       width: 100%;
       aspect-ratio: 4/5;
       background-color: var(--color-soft-blue);
-      border: 4px solid var(--color-navy);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: inset 0 0 25px rgba(13, 28, 42, 0.15);
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    /* Floating Badges & Combo */
-    .combo-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #FFD166;
-      color: var(--color-navy);
-      font-weight: 900;
-      font-size: 0.85rem;
-      padding: 5px 12px;
-      border-radius: 14px;
-      border: 2.5px solid var(--color-navy);
-      box-shadow: 0 4px 0 var(--color-navy);
-      transform: scale(0) rotate(5deg);
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .combo-badge.active {
-      transform: scale(1) rotate(5deg);
-    }
-
-    .diff-btn {
-      background: #FFFFFF;
       border: 3px solid var(--color-navy);
-      border-radius: 16px;
-      padding: 10px 12px;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 4px 0 var(--color-navy);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .diff-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 var(--color-navy);
-    }
-
-    .diff-btn.selected {
-      border-width: 4.5px;
-      box-shadow: 0 6px 0 var(--color-navy);
-      transform: scale(1.02);
-    }
-
-    .diff-btn.selected::after {
-      content: "✔ SELECTED";
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      background: var(--color-navy);
-      color: #FFD166;
-      font-size: 0.65rem;
-      font-weight: 900;
-      padding: 2px 6px;
-      border-radius: 8px;
-    }
-
-    .recipe-bar-container {
-      background: #E2E8F0;
-      border: 2.5px solid var(--color-navy);
       border-radius: 12px;
-      height: 14px;
-      width: 100%;
       overflow: hidden;
-      position: relative;
     }
 
-    .recipe-bar-fill {
-      background: linear-gradient(90deg, #388E3C, #4ADE80);
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s ease-out;
-    }
-
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(13, 28, 42, 0.94);
-      backdrop-filter: blur(5px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-white);
-      text-align: center;
-      padding: 20px;
-      z-index: 20;
-      animation: fadeIn 0.25s ease-out;
-      overflow-y: auto;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .star-rating {
-      display: flex;
-      gap: 10px;
-      font-size: 2.4rem;
-      margin: 6px 0;
-    }
-
-    .star {
-      filter: drop-shadow(0 4px 0 rgba(0,0,0,0.6));
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .btn-action {
-      background: linear-gradient(135deg, #FCA311, #FF8C00);
-      color: var(--color-navy);
-      border: 3.5px solid var(--color-navy);
-      box-shadow: 0 6px 0 var(--color-navy);
-      padding: 12px 28px;
-      font-size: 1.1rem;
-      font-weight: 900;
-      border-radius: 18px;
-      cursor: pointer;
-      transition: all 0.1s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 0 var(--color-navy);
-    }
-
-    .btn-action:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 var(--color-navy);
-    }
-
-    .btn-secondary {
-      background: #C9E2E9;
-      color: var(--color-navy);
-      border: 3px solid var(--color-navy);
-      box-shadow: 0 4px 0 var(--color-navy);
-      padding: 8px 16px;
-      font-size: 0.85rem;
-      font-weight: 800;
-      border-radius: 14px;
-      cursor: pointer;
-    }
+    canvas { width: 100%; height: 100%; display: block; }
 
     .tip-box {
-      background: linear-gradient(135deg, #FFF8E7, #FFEBB8);
+      background-color: var(--color-orange);
       color: var(--color-navy);
-      padding: 10px 14px;
-      border-radius: 16px;
-      border: 3px solid var(--color-navy);
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.35;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 0 rgba(13, 28, 42, 0.12);
-    }
-
-    .tip-icon {
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      background: #FCA311;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      border: 2.5px solid var(--color-navy);
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid var(--color-navy);
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-align: center;
+      min-height: 45px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 0 var(--color-navy);
-    }
-
-    .shake {
-      animation: shake-anim 0.35s cubic-bezier(.36,.07,.19,.97) both;
-    }
-
-    @keyframes shake-anim {
-      10%, 90% { transform: translate3d(-3px, 0, 0); }
-      20%, 80% { transform: translate3d(5px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-7px, 0, 0); }
-      40%, 60% { transform: translate3d(7px, 0, 0); }
-    }
-
-    .damage-flash {
-      box-shadow: inset 0 0 0 10px #E63946 !important;
-      transition: box-shadow 0.1s ease-out;
     }
   </style>
 </head>
 <body>
 
-  <div class="game-card" id="gameCard">
+  <div class="game-card">
     <header>
-      <div class="flex items-center justify-between mb-1">
-        <!-- Pause Button -->
-        <button id="pauseBtn" onclick="togglePause()" class="bg-amber-100 hover:bg-amber-200 text-slate-900 px-2.5 py-1.5 rounded-xl border-2 border-slate-900 text-xs font-black shadow-[0_3px_0_#0D1C2A] transition-all">
-          ⏸️ PAUSE
-        </button>
-
-        <div class="title-banner">
-          <h1>Pattern Pantry Rush</h1>
-        </div>
-
-        <!-- Audio Toggle Button -->
-        <button id="soundBtn" onclick="toggleAudio()" class="bg-amber-100 hover:bg-amber-200 text-slate-900 px-2.5 py-1.5 rounded-xl border-2 border-slate-900 text-xs font-black shadow-[0_3px_0_#0D1C2A] transition-all">
-          🔊 ON
-        </button>
-      </div>
-
-      <div class="mt-2 flex flex-col gap-1">
-        <div class="flex justify-between items-center text-[11px] font-extrabold text-slate-700 uppercase">
-          <div class="flex items-center gap-1.5">
-            <span id="recipeName">Dish: Super Veggie Bowl</span>
-            <span id="diffHudBadge" class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-black border border-slate-900 shadow-sm">EASY 🟢</span>
-          </div>
-          <span id="recipeCounter" class="text-emerald-700">0 / 3 items</span>
-        </div>
-        <div class="recipe-bar-container">
-          <div id="recipeBarFill" class="recipe-bar-fill"></div>
-        </div>
-      </div>
+      <h1>Pattern Pantry Catch</h1>
+      <p style="font-size: 0.8rem; font-weight: bold;">Student Budget Cooking Game</p>
     </header>
 
-    <div class="hud-grid">
-      <!-- Lives Box -->
-      <div class="hud-box">
-        <span class="text-[10px] text-slate-300 uppercase font-bold">Lives</span>
-        <span id="livesDisplay" class="text-xs tracking-wider mt-0.5">❤️❤️❤️❤️❤️</span>
-      </div>
-
-      <!-- Target Box -->
-      <div class="hud-box target-highlight">
-        <span class="text-[9px] uppercase font-black text-amber-900">CATCH TARGET</span>
-        <span id="targetItem" class="text-xs font-black text-amber-950 flex items-center gap-1 mt-0.5">
-          <span class="target-bounce" id="targetIcon">🥦</span> <span id="targetName">Broccoli</span>
-        </span>
-      </div>
-
-      <!-- Score Box -->
-      <div class="hud-box">
-        <span class="text-[10px] text-slate-300 uppercase font-bold">Score</span>
-        <span id="scoreDisplay" class="text-base text-amber-400 font-black">0</span>
-      </div>
+    <div class="hud-bar">
+      <div>Score: <span id="score" style="color: #4ADE80;">0</span></div>
+      <div>Target: <span id="target-item" style="color: var(--color-orange);">Broccoli 🥦</span></div>
+      <div>Saved: <span id="budget" style="color: #4ADE80;">$0.00</span></div>
     </div>
 
-    <div class="canvas-container" id="canvasWrapper">
+    <div class="canvas-container">
       <canvas id="gameCanvas" width="400" height="500"></canvas>
-      
-      <!-- Dynamic Combo Floating Badge -->
-      <div class="combo-badge" id="comboBadge">
-        🔥 <span id="comboText">2x COMBO!</span>
-      </div>
-
-      <!-- START & DIFFICULTY OVERLAY MENU -->
-      <div class="overlay" id="startScreen">
-        <div class="text-3xl mb-1">👨‍🍳 🥦 🐟</div>
-        <h2 class="text-xl font-black text-amber-400 mb-0.5 uppercase tracking-wide">PATTERN PANTRY RUSH</h2>
-        <p class="text-[11px] text-slate-200 max-w-[290px] mb-3 leading-tight">
-          Catch matching ingredients for healthy recipes! Choose your difficulty level to play:
-        </p>
-
-        <div class="w-full max-w-[310px] space-y-2 mb-4">
-          <!-- EASY -->
-          <button class="diff-btn selected w-full bg-emerald-50 text-slate-900 border-emerald-800" id="btnDiffEasy" onclick="selectDifficulty('EASY')">
-            <div class="flex items-center gap-1.5 text-xs font-black text-emerald-800">
-              <span class="text-base">🟢</span> EASY MODE
-            </div>
-            <div class="text-[10px] text-slate-600 font-medium leading-tight">
-              Slower food, 5 Lives, Fewer Traps - Great for beginners!
-            </div>
-          </button>
-
-          <!-- MEDIUM -->
-          <button class="diff-btn w-full bg-amber-50 text-slate-900 border-amber-800" id="btnDiffMedium" onclick="selectDifficulty('MEDIUM')">
-            <div class="flex items-center gap-1.5 text-xs font-black text-amber-800">
-              <span class="text-base">🟡</span> MEDIUM MODE (1.5x PTS)
-            </div>
-            <div class="text-[10px] text-slate-600 font-medium leading-tight">
-              Normal speed, 3 Lives, Balanced challenge!
-            </div>
-          </button>
-
-          <!-- HARD -->
-          <button class="diff-btn w-full bg-rose-50 text-slate-900 border-rose-800" id="btnDiffHard" onclick="selectDifficulty('HARD')">
-            <div class="flex items-center gap-1.5 text-xs font-black text-rose-800">
-              <span class="text-base">🔴</span> HARD MODE (2.0x PTS)
-            </div>
-            <div class="text-[10px] text-slate-600 font-medium leading-tight">
-              Fast food, 3 Lives, Extra Traps & 2x Score Bonus!
-            </div>
-          </button>
-        </div>
-
-        <button class="btn-action" onclick="startGame()">
-          🚀 START COOKING!
-        </button>
-      </div>
-
-      <div class="overlay" id="pauseScreen" style="display: none;">
-        <h2 class="text-3xl font-black text-amber-400 mb-2">GAME PAUSED</h2>
-        <p class="text-xs text-slate-300 mb-6">Take a quick breath, Chef!</p>
-        <button class="btn-action" onclick="togglePause()">
-          ▶ RESUME
-        </button>
-      </div>
-
-      <div class="overlay" id="gameOverScreen" style="display: none;">
-        <h2 class="text-2xl font-black text-red-400 mb-1">GAME OVER!</h2>
-        <p class="text-xs text-slate-300 mb-2" id="gameOverReason">Out of lives or hit too many traps!</p>
-        
-        <!-- Stars Awarded -->
-        <div class="star-rating" id="starRating">
-          <span class="star">⭐</span>
-          <span class="star">⭐</span>
-          <span class="star">⭐</span>
-        </div>
-
-        <div class="bg-slate-800/90 border-2 border-slate-700 rounded-2xl p-3 w-full max-w-[280px] my-2 text-xs space-y-1">
-          <div class="flex justify-between py-0.5 border-b border-slate-700">
-            <span>Difficulty:</span>
-            <strong id="finalDiff" class="text-emerald-400 font-black">EASY 🟢</strong>
-          </div>
-          <div class="flex justify-between py-0.5 border-b border-slate-700">
-            <span>Final Score:</span>
-            <strong id="finalScore" class="text-amber-400 font-black">0</strong>
-          </div>
-          <div class="flex justify-between py-0.5 border-b border-slate-700">
-            <span>Pantry Savings:</span>
-            <strong id="finalBudget" class="text-emerald-400 font-black">$0.00</strong>
-          </div>
-          <div class="flex justify-between py-0.5 border-b border-slate-700">
-            <span>Dishes Cooked:</span>
-            <strong id="finalDishes" class="text-amber-300 font-black">0</strong>
-          </div>
-          <div class="flex justify-between py-0.5">
-            <span>Max Combo:</span>
-            <strong id="finalCombo" class="text-yellow-300 font-black">0x</strong>
-          </div>
-        </div>
-
-        <div class="flex gap-2 mt-2">
-          <button class="btn-action !text-sm !py-2.5 !px-4" onclick="resetGame()">
-            🔄 PLAY AGAIN
-          </button>
-          <button class="btn-secondary !text-xs !py-2.5 !px-3" onclick="openStartScreen()">
-            ⚙️ DIFFICULTY
-          </button>
-        </div>
-      </div>
     </div>
 
-    <div class="tip-box">
-      <div class="tip-icon" id="tipIcon">💡</div>
-      <div id="tipDisplay">
-        <strong>Chef's Tip:</strong> Catch target foods to fill up the dish meter and earn massive budget bonus rewards!
-      </div>
-    </div>
-
-    <!-- Controls Hint -->
-    <div class="text-center text-[11px] text-slate-500 font-extrabold">
-      👈 Swipe / Drag or use ⬅️ ➡️ Arrow Keys to control Chef Bowl! 👉
+    <div class="tip-box" id="tip-display">
+      💡 Drag screen or use ⬅️ ➡️ arrow keys to catch high-contrast healthy ingredients!
     </div>
   </div>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
-    const canvasWrapper = document.getElementById("canvasWrapper");
-
-    function resizeCanvas() {
-      const rect = canvasWrapper.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const DIFFICULTY_SETTINGS = {
-      EASY: {
-        label: "EASY 🟢",
-        badgeBg: "bg-emerald-500",
-        lives: 5,
-        minSpeed: 1.5,
-        maxSpeed: 2.8,
-        spawnInterval: 66, // ~1100ms
-        trapChance: 0.10,
-        scoreMultiplier: 1.0
-      },
-      MEDIUM: {
-        label: "MEDIUM 🟡",
-        badgeBg: "bg-amber-500",
-        lives: 3,
-        minSpeed: 2.5,
-        maxSpeed: 4.5,
-        spawnInterval: 48, // ~800ms
-        trapChance: 0.20,
-        scoreMultiplier: 1.5
-      },
-      HARD: {
-        label: "HARD 🔴",
-        badgeBg: "bg-rose-500",
-        lives: 3,
-        minSpeed: 4.0,
-        maxSpeed: 6.8,
-        spawnInterval: 33, // ~550ms
-        trapChance: 0.35,
-        scoreMultiplier: 2.0
-      }
-    };
-
-    let selectedDifficultyKey = "EASY";
-
-    function selectDifficulty(key) {
-      selectedDifficultyKey = key;
-      document.querySelectorAll(".diff-btn").forEach(btn => btn.classList.remove("selected"));
-      if (key === "EASY") document.getElementById("btnDiffEasy").classList.add("selected");
-      if (key === "MEDIUM") document.getElementById("btnDiffMedium").classList.add("selected");
-      if (key === "HARD") document.getElementById("btnDiffHard").classList.add("selected");
-
-      updateDifficultyBadgeUI();
-    }
-
-    function updateDifficultyBadgeUI() {
-      const config = DIFFICULTY_SETTINGS[selectedDifficultyKey];
-      const badge = document.getElementById("diffHudBadge");
-      badge.innerText = config.label;
-      badge.className = `${config.badgeBg} text-white text-[9px] px-2 py-0.5 rounded-full font-black border border-slate-900 shadow-sm`;
-    }
-
-    class SoundEngine {
-      constructor() {
-        this.ctx = null;
-        this.muted = false;
-      }
-
-      init() {
-        if (!this.ctx) {
-          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
-      }
-
-      playCatch(combo = 1) {
-        if (this.muted) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        const scale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
-        const pitch = scale[Math.min(combo - 1, scale.length - 1)];
-
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(pitch, now);
-        osc.frequency.exponentialRampToValueAtTime(pitch * 1.3, now + 0.12);
-
-        gain.gain.setValueAtTime(0.25, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-
-        osc.start(now);
-        osc.stop(now + 0.14);
-      }
-
-      playPowerup() {
-        if (this.muted) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const notes = [440, 554.37, 659.25, 880];
-        notes.forEach((freq, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(freq, now + (idx * 0.05));
-
-          gain.gain.setValueAtTime(0.2, now + (idx * 0.05));
-          gain.gain.exponentialRampToValueAtTime(0.01, now + (idx * 0.05) + 0.15);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start(now + (idx * 0.05));
-          osc.stop(now + (idx * 0.05) + 0.15);
-        });
-      }
-
-      playRecipeComplete() {
-        if (this.muted) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const chord = [523.25, 659.25, 783.99, 1046.50];
-        chord.forEach(freq => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(freq, now);
-
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start(now);
-          osc.stop(now + 0.4);
-        });
-      }
-
-      playError() {
-        if (this.muted) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(190, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.22);
-
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-
-        osc.start(now);
-        osc.stop(now + 0.22);
-      }
-
-      playGameOver() {
-        if (this.muted) return;
-        this.init();
-        const notes = [320, 280, 240, 180];
-        notes.forEach((freq, idx) => {
-          const now = this.ctx.currentTime + (idx * 0.12);
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(freq, now);
-
-          gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start(now);
-          osc.stop(now + 0.2);
-        });
-      }
-    }
-
-    const sound = new SoundEngine();
-
-    function toggleAudio() {
-      sound.muted = !sound.muted;
-      document.getElementById("soundBtn").innerText = sound.muted ? "🔇 OFF" : "🔊 ON";
-    }
 
     let score = 0;
     let budgetSaved = 0;
-    let lives = 5;
-    let combo = 0;
-    let maxCombo = 0;
-    let dishesCooked = 0;
-    let gameStarted = false;
-    let isPaused = false;
-    let gameOver = false;
-    let spawnTimer = 0;
-    let spawnInterval = 65;
-    let frameCount = 0;
-
-    const player = {
-      x: 150,
-      y: 405,
-      width: 95,
-      height: 52,
-      targetX: 150,
-      speed: 10,
-      expression: 'normal',
-      expressionTimer: 0,
-      squashX: 1,
-      squashY: 1,
-      shieldActive: false,
-      shieldTimer: 0
-    };
-
-    const recipeList = [
-      {
-        name: "Super Veggie Bowl",
-        targetItems: ["broccoli", "broccoli", "egg"],
-        tip: "Broccoli is rich in Vitamin C & Fiber! Buying frozen preserves full nutrients!"
-      },
-      {
-        name: "Brain Power Salmon",
-        targetItems: ["salmon", "rice", "salmon"],
-        tip: "Salmon delivers healthy Omega-3 fats for brain power and sharp focus!"
-      },
-      {
-        name: "Energy Breakfast",
-        targetItems: ["egg", "rice", "egg"],
-        tip: "Eggs & whole grains supply long-lasting energy for school and sports!"
-      },
-      {
-        name: "Harvest Delight",
-        targetItems: ["salmon", "broccoli", "rice"],
-        tip: "A rainbow plate ensures you get a full spectrum of essential vitamins!"
-      }
+    
+    const player = { x: 160, y: 440, width: 80, height: 30, dx: 0 };
+    const recipeTargets = [
+      { name: "Broccoli 🥦", type: "broccoli", tip: "💡 Frozen broccoli retains nutrients and costs half as much as fresh." },
+      { name: "Salmon 🐟", type: "salmon", tip: "💡 Canned salmon provides quick omega-3 protein for easy dorm meals." },
+      { name: "Rice Bowl 🍚", type: "rice", tip: "💡 Bulk rice is an affordable foundation for any student meal." },
+      { name: "Boiled Egg 🥚", type: "egg", tip: "💡 Eggs are one of the most cost-effective proteins available." }
     ];
 
-    let currentRecipeIdx = 0;
-    let currentRecipeProgress = 0;
-
-    const foodItemTypes = {
-      broccoli: { name: "Broccoli", icon: "🥦" },
-      salmon: { name: "Salmon", icon: "🐟" },
-      rice: { name: "Rice Bowl", icon: "🍚" },
-      egg: { name: "Boiled Egg", icon: "🥚" },
-      trap: { name: "Fast Food Trap", icon: "🍔" },
-      powerup: { name: "Golden Spoon", icon: "⭐" }
-    };
-
-    let fallingItems = [];
-    let particles = [];
-    let floatingTexts = [];
-
-    const bgDoodles = Array.from({ length: 14 }, () => ({
-      x: Math.random() * 400,
-      y: Math.random() * 500,
-      radius: 12 + Math.random() * 18,
-      speed: 0.25 + Math.random() * 0.45,
-      rotation: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.02
-    }));
-
-    function drawChefBowl(x, y, width, height) {
-      ctx.save();
-      ctx.translate(x + width / 2, y + height / 2);
-      ctx.scale(player.squashX, player.squashY);
-
-      if (player.shieldActive) {
-        ctx.beginPath();
-        ctx.arc(0, 0, width / 1.6, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255, 209, 102, 0.25)";
-        ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#FCA311";
-        ctx.setLineDash([6, 4]);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-
-      const bowlGradient = ctx.createLinearGradient(0, -height/2, 0, height/2);
-      bowlGradient.addColorStop(0, '#FFFFFF');
-      bowlGradient.addColorStop(1, '#C9E2E9');
-
-      ctx.beginPath();
-      ctx.arc(0, 0, width / 2, 0, Math.PI);
-      ctx.lineTo(-width / 2, 0);
-      ctx.closePath();
-      ctx.fillStyle = bowlGradient;
-      ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "#0D1C2A";
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width / 2, 9, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#FCA311";
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.save();
-      ctx.translate(-width / 3.8, -14);
-      ctx.beginPath();
-      ctx.arc(-8, -10, 8, 0, Math.PI * 2);
-      ctx.arc(0, -16, 10, 0, Math.PI * 2);
-      ctx.arc(8, -10, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fill();
-      ctx.lineWidth = 3.5;
-      ctx.strokeStyle = "#0D1C2A";
-      ctx.stroke();
-      ctx.fillRect(-10, -6, 20, 8);
-      ctx.strokeRect(-10, -6, 20, 8);
-      ctx.restore();
-
-      const eyeWiggle = Math.sin(frameCount * 0.08) * 1.5;
-
-      if (player.expression === 'happy') {
-        ctx.lineWidth = 3.5;
-        ctx.strokeStyle = "#0D1C2A";
-
-        ctx.beginPath();
-        ctx.arc(-16, 12, 6, Math.PI, 0);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(16, 12, 6, 0, Math.PI * 2);
-        ctx.fillStyle = "#0D1C2A";
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(0, 16, 9, 0, Math.PI);
-        ctx.fillStyle = "#E63946";
-        ctx.fill();
-        ctx.stroke();
-
-      } else if (player.expression === 'sad') {
-        ctx.lineWidth = 3.5;
-        ctx.strokeStyle = "#0D1C2A";
-        ctx.fillStyle = "#0D1C2A";
-
-        ctx.beginPath();
-        ctx.arc(-16, 12, 5, 0, Math.PI * 2);
-        ctx.arc(16, 12, 5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(0, 19, 5, 0, Math.PI * 2);
-        ctx.fillStyle = "#E63946";
-        ctx.fill();
-        ctx.stroke();
-
-      } else {
-        const isBlinking = (frameCount % 180 > 172);
-
-        if (isBlinking) {
-          ctx.lineWidth = 3.5;
-          ctx.strokeStyle = "#0D1C2A";
-          ctx.beginPath();
-          ctx.moveTo(-21, 12); ctx.lineTo(-11, 12);
-          ctx.moveTo(11, 12); ctx.lineTo(21, 12);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = "#0D1C2A";
-          ctx.beginPath();
-          ctx.arc(-16 + eyeWiggle, 12, 5.5, 0, Math.PI * 2);
-          ctx.arc(16 + eyeWiggle, 12, 5.5, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = "#FFFFFF";
-          ctx.beginPath();
-          ctx.arc(-18 + eyeWiggle, 10, 2.2, 0, Math.PI * 2);
-          ctx.arc(14 + eyeWiggle, 10, 2.2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        ctx.fillStyle = "rgba(255, 122, 89, 0.55)";
-        ctx.beginPath();
-        ctx.arc(-22, 17, 4.5, 0, Math.PI * 2);
-        ctx.arc(22, 17, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#0D1C2A";
-        ctx.beginPath();
-        ctx.arc(0, 15, 6, 0.1, Math.PI - 0.1);
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    }
+    let currentTargetIdx = 0;
+    const fallingItems = [];
 
     function drawBroccoli(x, y) {
-      ctx.save();
-      ctx.translate(x + 18, y + 18);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#0D1C2A";
-
-      ctx.fillStyle = "#C9E2E9";
-      ctx.fillRect(-6, 5, 12, 13);
-      ctx.strokeRect(-6, 5, 12, 13);
-
-      ctx.fillStyle = "#388E3C";
+      ctx.fillStyle = "#18803C";
       ctx.beginPath();
-      ctx.arc(-11, -2, 11, 0, Math.PI * 2);
-      ctx.arc(0, -11, 13, 0, Math.PI * 2);
-      ctx.arc(11, -2, 11, 0, Math.PI * 2);
+      ctx.arc(x + 15, y + 10, 12, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = "#4ADE80";
-      ctx.beginPath();
-      ctx.arc(-3, -12, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
     }
 
     function drawSalmon(x, y) {
-      ctx.save();
-      ctx.translate(x + 18, y + 18);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#0D1C2A";
-
       ctx.fillStyle = "#FF7A59";
       ctx.beginPath();
-      ctx.ellipse(0, 0, 18, 12, Math.PI / 6, 0, Math.PI * 2);
+      ctx.ellipse(x + 15, y + 10, 15, 8, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-
-      ctx.strokeStyle = "#FFFFFF";
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(-9, -6); ctx.lineTo(1, 6);
-      ctx.moveTo(-3, -8); ctx.lineTo(7, 4);
-      ctx.stroke();
-
-      ctx.fillStyle = "#FFD166";
-      ctx.strokeStyle = "#0D1C2A";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(8, -8, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.restore();
     }
 
     function drawRiceBowl(x, y) {
-      ctx.save();
-      ctx.translate(x + 18, y + 18);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#0D1C2A";
-
       ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
-      ctx.arc(0, -2, 14, Math.PI, 0);
+      ctx.arc(x + 15, y + 10, 10, Math.PI, 0);
       ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = "#0D1C2A";
-      ctx.beginPath();
-      ctx.arc(0, -2, 15, 0, Math.PI);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.strokeStyle = "#FCA311";
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(-10, -12); ctx.lineTo(12, -20);
-      ctx.moveTo(-6, -14); ctx.lineTo(16, -18);
-      ctx.stroke();
-
-      ctx.restore();
     }
 
     function drawEgg(x, y) {
-      ctx.save();
-      ctx.translate(x + 18, y + 18);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#0D1C2A";
-
       ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
-      ctx.ellipse(0, 0, 16, 12, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 15, y + 10, 12, 8, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = "#FCA311";
+      ctx.fillStyle = "#F59E0B";
       ctx.beginPath();
-      ctx.arc(-2, 0, 6, 0, Math.PI * 2);
+      ctx.arc(x + 15, y + 10, 4, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = "#FFFFFF";
-      ctx.beginPath();
-      ctx.arc(-4, -2, 2, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    function drawTrap(x, y) {
-      ctx.save();
-      ctx.translate(x + 18, y + 18);
-
-      ctx.shadowColor = "#E63946";
-      ctx.shadowBlur = 12;
-
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#0D1C2A";
-      ctx.fillStyle = "#E63946";
-
-      ctx.fillRect(-14, -12, 28, 24);
-      ctx.strokeRect(-14, -12, 28, 24);
-
-      ctx.fillStyle = "#FFD166";
-      ctx.font = "900 11px Fredoka, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("$15", 0, 4);
-
-      ctx.restore();
-    }
-
-    function drawPowerup(x, y) {
-      ctx.save();
-      ctx.translate(x + 18, y + 18);
-
-      ctx.shadowColor = "#FFD166";
-      ctx.shadowBlur = 14;
-
-      ctx.fillStyle = "#FFD166";
-      ctx.strokeStyle = "#0D1C2A";
-      ctx.lineWidth = 3;
-
-      ctx.beginPath();
-      for (let i = 0; i < 5; i++) {
-        ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * 16, -Math.sin((18 + i * 72) * Math.PI / 180) * 16);
-        ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 7, -Math.sin((54 + i * 72) * Math.PI / 180) * 7);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
-    function drawBackgroundDoodle(d) {
-      ctx.save();
-      ctx.translate(d.x, d.y);
-      ctx.rotate(d.rotation);
-      ctx.fillStyle = "rgba(13, 28, 42, 0.07)";
-      ctx.beginPath();
-      ctx.arc(0, 0, d.radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function updateRecipeUI() {
-      const currentRecipe = recipeList[currentRecipeIdx];
-      const targetItemKey = currentRecipe.targetItems[currentRecipeProgress];
-
-      document.getElementById("recipeName").innerText = `Dish: ${currentRecipe.name}`;
-      document.getElementById("recipeCounter").innerText = `${currentRecipeProgress} / ${currentRecipe.targetItems.length} items`;
-      
-      const fillPercentage = (currentRecipeProgress / currentRecipe.targetItems.length) * 100;
-      document.getElementById("recipeBarFill").style.width = `${fillPercentage}%`;
-
-      if (targetItemKey) {
-        const itemInfo = foodItemTypes[targetItemKey];
-        document.getElementById("targetIcon").innerText = itemInfo.icon;
-        document.getElementById("targetName").innerText = itemInfo.name;
-        document.getElementById("tipDisplay").innerText = currentRecipe.tip;
-      }
     }
 
     function spawnItem() {
-      if (gameOver || !gameStarted || isPaused) return;
-
-      const diffConfig = DIFFICULTY_SETTINGS[selectedDifficultyKey];
-      const currentRecipe = recipeList[currentRecipeIdx];
-      const requiredTargetKey = currentRecipe.targetItems[currentRecipeProgress];
-
-      let selectedType = requiredTargetKey;
-
-      const rand = Math.random();
-      if (rand < diffConfig.trapChance) {
-        selectedType = "trap";
-      } else if (rand < diffConfig.trapChance + 0.08) {
-        selectedType = "powerup";
-      } else if (rand > 0.40) {
-        const foodKeys = ["broccoli", "salmon", "rice", "egg"];
-        selectedType = foodKeys[Math.floor(Math.random() * foodKeys.length)];
-      }
-
-      const rect = canvasWrapper.getBoundingClientRect();
-      const itemX = 20 + Math.random() * (rect.width - 60);
-
-      const speedRange = diffConfig.maxSpeed - diffConfig.minSpeed;
-      const baseSpeed = diffConfig.minSpeed + Math.random() * speedRange;
-
+      const types = ["broccoli", "salmon", "rice", "egg"];
       fallingItems.push({
-        x: itemX,
-        y: -36,
-        type: selectedType,
-        speed: baseSpeed + (score / 2500),
-        rotation: 0,
-        rotSpeed: (Math.random() - 0.5) * 0.04
+        x: Math.random() * (canvas.width - 30),
+        y: -20,
+        type: types[Math.floor(Math.random() * types.length)],
+        speed: 3
       });
-    }
-
-    function createExplosion(x, y, color, count = 14) {
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 2 + Math.random() * 4.5;
-        particles.push({
-          x: x,
-          y: y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          radius: 3 + Math.random() * 4,
-          color: color,
-          alpha: 1,
-          life: 25 + Math.random() * 15
-        });
-      }
-    }
-
-    function createFloatingText(text, x, y, color) {
-      floatingTexts.push({
-        text: text,
-        x: x,
-        y: y,
-        vy: -2,
-        alpha: 1,
-        color: color
-      });
-    }
-
-    function updateLivesUI() {
-      const maxLives = DIFFICULTY_SETTINGS[selectedDifficultyKey].lives;
-      let hearts = "";
-      for (let i = 0; i < maxLives; i++) {
-        hearts += (i < lives) ? "❤️️" : "🖤";
-      }
-      document.getElementById("livesDisplay").innerText = hearts;
-    }
-
-    function showComboBadge(text) {
-      const badge = document.getElementById("comboBadge");
-      document.getElementById("comboText").innerText = text;
-      badge.classList.add("active");
-      setTimeout(() => badge.classList.remove("active"), 1200);
-    }
-
-    function triggerGameOver() {
-      gameOver = true;
-      sound.playGameOver();
-
-      const diffConfig = DIFFICULTY_SETTINGS[selectedDifficultyKey];
-
-      document.getElementById("finalDiff").innerText = diffConfig.label;
-      document.getElementById("finalScore").innerText = score;
-      document.getElementById("finalBudget").innerText = `$${budgetSaved.toFixed(2)}`;
-      document.getElementById("finalDishes").innerText = dishesCooked;
-      document.getElementById("finalCombo").innerText = `${maxCombo}x`;
-
-      let stars = "⭐";
-      if (score >= 600 * diffConfig.scoreMultiplier) stars = "⭐⭐";
-      if (score >= 1500 * diffConfig.scoreMultiplier) stars = "⭐⭐⭐";
-
-      document.getElementById("starRating").innerHTML = stars.split('').map(s => `<span class="star">${s}</span>`).join('');
-      document.getElementById("gameOverScreen").style.display = "flex";
-    }
-
-    function openStartScreen() {
-      gameStarted = false;
-      gameOver = false;
-      document.getElementById("gameOverScreen").style.display = "none";
-      document.getElementById("pauseScreen").style.display = "none";
-      document.getElementById("startScreen").style.display = "flex";
-    }
-
-    function startGame() {
-      gameStarted = true;
-      document.getElementById("startScreen").style.display = "none";
-      resetGame();
-    }
-
-    function togglePause() {
-      if (!gameStarted || gameOver) return;
-      isPaused = !isPaused;
-      document.getElementById("pauseScreen").style.display = isPaused ? "flex" : "none";
-      document.getElementById("pauseBtn").innerText = isPaused ? "▶️ RESUME" : "⏸️ PAUSE";
-    }
-
-    function resetGame() {
-      const diffConfig = DIFFICULTY_SETTINGS[selectedDifficultyKey];
-
-      score = 0;
-      budgetSaved = 0;
-      lives = diffConfig.lives;
-      combo = 0;
-      maxCombo = 0;
-      dishesCooked = 0;
-      gameOver = false;
-      isPaused = false;
-      currentRecipeIdx = 0;
-      currentRecipeProgress = 0;
-      fallingItems = [];
-      particles = [];
-      floatingTexts = [];
-      player.shieldActive = false;
-
-      spawnInterval = diffConfig.spawnInterval;
-
-      document.getElementById("scoreDisplay").innerText = "0";
-      document.getElementById("gameOverScreen").style.display = "none";
-      document.getElementById("pauseScreen").style.display = "none";
-
-      updateDifficultyBadgeUI();
-      updateLivesUI();
-      updateRecipeUI();
     }
 
     function update() {
-      if (!gameStarted || isPaused || gameOver) return;
-
-      frameCount++;
-
-      player.x += (player.targetX - player.x) * 0.25;
-
-      const rect = canvasWrapper.getBoundingClientRect();
-      const canvasWidth = rect.width;
-
+      player.x += player.dx;
       if (player.x < 0) player.x = 0;
-      if (player.x + player.width > canvasWidth) player.x = canvasWidth - player.width;
-
-      player.squashX += (1 - player.squashX) * 0.15;
-      player.squashY += (1 - player.squashY) * 0.15;
-
-      if (player.expressionTimer > 0) {
-        player.expressionTimer--;
-        if (player.expressionTimer <= 0) player.expression = 'normal';
-      }
-
-      if (player.shieldActive) {
-        player.shieldTimer--;
-        if (player.shieldTimer <= 0) player.shieldActive = false;
-      }
-
-      const diffConfig = DIFFICULTY_SETTINGS[selectedDifficultyKey];
-
-      spawnTimer++;
-      if (spawnTimer >= spawnInterval) {
-        spawnItem();
-        spawnTimer = 0;
-        spawnInterval = Math.max(25, diffConfig.spawnInterval - Math.floor(score / 400));
-      }
-
-      bgDoodles.forEach(d => {
-        d.y -= d.speed;
-        d.rotation += d.rotSpeed;
-        if (d.y < -30) {
-          d.y = rect.height + 30;
-          d.x = Math.random() * rect.width;
-        }
-      });
-
-      const currentRecipe = recipeList[currentRecipeIdx];
-      const requiredTargetKey = currentRecipe.targetItems[currentRecipeProgress];
+      if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
 
       for (let i = fallingItems.length - 1; i >= 0; i--) {
         const item = fallingItems[i];
@@ -1325,154 +177,38 @@
 
         if (
           item.y + 20 >= player.y &&
-          item.y <= player.y + player.height &&
           item.x + 20 >= player.x &&
           item.x <= player.x + player.width
         ) {
-          
-          if (item.type === "powerup") {
-            player.shieldActive = true;
-            player.shieldTimer = 300;
-            sound.playPowerup();
-            createExplosion(item.x + 18, item.y + 18, "#FFD166", 18);
-            createFloatingText("⭐ SHIELD ACTIVE!", item.x, item.y, "#FFD166");
-          }
-          else if (item.type === requiredTargetKey) {
-            combo++;
-            if (combo > maxCombo) maxCombo = combo;
+          const currentTarget = recipeTargets[currentTargetIdx];
 
-            const comboMultiplier = Math.min(5, 1 + Math.floor(combo / 3));
-            const earnedScore = Math.round(150 * comboMultiplier * diffConfig.scoreMultiplier);
-            score += earnedScore;
+          if (item.type === currentTarget.type) {
+            score += 100;
             budgetSaved += 2.50;
-
-            sound.playCatch(comboMultiplier);
-
-            player.squashX = 1.25;
-            player.squashY = 0.75;
-            player.expression = 'happy';
-            player.expressionTimer = 30;
-
-            createExplosion(item.x + 18, item.y + 18, "#388E3C", 14);
-            createFloatingText(`+${earnedScore}${comboMultiplier > 1 ? ` (${comboMultiplier}x)` : ''}`, item.x, item.y, "#FCA311");
-
-            if (combo >= 3) {
-              showComboBadge(`🔥 ${combo}x COMBO!`);
-            }
-
-            currentRecipeProgress++;
-
-            if (currentRecipeProgress >= currentRecipe.targetItems.length) {
-              dishesCooked++;
-              const dishBonus = Math.round(500 * diffConfig.scoreMultiplier);
-              score += dishBonus;
-              budgetSaved += 5.00;
-              sound.playRecipeComplete();
-              createFloatingText(`🎉 DISH COOKED! +${dishBonus}`, item.x, item.y - 20, "#4ADE80");
-
-              currentRecipeIdx = (currentRecipeIdx + 1) % recipeList.length;
-              currentRecipeProgress = 0;
-            }
-
-            updateRecipeUI();
-
-          } else {
-            if (player.shieldActive) {
-              player.shieldActive = false;
-              sound.playPowerup();
-              createFloatingText("🛡️ SHIELD PROTECTED!", item.x, item.y, "#FFD166");
-            } else {
-              combo = 0;
-              lives--;
-              sound.playError();
-
-              player.squashX = 0.8;
-              player.squashY = 1.2;
-              player.expression = 'sad';
-              player.expressionTimer = 40;
-
-              canvasWrapper.classList.add("shake", "damage-flash");
-              setTimeout(() => canvasWrapper.classList.remove("shake", "damage-flash"), 320);
-
-              createExplosion(item.x + 18, item.y + 18, "#E63946", 16);
-
-              if (item.type === "trap") {
-                createFloatingText("🍔 TRAP! -1 LIFE", item.x, item.y, "#E63946");
-              } else {
-                createFloatingText("❌ WRONG ITEM!", item.x, item.y, "#E63946");
-              }
-
-              updateLivesUI();
-
-              if (lives <= 0) {
-                triggerGameOver();
-              }
-            }
+            document.getElementById("tip-display").innerHTML = currentTarget.tip;
+            currentTargetIdx = (currentTargetIdx + 1) % recipeTargets.length;
+            document.getElementById("target-item").innerText = recipeTargets[currentTargetIdx].name;
           }
 
-          document.getElementById("scoreDisplay").innerText = score;
+          document.getElementById("score").innerText = score;
+          document.getElementById("budget").innerText = `$${budgetSaved.toFixed(2)}`;
           fallingItems.splice(i, 1);
-          continue;
-        }
-
-        if (item.y > rect.height + 40) {
+        } else if (item.y > canvas.height) {
           fallingItems.splice(i, 1);
         }
-      }
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.03;
-        if (p.alpha <= 0) particles.splice(i, 1);
-      }
-
-      for (let i = floatingTexts.length - 1; i >= 0; i--) {
-        const ft = floatingTexts[i];
-        ft.y += ft.vy;
-        ft.alpha -= 0.025;
-        if (ft.alpha <= 0) floatingTexts.splice(i, 1);
       }
     }
 
     function draw() {
-      const rect = canvasWrapper.getBoundingClientRect();
-      ctx.clearRect(0, 0, rect.width, rect.height);
-
-      bgDoodles.forEach(d => drawBackgroundDoodle(d));
-
-      drawChefBowl(player.x, player.y, player.width, player.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#001C2A";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
 
       fallingItems.forEach(item => {
         if (item.type === "broccoli") drawBroccoli(item.x, item.y);
         else if (item.type === "salmon") drawSalmon(item.x, item.y);
         else if (item.type === "rice") drawRiceBowl(item.x, item.y);
         else if (item.type === "egg") drawEgg(item.x, item.y);
-        else if (item.type === "trap") drawTrap(item.x, item.y);
-        else if (item.type === "powerup") drawPowerup(item.x, item.y);
-      });
-
-      particles.forEach(p => {
-        ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
-
-      floatingTexts.forEach(ft => {
-        ctx.save();
-        ctx.globalAlpha = ft.alpha;
-        ctx.fillStyle = ft.color;
-        ctx.font = "900 16px Fredoka, sans-serif";
-        ctx.strokeStyle = "#0D1C2A";
-        ctx.lineWidth = 3.5;
-        ctx.strokeText(ft.text, ft.x, ft.y);
-        ctx.fillText(ft.text, ft.x, ft.y);
-        ctx.restore();
       });
     }
 
@@ -1483,40 +219,19 @@
     }
 
     document.addEventListener("keydown", e => {
-      if (!gameStarted || isPaused || gameOver) return;
-      if (e.key === "ArrowLeft" || e.key === "a") {
-        player.targetX -= player.speed * 3.8;
-      }
-      if (e.key === "ArrowRight" || e.key === "d") {
-        player.targetX += player.speed * 3.8;
-      }
+      if (e.key === "ArrowLeft") player.dx = -7;
+      if (e.key === "ArrowRight") player.dx = 7;
     });
 
-    function handlePointerMove(clientX) {
-      if (!gameStarted || isPaused || gameOver) return;
-      const rect = canvasWrapper.getBoundingClientRect();
-      const relativeX = clientX - rect.left;
-      player.targetX = relativeX - player.width / 2;
-    }
+    document.addEventListener("keyup", () => player.dx = 0);
 
-    canvasWrapper.addEventListener("mousemove", e => handlePointerMove(e.clientX));
-    canvasWrapper.addEventListener("touchmove", e => {
-      if (e.touches.length > 0) {
-        handlePointerMove(e.touches[0].clientX);
-      }
-    }, { passive: true });
+    canvas.addEventListener("touchmove", e => {
+      const rect = canvas.getBoundingClientRect();
+      player.x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width) - player.width / 2;
+    });
 
-    canvasWrapper.addEventListener("touchstart", e => {
-      if (e.touches.length > 0) {
-        handlePointerMove(e.touches[0].clientX);
-      }
-    }, { passive: true });
-
-    window.onload = function() {
-      selectDifficulty("EASY");
-      updateRecipeUI();
-      gameLoop();
-    };
+    setInterval(spawnItem, 1000);
+    gameLoop();
   </script>
 </body>
 </html>
