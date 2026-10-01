@@ -1,31 +1,36 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Neural Ninja | Cyber Matrix Slicer</title>
+  <title>Fruit Ninja | High-Contrast Edition</title>
   <style>
     :root {
-      --cyber-dark: #060913;
-      --cyber-card: rgba(12, 18, 34, 0.88);
-      --neon-cyan: #00F0FF;
-      --neon-pink: #FF0055;
-      --neon-green: #00FF66;
-      --neon-gold: #FFB800;
-      --neon-purple: #9D00FF;
-      --font-stack: "Segoe UI", Roboto, -apple-system, sans-serif, monospace;
+      --bg-cream: #FAF7F0;
+      --navy-dark: #0B132B;
+      --navy-subtle: #1C2541;
+      --accent-orange: #FF7A00;
+      --accent-amber: #F59E0B;
+      --accent-coral: #EF4444;
+      --accent-lime: #10B981;
+      --accent-cyan: #06B6D4;
+      --accent-magenta: #EC4899;
+      --card-bg: #FFFFFF;
+      --font-stack: "Segoe UI", Roboto, -apple-system, sans-serif;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      touch-action: none; /* Prevents scroll/zoom on mobile swipe */
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     body {
-      background-color: var(--cyber-dark);
-      color: #E2F1FF;
+      background-color: var(--bg-cream);
+      color: var(--navy-dark);
       font-family: var(--font-stack);
       min-height: 100vh;
       display: flex;
@@ -33,26 +38,22 @@
       align-items: center;
       justify-content: center;
       padding: 12px;
-      user-select: none;
-      -webkit-user-select: none;
-      background-image: 
-        radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 65%),
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 25px 25px, 25px 25px;
       overflow: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(11, 19, 43, 0.04) 0%, transparent 70%),
+        linear-gradient(rgba(11, 19, 43, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(11, 19, 43, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px, 24px 24px;
     }
 
     .game-card {
       width: 100%;
       max-width: 480px;
-      background: var(--cyber-card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 2px solid rgba(0, 240, 255, 0.4);
+      background: var(--card-bg);
+      border: 3px solid var(--navy-dark);
       border-radius: 20px;
       padding: 14px;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.1);
+      box-shadow: 8px 8px 0px var(--navy-dark);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -63,25 +64,24 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+      border-bottom: 2px solid var(--navy-dark);
       padding-bottom: 8px;
     }
 
     .title-group h1 {
       font-size: 1.4rem;
-      color: var(--neon-cyan);
+      color: var(--navy-dark);
       text-transform: uppercase;
-      letter-spacing: 2.5px;
-      text-shadow: 0 0 12px var(--neon-cyan), 0 0 25px rgba(0, 240, 255, 0.5);
+      letter-spacing: 1.5px;
       font-weight: 900;
       line-height: 1.1;
     }
 
     .title-group p {
-      font-size: 0.7rem;
-      color: #8A99AD;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-size: 0.72rem;
+      color: #5A6578;
+      font-weight: 800;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
     }
 
@@ -91,63 +91,60 @@
     }
 
     .icon-btn {
-      background: rgba(6, 9, 19, 0.8);
-      border: 1px solid var(--neon-cyan);
-      color: var(--neon-cyan);
-      padding: 6px 10px;
-      border-radius: 8px;
+      background: var(--bg-cream);
+      border: 2px solid var(--navy-dark);
+      color: var(--navy-dark);
+      padding: 6px 12px;
+      border-radius: 10px;
       font-size: 0.85rem;
-      font-weight: bold;
+      font-weight: 800;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+      box-shadow: 3px 3px 0px var(--navy-dark);
+      transition: transform 0.1s;
     }
 
-    .icon-btn:hover, .icon-btn:active {
-      background: var(--neon-cyan);
-      color: var(--cyber-dark);
-      box-shadow: 0 0 15px var(--neon-cyan);
+    .icon-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--navy-dark);
     }
 
     .hud-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(6, 9, 19, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      background: var(--bg-cream);
+      border: 2px solid var(--navy-dark);
       padding: 8px 12px;
       border-radius: 12px;
-      font-weight: bold;
+      font-weight: 800;
       font-size: 0.8rem;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
     }
 
     .hud-badge {
       display: flex;
       align-items: center;
       gap: 4px;
-      letter-spacing: 0.5px;
     }
 
     .diff-tag {
-      background: rgba(0, 240, 255, 0.15);
-      border: 1px solid var(--neon-cyan);
+      background: #E2E8F0;
+      border: 1.5px solid var(--navy-dark);
       border-radius: 6px;
       padding: 2px 6px;
       font-size: 0.7rem;
       cursor: pointer;
     }
 
-    .val-cyan { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); }
-    .val-pink { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
-    .val-green { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
-    .val-gold { color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
+    .val-orange { color: var(--accent-orange); }
+    .val-coral { color: var(--accent-coral); }
+    .val-lime { color: var(--accent-lime); }
+    .val-navy { color: var(--navy-dark); }
 
-    /* Star Rating Meter */
+    /* Star Meter */
     .star-meter-box {
-      background: rgba(6, 9, 19, 0.8);
-      border: 1px solid rgba(255, 184, 0, 0.4);
-      border-radius: 10px;
+      background: var(--bg-cream);
+      border: 2px solid var(--navy-dark);
+      border-radius: 12px;
       padding: 6px 12px;
       display: flex;
       align-items: center;
@@ -162,28 +159,27 @@
 
     .star-icon {
       filter: grayscale(1) opacity(0.3);
-      transition: filter 0.3s ease, transform 0.3s ease;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
     .star-icon.active {
-      filter: grayscale(0) opacity(1) drop-shadow(0 0 8px #FFB800);
+      filter: grayscale(0) opacity(1);
       transform: scale(1.2);
     }
 
     .progress-bar-container {
       flex: 1;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
+      height: 10px;
+      background: #E2E8F0;
+      border: 2px solid var(--navy-dark);
+      border-radius: 6px;
       overflow: hidden;
-      position: relative;
     }
 
     .progress-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-gold));
-      box-shadow: 0 0 10px var(--neon-gold);
+      background: linear-gradient(90deg, var(--accent-amber), var(--accent-orange));
       transition: width 0.2s ease;
     }
 
@@ -191,12 +187,11 @@
       position: relative;
       width: 100%;
       aspect-ratio: 4/5;
-      background: radial-gradient(circle at center, #0F172A 0%, #04060C 100%);
-      border: 2px solid rgba(0, 240, 255, 0.5);
-      border-radius: 14px;
+      background: var(--bg-cream);
+      border: 3px solid var(--navy-dark);
+      border-radius: 16px;
       overflow: hidden;
       cursor: crosshair;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 240, 255, 0.15);
     }
 
     canvas {
@@ -205,156 +200,143 @@
       display: block;
     }
 
-    /* Modal / Overlay screens */
+    /* Modal Overlays */
     .overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(6, 9, 19, 0.94);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(250, 247, 240, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #FFF;
+      color: var(--navy-dark);
       text-align: center;
       padding: 20px;
       z-index: 10;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1); }
     }
 
     .overlay h2 {
-      font-size: 1.8rem;
-      color: var(--neon-cyan);
-      margin-bottom: 6px;
-      text-shadow: 0 0 15px var(--neon-cyan);
-      letter-spacing: 2px;
+      font-size: 1.7rem;
+      color: var(--navy-dark);
+      margin-bottom: 4px;
+      font-weight: 900;
       text-transform: uppercase;
     }
 
     .overlay p {
       font-size: 0.85rem;
-      color: #8A99AD;
-      margin-bottom: 14px;
+      color: #4B5563;
+      margin-bottom: 12px;
+      font-weight: 600;
     }
 
-    /* Difficulty Selection Cards */
     .diff-selector {
       display: flex;
       flex-direction: column;
       gap: 10px;
       width: 100%;
-      margin: 12px 0;
+      margin: 10px 0;
     }
 
     .diff-card {
-      background: rgba(12, 18, 34, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      background: #FFFFFF;
+      border: 2px solid var(--navy-dark);
       padding: 10px 14px;
       border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      transition: all 0.2s;
+      box-shadow: 4px 4px 0px var(--navy-dark);
+      transition: transform 0.1s;
       text-align: left;
     }
 
     .diff-card:hover, .diff-card.selected {
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-      background: rgba(0, 240, 255, 0.1);
-      transform: translateY(-2px);
+      background: #FFFBEB;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--navy-dark);
     }
 
     .diff-title {
-      font-weight: 800;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-weight: 900;
+      font-size: 0.92rem;
     }
 
     .diff-desc {
       font-size: 0.72rem;
-      color: #8A99AD;
+      color: #6B7280;
       margin-top: 2px;
     }
 
     .diff-mult {
       font-weight: 900;
       font-size: 0.9rem;
-      color: var(--neon-gold);
+      color: var(--accent-orange);
     }
 
-    /* Stats Summary Box */
     .stats-summary {
-      background: rgba(12, 18, 34, 0.85);
-      border: 1px solid var(--neon-cyan);
-      padding: 12px 20px;
+      background: #FFFFFF;
+      border: 2px solid var(--navy-dark);
+      padding: 12px 18px;
       border-radius: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       font-size: 0.88rem;
       line-height: 1.6;
       width: 100%;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+      box-shadow: 4px 4px 0px var(--navy-dark);
+      font-weight: 700;
     }
 
     .star-display-big {
-      font-size: 2rem;
-      margin: 8px 0;
-      letter-spacing: 6px;
+      font-size: 2.2rem;
+      margin: 6px 0;
     }
 
     .btn-cyber {
-      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-      color: #FFF;
-      border: none;
-      padding: 12px 28px;
-      font-size: 0.95rem;
+      background: var(--accent-orange);
+      color: #FFFFFF;
+      border: 2.5px solid var(--navy-dark);
+      padding: 12px 24px;
+      font-size: 1rem;
       font-weight: 900;
       border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.5);
-      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 5px 5px 0px var(--navy-dark);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       width: 100%;
+      transition: transform 0.1s;
     }
 
     .btn-cyber:active {
-      transform: scale(0.97);
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0px var(--navy-dark);
     }
 
     .tip-box {
-      background-color: rgba(6, 9, 19, 0.85);
-      color: #D1E5FF;
+      background-color: #FFFFFF;
+      color: var(--navy-dark);
       padding: 8px 12px;
       border-radius: 12px;
-      border: 1px solid var(--neon-cyan);
+      border: 2px solid var(--navy-dark);
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 700;
       text-align: center;
-      min-height: 48px;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      line-height: 1.35;
-      box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.08);
+      box-shadow: 3px 3px 0px var(--navy-dark);
     }
 
     .controls-hint {
       text-align: center;
       font-size: 0.7rem;
-      color: #61738A;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+      color: #6B7280;
+      font-weight: 700;
     }
   </style>
 </head>
@@ -363,12 +345,12 @@
   <div class="game-card">
     <header>
       <div class="title-group">
-        <h1>⚡ AI NEURAL NINJA</h1>
-        <p>MATRIX SYNTHETIC SLICER</p>
+        <h1>🍉 FRUIT NINJA</h1>
+        <p>HIGH-CONTRAST INGREDIENT PATTERN</p>
       </div>
       <div class="header-actions">
-        <button id="soundToggle" class="icon-btn" onclick="toggleAudio()" title="Toggle Sound">🔊 ON</button>
-        <button id="pauseBtn" class="icon-btn" onclick="togglePause()" title="Pause Game">⏸️</button>
+        <button id="soundToggle" class="icon-btn" onclick="toggleAudio()">🔊 ON</button>
+        <button id="pauseBtn" class="icon-btn" onclick="togglePause()">⏸️</button>
       </div>
     </header>
 
@@ -377,8 +359,8 @@
       <div class="hud-badge">
         <span id="diffBadge" class="diff-tag" onclick="openDifficultyModal()">EASY 🟢</span>
       </div>
-      <div class="hud-badge">INTEGRITY: <span id="livesDisplay" class="val-pink">🛡️ 🛡️ 🛡️ 🛡️ 🛡️</span></div>
-      <div class="hud-badge">HARVESTED: <span class="val-cyan" id="slicedCount">0</span></div>
+      <div class="hud-badge">LIVES: <span id="livesDisplay" class="val-coral">❤️ ❤️ ❤️ ❤️️ ❤️</span></div>
+      <div class="hud-badge">CUTS: <span class="val-navy" id="slicedCount">0</span></div>
     </div>
 
     <!-- Star Progress Meter -->
@@ -391,94 +373,92 @@
       <div class="progress-bar-container">
         <div id="starProgressBar" class="progress-bar-fill"></div>
       </div>
-      <div style="font-size: 0.78rem;" class="val-green" id="computeDisplay">0.0 FLOPS</div>
+      <div style="font-size: 0.8rem; font-weight: 900;" class="val-orange" id="computeDisplay">0 PTS</div>
     </div>
 
     <!-- Canvas Viewport Container -->
     <div class="canvas-container" id="canvasBox">
       <canvas id="gameCanvas" width="400" height="500"></canvas>
 
-      <!-- 1. Start / Difficulty Select Modal -->
+      <!-- 1. Start / Difficulty Modal -->
       <div class="overlay" id="startModal">
-        <h2>NEURAL BOOT MATRIX</h2>
-        <p>Select Security clearance to initialize blade protocol:</p>
+        <h2>FRUIT NINJA MATRIX</h2>
+        <p>Select Difficulty to Initialize Blade Stream:</p>
         
         <div class="diff-selector">
           <div class="diff-card selected" id="diffCard-easy" onclick="selectDifficulty('EASY')">
             <div>
-              <div class="diff-title" style="color: var(--neon-green);">🟢 EASY MODE</div>
-              <div class="diff-desc">5 Shield Lives • Low Malware Rate (~10%) • Relaxed Speed</div>
+              <div class="diff-title" style="color: var(--accent-lime);">🟢 EASY MODE</div>
+              <div class="diff-desc">5 Lives • Low Bomb Rate (~10%) • Relaxed Speed</div>
             </div>
             <div class="diff-mult">1.0x</div>
           </div>
 
           <div class="diff-card" id="diffCard-medium" onclick="selectDifficulty('MEDIUM')">
             <div>
-              <div class="diff-title" style="color: var(--neon-gold);">🟡 MEDIUM MODE</div>
-              <div class="diff-desc">3 Shield Lives • Mod Malware Rate (~22%) • Standard Velocity</div>
+              <div class="diff-title" style="color: var(--accent-amber);">🟡 MEDIUM MODE</div>
+              <div class="diff-desc">3 Lives • Moderate Bombs (~22%) • Standard Velocity</div>
             </div>
             <div class="diff-mult">1.5x</div>
           </div>
 
           <div class="diff-card" id="diffCard-hard" onclick="selectDifficulty('HARD')">
             <div>
-              <div class="diff-title" style="color: var(--neon-pink);">🔴 HARD MODE</div>
-              <div class="diff-desc">3 Shield Lives • High Malware Rate (~35%) • Cluster Launches</div>
+              <div class="diff-title" style="color: var(--accent-coral);">🔴 HARD MODE</div>
+              <div class="diff-desc">3 Lives • High Bombs (~35%) • Rapid Fruit Clusters</div>
             </div>
             <div class="diff-mult">2.0x</div>
           </div>
         </div>
 
-        <button class="btn-cyber" onclick="startGame()">INITIALIZE MATRIX</button>
+        <button class="btn-cyber" onclick="startGame()">START SLICING</button>
       </div>
 
       <!-- 2. Pause Overlay -->
       <div class="overlay" id="pauseModal" style="display: none;">
-        <h2>MATRIX PAUSED</h2>
-        <p>Neural blade stream suspended.</p>
-        <button class="btn-cyber" onclick="togglePause()" style="margin-bottom: 10px;">RESUME PROTOCOL</button>
-        <button class="btn-cyber" onclick="openDifficultyModal()" style="background: rgba(255,255,255,0.1); border: 1px solid var(--neon-cyan);">CHANGE DIFFICULTY</button>
+        <h2>GAME PAUSED</h2>
+        <p>Blade stream temporarily suspended.</p>
+        <button class="btn-cyber" onclick="togglePause()" style="margin-bottom: 10px;">RESUME SLICING</button>
+        <button class="btn-cyber" onclick="openDifficultyModal()" style="background: #FFFFFF; color: var(--navy-dark);">CHANGE DIFFICULTY</button>
       </div>
 
       <!-- 3. Game Over Overlay -->
       <div class="overlay" id="gameOverModal" style="display: none;">
-        <h2 id="gameOverTitle" style="color: var(--neon-pink);">SYSTEM CRITICAL</h2>
-        <p id="deathReason">Corrupted Malware Breach Detected!</p>
+        <h2 id="gameOverTitle" style="color: var(--accent-coral);">GAME OVER</h2>
+        <p id="deathReason">Sliced a Corrupted Bomb!</p>
 
         <div class="star-display-big" id="finalStarsDisplay">⭐⭐⭐</div>
 
         <div class="stats-summary">
-          <div>Neural Cores Processed: <strong id="finalSliced" class="val-cyan">0</strong></div>
-          <div>Synthetic Compute: <strong id="finalCompute" class="val-green">0.0 FLOPS</strong></div>
-          <div>Max Cyber Combo: <strong id="finalMaxCombo" class="val-gold">x0</strong></div>
-          <div>All-Time High Score: <strong id="finalHighScore" class="val-cyan">0 FLOPS</strong></div>
+          <div>Fruits Harvested: <strong id="finalSliced" class="val-navy">0</strong></div>
+          <div>Total Score: <strong id="finalCompute" class="val-orange">0 PTS</strong></div>
+          <div>Max Combo: <strong id="finalMaxCombo" class="val-lime">x0</strong></div>
+          <div>All-Time High Score: <strong id="finalHighScore" class="val-coral">0 PTS</strong></div>
         </div>
 
-        <button class="btn-cyber" onclick="resetGame()">REBOOT NEURAL MATRIX</button>
+        <button class="btn-cyber" onclick="resetGame()">PLAY AGAIN</button>
       </div>
     </div>
 
     <!-- AI Tip Box -->
     <div class="tip-box" id="tipDisplay">
-      ⚡ <strong>NEURAL PROTOCOL:</strong> Swipe across airborne AI Data Cores! Slice multiple nodes in one sweep for COMBO FLOPS!
+      ⚡ <strong>NINJA TIP:</strong> Swipe across airborne fruits! Slice multiple nodes in one sweep for COMBO BONUS!
     </div>
 
     <div class="controls-hint">
-      ✦ Drag or Swipe to project Laser Energy Blade • Avoid Red Corrupted Viruses ✦
+      ✦ Swipe or Drag to Slice • Avoid Red Spiked Bombs ✦
     </div>
   </div>
 
   <script>
-    // Audio State & Synthesizer via Web Audio API
+    // Audio State Synthesizer
     let audioCtx = null;
     let isMuted = false;
 
     function initAudio() {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          audioCtx = new AudioContextClass();
-        }
+        if (AudioContextClass) audioCtx = new AudioContextClass();
       }
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
@@ -505,130 +485,107 @@
 
         if (type === 'slash') {
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(1000 + Math.random() * 400, now);
-          osc.frequency.exponentialRampToValueAtTime(250, now + 0.09);
+          osc.frequency.setValueAtTime(900 + Math.random() * 300, now);
+          osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
           gain.gain.setValueAtTime(0.2, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
           osc.start(now);
-          osc.stop(now + 0.09);
+          osc.stop(now + 0.08);
         } else if (type === 'pop') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(400 + Math.random() * 200, now);
-          osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+          osc.frequency.setValueAtTime(450 + Math.random() * 200, now);
+          osc.frequency.exponentialRampToValueAtTime(850, now + 0.08);
           gain.gain.setValueAtTime(0.25, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
           osc.start(now);
           osc.stop(now + 0.08);
         } else if (type === 'combo') {
-          // Ascending pitch arpeggio tone based on combo level
           const comboLevel = Math.min(param, 6);
-          const baseFreq = 523.25; // C5
-          const pitch = baseFreq * Math.pow(1.122, comboLevel * 2);
+          const pitch = 523.25 * Math.pow(1.122, comboLevel * 2);
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(pitch, now);
-          osc.frequency.exponentialRampToValueAtTime(pitch * 1.5, now + 0.18);
+          osc.frequency.exponentialRampToValueAtTime(pitch * 1.4, now + 0.16);
           gain.gain.setValueAtTime(0.3, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
           osc.start(now);
-          osc.stop(now + 0.18);
+          osc.stop(now + 0.16);
         } else if (type === 'explode') {
           osc.type = 'square';
-          osc.frequency.setValueAtTime(160, now);
-          osc.frequency.linearRampToValueAtTime(30, now + 0.4);
-          gain.gain.setValueAtTime(0.45, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
-          osc.start(now);
-          osc.stop(now + 0.4);
-        } else if (type === 'star') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(659.25, now); // E5
-          osc.frequency.setValueAtTime(880, now + 0.1); // A5
-          osc.frequency.setValueAtTime(1046.50, now + 0.2); // C6
-          gain.gain.setValueAtTime(0.3, now);
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.linearRampToValueAtTime(30, now + 0.35);
+          gain.gain.setValueAtTime(0.4, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
           osc.start(now);
           osc.stop(now + 0.35);
+        } else if (type === 'star') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(659, now);
+          osc.frequency.setValueAtTime(880, now + 0.09);
+          osc.frequency.setValueAtTime(1046, now + 0.18);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
         } else if (type === 'click') {
           osc.type = 'sine';
           osc.frequency.setValueAtTime(600, now);
           gain.gain.setValueAtTime(0.15, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
           osc.start(now);
-          osc.stop(now + 0.05);
+          osc.stop(now + 0.04);
         }
-      } catch (e) {
-        // Fallback for audio policy constraints
-      }
+      } catch (e) {}
     }
 
     const DIFFICULTY_SETTINGS = {
-      EASY: {
-        name: 'EASY 🟢',
-        lives: 5,
-        speedMult: 0.85,
-        bombChance: 0.10,
-        scoreMult: 1.0,
-        spawnInterval: 75,
-        starThresholds: [60, 140, 260]
-      },
-      MEDIUM: {
-        name: 'MEDIUM 🟡',
-        lives: 3,
-        speedMult: 1.0,
-        bombChance: 0.22,
-        scoreMult: 1.5,
-        spawnInterval: 60,
-        starThresholds: [100, 240, 450]
-      },
-      HARD: {
-        name: 'HARD 🔴',
-        lives: 3,
-        speedMult: 1.25,
-        bombChance: 0.35,
-        scoreMult: 2.0,
-        spawnInterval: 48,
-        starThresholds: [150, 380, 700]
-      }
+      EASY: { name: 'EASY 🟢', lives: 5, speedMult: 0.85, bombChance: 0.10, scoreMult: 1.0, starThresholds: [60, 140, 260] },
+      MEDIUM: { name: 'MEDIUM 🟡', lives: 3, speedMult: 1.0, bombChance: 0.22, scoreMult: 1.5, starThresholds: [100, 240, 450] },
+      HARD: { name: 'HARD 🔴', lives: 3, speedMult: 1.25, bombChance: 0.35, scoreMult: 2.0, starThresholds: [150, 380, 700] }
     };
 
     let selectedDifficultyKey = 'EASY';
     let currentConfig = DIFFICULTY_SETTINGS.EASY;
 
-    // Game Core State Variables
+    // Game Core State
     let slicedCount = 0;
     let computeValue = 0;
     let lives = 5;
     let starsUnlocked = 0;
-    let highScore = parseFloat(localStorage.getItem('nn_high_score') || '0');
+    let highScore = parseFloat(localStorage.getItem('fn_high_score') || '0');
 
     let gameOver = false;
     let isPaused = false;
     let isGameStarted = false;
     let spawnTimer = 0;
+    let globalGravity = 0.26;
+    let freezeTimer = 0;
 
     // Combo Tracking
     let sliceComboCount = 0;
     let maxCombo = 0;
     let lastSliceTime = 0;
-    const COMBO_RESET_DELAY = 300; // ms
+    const COMBO_RESET_DELAY = 300;
 
-    // Visual FX & Entities
+    // FX & Entities
     let screenShakeTimer = 0;
-    let bladePath = []; // {x, y, time}
+    let bladePath = [];
     let flyingItems = [];
     let slicedHalves = [];
     let particles = [];
     let gridSplashes = [];
     let floatingTexts = [];
 
-    // AI Data Node Definitions
-    const AI_NODES = [
-      { id: 'neural_core', name: 'Neural Matrix Core', compute: 12.0, isBomb: false, color: '#00F0FF', coreColor: '#FFFFFF', radius: 24, tip: '⚡ Neural Matrix Cores stream synthetic parameter vectors.' },
-      { id: 'quantum_strand', name: 'Quantum Data Strand', compute: 5.0, isBomb: false, color: '#FFB800', coreColor: '#FFF', radius: 18, tip: '⚡ Quantum Strands execute tensor math with zero thermal noise.' },
-      { id: 'synthetix_node', name: 'Synthetix Node', compute: 8.5, isBomb: false, color: '#FF0055', coreColor: '#FFAAE5', radius: 20, tip: '⚡ Synthetix Nodes render real-time generative latent vectors.' },
-      { id: 'bio_vector', name: 'Bio-Vector Core', compute: 6.5, isBomb: false, color: '#FF7700', coreColor: '#FFE0B2', radius: 18, tip: '⚡ Bio-Vectors optimize neural network gradient convergence.' },
-      { id: 'gen_cluster', name: 'Generative Cluster', compute: 16.0, isBomb: false, color: '#00FF66', coreColor: '#D4FFEA', radius: 23, tip: '⚡ Generative Clusters compile ultra-high resolution AI outputs.' },
-      { id: 'malware_bomb', name: 'Corrupted Malware Bomb', compute: -20.0, isBomb: true, color: '#FF0033', coreColor: '#000000', radius: 22, tip: '💥 WARNING! Slicing Corrupted Malware drains system integrity!' }
+    // High-Contrast Fruit Catalog
+    const FRUITS = [
+      { id: 'orange', name: 'Citrus Orange', pts: 10, isBomb: false, fill: '#FF7A00', radius: 24, tip: '🍊 Orange: Fresh citrus vector filled with golden energy!' },
+      { id: 'strawberry', name: 'Strawberry', pts: 12, isBomb: false, fill: '#EF4444', radius: 21, tip: '🍓 Strawberry: Cone shaped crown with dark seeds!' },
+      { id: 'banana', name: 'Golden Banana', pts: 8, isBomb: false, fill: '#F59E0B', radius: 22, tip: '🍌 Banana: Curved golden crescent slice.' },
+      { id: 'apple', name: 'Crisp Apple', pts: 10, isBomb: false, fill: '#DC2626', radius: 23, tip: '🍎 Apple: Double curved indentation with glossy shine.' },
+      { id: 'watermelon', name: 'Juicy Watermelon', pts: 15, isBomb: false, fill: '#EF4444', radius: 27, tip: '🍉 Watermelon: Dark green rind with vivid coral core!' },
+      { id: 'pineapple', name: 'Golden Pineapple', pts: 18, isBomb: false, fill: '#F59E0B', radius: 26, tip: '🍍 Pineapple: Diamond grid body with navy crown!' },
+      { id: 'dragon_fruit', name: 'Dragon Fruit', pts: 25, isBomb: false, fill: '#EC4899', radius: 24, tip: '🐉 Dragon Fruit: High contrast magenta scaled exterior (+25 Pts)!' },
+      { id: 'freezer_banana', name: 'Freezer Banana', pts: 15, isBomb: false, fill: '#06B6D4', radius: 22, tip: '❄️ Freezer Banana: Slows down gravity & game speed when sliced!' },
+      { id: 'bomb', name: 'Spiked Bomb', pts: -20, isBomb: true, fill: '#0B132B', radius: 22, tip: '💥 WARNING! Slicing bombs reduces system integrity!' }
     ];
 
     const canvas = document.getElementById("gameCanvas");
@@ -638,15 +595,12 @@
       selectedDifficultyKey = key;
       currentConfig = DIFFICULTY_SETTINGS[key];
       playSound('click');
-
       document.querySelectorAll('.diff-card').forEach(card => card.classList.remove('selected'));
       document.getElementById(`diffCard-${key.toLowerCase()}`).classList.add('selected');
     }
 
     function openDifficultyModal() {
-      if (isGameStarted && !gameOver) {
-        isPaused = true;
-      }
+      if (isGameStarted && !gameOver) isPaused = true;
       document.getElementById('startModal').style.display = 'flex';
       document.getElementById('pauseModal').style.display = 'none';
       playSound('click');
@@ -657,7 +611,6 @@
       playSound('click');
       document.getElementById('startModal').style.display = 'none';
       document.getElementById('diffBadge').innerText = currentConfig.name;
-      
       isGameStarted = true;
       resetGame();
     }
@@ -669,16 +622,8 @@
       document.getElementById('pauseModal').style.display = isPaused ? 'flex' : 'none';
     }
 
-    function addFloatingText(x, y, text, color = '#00F0FF', scale = 1.0) {
-      floatingTexts.push({
-        x: x,
-        y: y,
-        text: text,
-        color: color,
-        scale: scale,
-        alpha: 1.0,
-        vy: -1.8
-      });
+    function addFloatingText(x, y, text, color = '#0B132B', scale = 1.0) {
+      floatingTexts.push({ x, y, text, color, scale, alpha: 1.0, vy: -1.6 });
     }
 
     function updateStarsAndMeter() {
@@ -688,148 +633,198 @@
       else if (computeValue >= thresholds[1]) stars = 2;
       else if (computeValue >= thresholds[0]) stars = 1;
 
-      // Check if newly unlocked star
       if (stars > starsUnlocked) {
         starsUnlocked = stars;
         playSound('star');
-        addFloatingText(canvas.width / 2, canvas.height / 3, `⭐ ${stars}-STAR REACHED!`, '#FFB800', 1.4);
+        addFloatingText(canvas.width / 2, canvas.height / 3, `⭐ ${stars}-STAR REACHED!`, '#F59E0B', 1.3);
       }
 
-      // Update Star icons in UI
       for (let i = 1; i <= 3; i++) {
         const starElem = document.getElementById(`star${i}`);
         if (i <= starsUnlocked) starElem.classList.add('active');
         else starElem.classList.remove('active');
       }
 
-      // Update Progress Bar %
-      const maxGoal = thresholds[2];
-      const progressPercent = Math.min(100, (computeValue / maxGoal) * 100);
+      const progressPercent = Math.min(100, (computeValue / thresholds[2]) * 100);
       document.getElementById('starProgressBar').style.width = `${progressPercent}%`;
     }
 
     function updateLivesDisplay() {
-      let shields = "";
+      let hearts = "";
       for (let i = 0; i < currentConfig.lives; i++) {
-        shields += (i < lives) ? "🛡️ " : "❌ ";
+        hearts += (i < lives) ? "❤️ " : "🖤 ";
       }
-      document.getElementById("livesDisplay").innerText = shields.trim();
+      document.getElementById("livesDisplay").innerText = hearts.trim();
     }
 
-    function drawAINodeShape(ctx, node) {
-      const radius = node.radius;
-
+    // Canvas Vector Rendering - High-Contrast Ingredient Style
+    function drawFruitShape(ctx, item) {
+      const r = item.radius;
       ctx.save();
-      ctx.shadowColor = node.color;
-      ctx.shadowBlur = 14;
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = '#0B132B';
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
 
-      if (node.isBomb) {
-        // Glitch Malware Spike Sphere
-        ctx.fillStyle = '#060913';
-        ctx.strokeStyle = '#FF0055';
-        ctx.lineWidth = 3;
-
+      if (item.isBomb) {
+        // Spiked Bomb
+        ctx.fillStyle = '#0B132B';
         ctx.beginPath();
         for (let i = 0; i < 8; i++) {
           const angle = (Math.PI * 2 / 8) * i;
-          const r = (i % 2 === 0) ? radius + 7 : radius - 5;
-          const x = Math.cos(angle) * r;
-          const y = Math.sin(angle) * r;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+          const rad = (i % 2 === 0) ? r + 6 : r - 4;
+          const x = Math.cos(angle) * rad;
+          const y = Math.sin(angle) * rad;
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
         }
         ctx.closePath();
-        ctx.fill(); 
-        ctx.stroke();
+        ctx.fill(); ctx.stroke();
 
-        ctx.fillStyle = '#FF0055';
-        ctx.font = '900 15px monospace';
-        ctx.textAlign = 'center'; 
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⚡', 0, 0);
-      } else {
-        // Cybernetic Holographic Orb with Outer Hex Bounds
-        ctx.fillStyle = 'rgba(6, 9, 19, 0.88)';
-        ctx.strokeStyle = node.color;
-        ctx.lineWidth = 2.5;
-
-        // Outer Hexagon
+        ctx.fillStyle = '#EF4444';
+        ctx.font = '900 14px monospace';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('💣', 0, 0);
+      } 
+      else if (item.id === 'orange') {
+        ctx.fillStyle = '#FF7A00';
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Leaf Cap
+        ctx.fillStyle = '#10B981';
+        ctx.beginPath(); ctx.ellipse(0, -r + 2, 8, 4, -0.4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Highlight dot
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath(); ctx.arc(-r * 0.3, -r * 0.3, r * 0.2, 0, Math.PI * 2); ctx.fill();
+      } 
+      else if (item.id === 'strawberry') {
+        ctx.fillStyle = '#EF4444';
         ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI * 2 / 6) * i;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill(); 
-        ctx.stroke();
-
-        // Inner Glowing Nucleus
-        ctx.fillStyle = node.coreColor;
+        ctx.moveTo(0, -r);
+        ctx.bezierCurveTo(r * 1.2, -r * 0.5, r, r, 0, r * 1.15);
+        ctx.bezierCurveTo(-r, r, -r * 1.2, -r * 0.5, 0, -r);
+        ctx.fill(); ctx.stroke();
+        // Seed Dots
+        ctx.fillStyle = '#0B132B';
+        [[-4, -2], [4, -2], [0, 6], [-5, 8], [5, 8]].forEach(([sx, sy]) => {
+          ctx.beginPath(); ctx.arc(sx, sy, 1.8, 0, Math.PI * 2); ctx.fill();
+        });
+        // Leaf Crown
+        ctx.fillStyle = '#10B981';
         ctx.beginPath();
-        ctx.arc(0, 0, radius * 0.45, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Orbital Rings
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 1.5;
+        ctx.moveTo(-10, -r + 2); ctx.lineTo(-2, -r - 6); ctx.lineTo(4, -r + 1);
+        ctx.lineTo(10, -r - 4); ctx.lineTo(6, -r + 4); ctx.closePath();
+        ctx.fill(); ctx.stroke();
+      } 
+      else if (item.id === 'banana' || item.id === 'freezer_banana') {
+        ctx.fillStyle = item.id === 'freezer_banana' ? '#06B6D4' : '#F59E0B';
         ctx.beginPath();
-        ctx.ellipse(0, 0, radius * 0.8, radius * 0.25, Math.PI / 3, 0, Math.PI * 2);
+        ctx.moveTo(-r, r * 0.4);
+        ctx.quadraticCurveTo(0, -r * 1.1, r, -r * 0.2);
+        ctx.quadraticCurveTo(0, r * 0.8, -r, r * 0.4);
+        ctx.fill(); ctx.stroke();
+        // Stem & Tip
+        ctx.fillStyle = '#0B132B';
+        ctx.fillRect(-r - 2, r * 0.3, 5, 5);
+        ctx.fillRect(r - 1, -r * 0.25, 4, 4);
+      } 
+      else if (item.id === 'apple') {
+        ctx.fillStyle = '#EF4444';
+        ctx.beginPath();
+        ctx.moveTo(0, -r * 0.6);
+        ctx.bezierCurveTo(r * 1.1, -r * 1.1, r * 1.2, r * 0.9, 0, r * 1.05);
+        ctx.bezierCurveTo(-r * 1.2, r * 0.9, -r * 1.1, -r * 1.1, 0, -r * 0.6);
+        ctx.fill(); ctx.stroke();
+        // Stem & Leaf
+        ctx.fillStyle = '#0B132B';
+        ctx.fillRect(-2, -r - 3, 4, 7);
+        ctx.fillStyle = '#10B981';
+        ctx.beginPath(); ctx.ellipse(5, -r - 1, 7, 3, -0.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      } 
+      else if (item.id === 'watermelon') {
+        ctx.fillStyle = '#10B981';
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#EF4444';
+        ctx.beginPath(); ctx.arc(0, 0, r * 0.78, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#0B132B';
+        [[-6, -4], [6, 2], [-2, 8], [5, -8]].forEach(([sx, sy]) => {
+          ctx.beginPath(); ctx.arc(sx, sy, 2, 0, Math.PI * 2); ctx.fill();
+        });
+      } 
+      else if (item.id === 'pineapple') {
+        ctx.fillStyle = '#F59E0B';
+        ctx.beginPath(); ctx.ellipse(0, 2, r * 0.85, r * 1.05, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Grid pattern
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.6, -r * 0.4); ctx.lineTo(r * 0.6, r * 0.6);
+        ctx.moveTo(r * 0.6, -r * 0.4); ctx.lineTo(-r * 0.6, r * 0.6);
         ctx.stroke();
+        // Crown
+        ctx.fillStyle = '#10B981';
+        ctx.beginPath();
+        ctx.moveTo(-8, -r + 2); ctx.lineTo(-12, -r - 12); ctx.lineTo(0, -r - 4);
+        ctx.lineTo(12, -r - 12); ctx.lineTo(8, -r + 2); ctx.closePath();
+        ctx.fill(); ctx.stroke();
+      } 
+      else if (item.id === 'dragon_fruit') {
+        ctx.fillStyle = '#EC4899';
+        ctx.beginPath(); ctx.ellipse(0, 0, r * 0.85, r * 1.05, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Scale accents
+        ctx.fillStyle = '#10B981';
+        [[-r * 0.6, -r * 0.3], [r * 0.6, -r * 0.2], [-r * 0.5, r * 0.4]].forEach(([sx, sy]) => {
+          ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        });
       }
 
       ctx.restore();
     }
 
-    function drawHalvedAINode(ctx, node, side) {
+    function drawHalvedFruit(ctx, item, side) {
       ctx.save();
-      // Clip left or right half
-      ctx.clip(new Path2D(side === 1 ? 'M -70 -70 L 0 -70 L 0 70 L -70 70 Z' : 'M 0 -70 L 70 -70 L 70 70 L 0 70 Z'));
-      drawAINodeShape(ctx, node);
+      // Side 1 clip left, Side 2 clip right
+      ctx.beginPath();
+      if (side === 1) ctx.rect(-80, -80, 80, 160);
+      else ctx.rect(0, -80, 80, 160);
+      ctx.clip();
 
-      // Glowing Sliced Edge Line
-      ctx.fillStyle = '#FFFFFF';
-      ctx.shadowColor = node.color;
-      ctx.shadowBlur = 12;
-      ctx.fillRect(-2, -node.radius - 8, 4, (node.radius + 8) * 2);
+      drawFruitShape(ctx, item);
+
+      // White inner slice flesh cut line
+      if (item.id === 'orange') {
+        ctx.fillStyle = '#FFF5D6';
+        ctx.beginPath(); ctx.arc(0, 0, item.radius - 3, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#FF7A00'; ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#0B132B';
+      ctx.fillRect(-2, -item.radius - 8, 4, (item.radius + 8) * 2);
       ctx.restore();
     }
 
     function spawnNodeCluster() {
       if (gameOver || isPaused || !isGameStarted) return;
 
-      // Determine wave count based on difficulty
       let count = 1;
       const rand = Math.random();
-      if (selectedDifficultyKey === 'HARD') {
-        count = rand < 0.5 ? 2 : (rand < 0.85 ? 3 : 1);
-      } else if (selectedDifficultyKey === 'MEDIUM') {
-        count = rand < 0.35 ? 2 : 1;
-      }
+      if (selectedDifficultyKey === 'HARD') count = rand < 0.5 ? 2 : (rand < 0.85 ? 3 : 1);
+      else if (selectedDifficultyKey === 'MEDIUM') count = rand < 0.35 ? 2 : 1;
 
       for (let i = 0; i < count; i++) {
-        // Decide if bomb spawns
         const isBomb = Math.random() < currentConfig.bombChance;
-        let nodeDef;
-
-        if (isBomb) {
-          nodeDef = AI_NODES.find(n => n.isBomb);
-        } else {
-          const nonBombs = AI_NODES.filter(n => !n.isBomb);
-          nodeDef = nonBombs[Math.floor(Math.random() * nonBombs.length)];
+        let fruitDef;
+        if (isBomb) fruitDef = FRUITS.find(f => f.isBomb);
+        else {
+          const nonBombs = FRUITS.filter(f => !f.isBomb);
+          fruitDef = nonBombs[Math.floor(Math.random() * nonBombs.length)];
         }
 
-        const launchSpeed = (12.5 + Math.random() * 3.5) * currentConfig.speedMult;
+        const launchSpeed = (12.5 + Math.random() * 3.2) * currentConfig.speedMult;
 
         flyingItems.push({
-          ...nodeDef,
+          ...fruitDef,
           x: 50 + Math.random() * (canvas.width - 100),
           y: canvas.height + 30,
           vx: (Math.random() - 0.5) * 4.2,
           vy: -launchSpeed,
-          gravity: 0.26,
           rotation: Math.random() * Math.PI,
           vRot: (Math.random() - 0.5) * 0.1,
           sliced: false
@@ -852,10 +847,7 @@
       const p1 = bladePath[bladePath.length - 2];
       const p2 = bladePath[bladePath.length - 1];
 
-      // Reset combo if elapsed time since last slice > threshold
-      if (now - lastSliceTime > COMBO_RESET_DELAY) {
-        sliceComboCount = 0;
-      }
+      if (now - lastSliceTime > COMBO_RESET_DELAY) sliceComboCount = 0;
 
       for (let i = flyingItems.length - 1; i >= 0; i--) {
         const item = flyingItems[i];
@@ -863,71 +855,67 @@
 
         const dist = distToSegment(item.x, item.y, p1.x, p1.y, p2.x, p2.y);
 
-        if (dist < item.radius + 10) {
+        if (dist < item.radius + 8) {
           item.sliced = true;
 
           if (item.isBomb) {
             playSound('explode');
             triggerScreenShake(20);
-            createCyberExplosion(item.x, item.y, '#FF0055');
-            
+            createExplosionParticles(item.x, item.y, '#EF4444');
             lives--;
             updateLivesDisplay();
-            addFloatingText(item.x, item.y, '💥 BOMB DETONATED (-1 SHIELD)', '#FF0055', 1.1);
+            addFloatingText(item.x, item.y, '💥 BOMB DETONATED (-1 LIFE)', '#EF4444', 1.1);
 
             if (lives <= 0) {
-              triggerGameOver("💥 MALWARE BREACH! Sliced a Corrupted Virus Bomb!");
+              triggerGameOver("💥 BOMB BREACH! Sliced a Spiked Bomb!");
               return;
             }
           } else {
-            // Sliced AI Node
             sliceComboCount++;
             lastSliceTime = now;
             if (sliceComboCount > maxCombo) maxCombo = sliceComboCount;
 
             slicedCount++;
 
-            // Calculate FLOPS with Difficulty Multiplier and Combo Bonus
-            const comboBonusMult = 1 + (sliceComboCount - 1) * 0.5;
-            const earnedFLOPS = item.compute * currentConfig.scoreMult * comboBonusMult;
-            computeValue += earnedFLOPS;
-
-            // Audio & Floating Text
-            if (sliceComboCount >= 2) {
-              playSound('combo', sliceComboCount);
-              addFloatingText(item.x, item.y, `COMBO x${sliceComboCount}! +${earnedFLOPS.toFixed(1)} FLOPS`, '#FFB800', 1.2);
-            } else {
-              playSound('pop');
-              playSound('slash');
-              addFloatingText(item.x, item.y, `+${earnedFLOPS.toFixed(1)} FLOPS`, item.color, 0.95);
+            // Handle Freezer Slow Motion
+            if (item.id === 'freezer_banana') {
+              freezeTimer = 300; // 5 seconds at 60fps
+              addFloatingText(item.x, item.y, '❄️ FREEZE TIME SLOWDOWN!', '#06B6D4', 1.2);
             }
 
-            // Sync UI
+            const comboBonusMult = 1 + (sliceComboCount - 1) * 0.5;
+            const earnedFLOPS = Math.round(item.pts * currentConfig.scoreMult * comboBonusMult);
+            computeValue += earnedFLOPS;
+
+            if (sliceComboCount >= 2) {
+              playSound('combo', sliceComboCount);
+              addFloatingText(item.x, item.y, `COMBO x${sliceComboCount}! +${earnedFLOPS} PTS`, '#F59E0B', 1.25);
+            } else {
+              playSound('pop'); playSound('slash');
+              addFloatingText(item.x, item.y, `+${earnedFLOPS} PTS`, item.fill, 0.95);
+            }
+
             document.getElementById('slicedCount').innerText = slicedCount;
-            document.getElementById('computeDisplay').innerText = `${computeValue.toFixed(1)} FLOPS`;
+            document.getElementById('computeDisplay').innerText = `${computeValue} PTS`;
             document.getElementById('tipDisplay').innerHTML = item.tip;
             updateStarsAndMeter();
 
-            // Shockwave & Particles
+            // Juice Splatters & Particle Explosion
             gridSplashes.push({
-              x: item.x, y: item.y,
-              color: item.color,
-              radius: 10, maxRadius: item.radius * 2.8,
-              alpha: 1.0
+              x: item.x, y: item.y, color: item.fill,
+              radius: 10, maxRadius: item.radius * 2.5, alpha: 0.9
             });
 
-            createCyberExplosion(item.x, item.y, item.color);
+            createExplosionParticles(item.x, item.y, item.fill);
 
-            // Spawn Sliced Physics Halves
+            // Spawn Severed Halves
             slicedHalves.push({
-              node: item, side: 1,
-              x: item.x - 6, y: item.y, vx: item.vx - 3.5, vy: item.vy - 1, gravity: 0.28,
-              rotation: item.rotation, vRot: -0.12
+              node: item, side: 1, x: item.x - 6, y: item.y,
+              vx: item.vx - 3.5, vy: item.vy - 1, rotation: item.rotation, vRot: -0.12
             });
             slicedHalves.push({
-              node: item, side: 2,
-              x: item.x + 6, y: item.y, vx: item.vx + 3.5, vy: item.vy - 1, gravity: 0.28,
-              rotation: item.rotation, vRot: 0.12
+              node: item, side: 2, x: item.x + 6, y: item.y,
+              vx: item.vx + 3.5, vy: item.vy - 1, rotation: item.rotation, vRot: 0.12
             });
           }
 
@@ -936,15 +924,18 @@
       }
     }
 
-    function createCyberExplosion(x, y, color) {
-      for (let p = 0; p < 18; p++) {
+    function createExplosionParticles(x, y, color) {
+      for (let p = 0; p < 16; p++) {
+        const angle = Math.random() * Math.PI * 2;
+        const spd = 3 + Math.random() * 6;
         particles.push({
-          x: x, y: y,
-          vx: (Math.random() - 0.5) * 12,
-          vy: (Math.random() - 0.5) * 12,
-          color: Math.random() > 0.4 ? color : '#FFFFFF',
-          size: 2 + Math.random() * 4,
-          alpha: 1.0
+          x, y,
+          vx: Math.cos(angle) * spd,
+          vy: Math.sin(angle) * spd,
+          size: 3 + Math.random() * 5,
+          color: color,
+          alpha: 1.0,
+          life: 30 + Math.random() * 20
         });
       }
     }
@@ -956,281 +947,250 @@
     function triggerGameOver(reason) {
       gameOver = true;
       playSound('explode');
-
       if (computeValue > highScore) {
         highScore = computeValue;
-        localStorage.setItem('nn_high_score', highScore.toString());
+        localStorage.setItem('fn_high_score', highScore.toString());
       }
 
-      document.getElementById("deathReason").innerText = reason;
-      document.getElementById("finalSliced").innerText = slicedCount;
-      document.getElementById("finalCompute").innerText = `${computeValue.toFixed(1)} FLOPS`;
-      document.getElementById("finalMaxCombo").innerText = `x${maxCombo}`;
-      document.getElementById("finalHighScore").innerText = `${highScore.toFixed(1)} FLOPS`;
-
-      // Stars display in final modal
-      let starIcons = "";
-      for (let i = 1; i <= 3; i++) {
-        starIcons += (i <= starsUnlocked) ? "⭐ " : "🔒 ";
-      }
-      document.getElementById("finalStarsDisplay").innerText = starIcons.trim();
-
-      document.getElementById("gameOverModal").style.display = "flex";
+      const starsStr = "⭐".repeat(starsUnlocked) || "❌";
+      document.getElementById('finalStarsDisplay').innerText = starsStr;
+      document.getElementById('deathReason').innerText = reason;
+      document.getElementById('finalSliced').innerText = slicedCount;
+      document.getElementById('finalCompute').innerText = `${computeValue} PTS`;
+      document.getElementById('finalMaxCombo').innerText = `x${maxCombo}`;
+      document.getElementById('finalHighScore').innerText = `${highScore} PTS`;
+      document.getElementById('gameOverModal').style.display = 'flex';
     }
 
     function resetGame() {
       slicedCount = 0;
       computeValue = 0;
-      lives = currentConfig.lives;
       starsUnlocked = 0;
-      maxCombo = 0;
-      sliceComboCount = 0;
+      lives = currentConfig.lives;
       gameOver = false;
       isPaused = false;
+      freezeTimer = 0;
 
       flyingItems = [];
       slicedHalves = [];
       particles = [];
       gridSplashes = [];
-      bladePath = [];
       floatingTexts = [];
+      bladePath = [];
 
-      document.getElementById("slicedCount").innerText = "0";
-      document.getElementById("computeDisplay").innerText = "0.0 FLOPS";
-      document.getElementById("tipDisplay").innerHTML = "⚡ <strong>NEURAL PROTOCOL:</strong> Swipe across airborne AI Data Cores! Slice multiple nodes in one sweep for COMBO FLOPS!";
-      
-      document.getElementById("gameOverModal").style.display = "none";
-      document.getElementById("pauseModal").style.display = "none";
-
+      document.getElementById('slicedCount').innerText = '0';
+      document.getElementById('computeDisplay').innerText = '0 PTS';
+      document.getElementById('gameOverModal').style.display = 'none';
+      document.getElementById('pauseModal').style.display = 'none';
       updateLivesDisplay();
       updateStarsAndMeter();
     }
 
-    function update() {
-      if (gameOver || isPaused || !isGameStarted) return;
-
-      // Spawning loop
-      spawnTimer++;
-      if (spawnTimer > currentConfig.spawnInterval) {
-        spawnNodeCluster();
-        spawnTimer = 0;
+    // Main Canvas Render Loop
+    function updateAndDraw() {
+      // Handle Freeze Timer (Slow Motion)
+      if (freezeTimer > 0) {
+        freezeTimer--;
+        globalGravity = 0.12;
+      } else {
+        globalGravity = 0.26;
       }
 
-      // Flying Items Physics
+      // Screen Shake
+      ctx.save();
+      if (screenShakeTimer > 0) {
+        screenShakeTimer--;
+        const shakeX = (Math.random() - 0.5) * 12;
+        const shakeY = (Math.random() - 0.5) * 12;
+        ctx.translate(shakeX, shakeY);
+      }
+
+      // Clean Canvas Background
+      ctx.fillStyle = '#FAF7F0';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Background Navy Star Pattern Details
+      ctx.fillStyle = 'rgba(11, 19, 43, 0.05)';
+      for (let i = 20; i < canvas.width; i += 60) {
+        for (let j = 20; j < canvas.height; j += 60) {
+          ctx.beginPath(); ctx.arc(i, j, 2, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+
+      if (isGameStarted && !isPaused && !gameOver) {
+        spawnTimer++;
+        const spawnFreq = currentConfig.spawnInterval || (selectedDifficultyKey === 'HARD' ? 45 : 65);
+        if (spawnTimer >= spawnFreq) {
+          spawnTimer = 0;
+          spawnNodeCluster();
+        }
+
+        checkBladeSlices();
+      }
+
+      // 1. Draw Background Juice Splatters
+      for (let i = gridSplashes.length - 1; i >= 0; i--) {
+        const s = gridSplashes[i];
+        if (!isPaused && !gameOver) {
+          s.radius += (s.maxRadius - s.radius) * 0.1;
+          s.alpha -= 0.008;
+        }
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, s.alpha);
+        ctx.fillStyle = s.color;
+        ctx.strokeStyle = '#0B132B'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        if (s.alpha <= 0) gridSplashes.splice(i, 1);
+      }
+
+      // 2. Draw Airborne Fruits
       for (let i = flyingItems.length - 1; i >= 0; i--) {
         const item = flyingItems[i];
-        item.x += item.vx;
-        item.y += item.vy;
-        item.vy += item.gravity;
-        item.rotation += item.vRot;
+        if (!isPaused && !gameOver) {
+          item.x += item.vx;
+          item.y += item.vy;
+          item.vy += globalGravity;
+          item.rotation += item.vRot;
+        }
 
-        // Unharvested Data Node falls past screen bottom
-        if (item.y > canvas.height + 40) {
-          if (!item.isBomb && !item.sliced) {
+        ctx.save();
+        ctx.translate(item.x, item.y);
+        ctx.rotate(item.rotation);
+        drawFruitShape(ctx, item);
+        ctx.restore();
+
+        // Check Missed Fruits
+        if (item.y > canvas.height + 60) {
+          if (!item.isBomb && isGameStarted && !gameOver) {
             lives--;
             updateLivesDisplay();
-            triggerScreenShake(8);
-            addFloatingText(item.x, canvas.height - 20, "❌ DATA NODE LOST", "#FF0055", 0.9);
-
-            if (lives <= 0) {
-              triggerGameOver("System Integrity Depleted! Unharvested Data Nodes Lost!");
-            }
+            addFloatingText(item.x, canvas.height - 30, '❌ MISSED!', '#EF4444', 0.9);
+            if (lives <= 0) triggerGameOver(" Integrity Depleted! Missed too many fruits!");
           }
           flyingItems.splice(i, 1);
         }
       }
 
-      // Sliced Halves Physics
+      // 3. Draw Severed Halves
       for (let i = slicedHalves.length - 1; i >= 0; i--) {
         const half = slicedHalves[i];
-        half.x += half.vx;
-        half.y += half.vy;
-        half.vy += half.gravity;
-        half.rotation += half.vRot;
-
-        if (half.y > canvas.height + 50) {
-          slicedHalves.splice(i, 1);
+        if (!isPaused && !gameOver) {
+          half.x += half.vx;
+          half.y += half.vy;
+          half.vy += globalGravity * 1.1;
+          half.rotation += half.vRot;
         }
-      }
 
-      // Grid Shockwave Animations
-      for (let i = gridSplashes.length - 1; i >= 0; i--) {
-        const s = gridSplashes[i];
-        s.radius += 2.5;
-        s.alpha -= 0.04;
-        if (s.alpha <= 0) gridSplashes.splice(i, 1);
-      }
-
-      // Particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.03;
-        if (p.alpha <= 0) particles.splice(i, 1);
-      }
-
-      // Floating Notification Text
-      for (let i = floatingTexts.length - 1; i >= 0; i--) {
-        const ft = floatingTexts[i];
-        ft.y += ft.vy;
-        ft.alpha -= 0.02;
-        if (ft.alpha <= 0) floatingTexts.splice(i, 1);
-      }
-
-      // Fade Laser Blade Trail
-      const now = Date.now();
-      bladePath = bladePath.filter(p => now - p.time < 160);
-
-      checkBladeSlices();
-
-      if (screenShakeTimer > 0) screenShakeTimer--;
-    }
-
-    function draw() {
-      ctx.save();
-
-      // Screen Shake offset
-      if (screenShakeTimer > 0) {
-        const dx = (Math.random() - 0.5) * screenShakeTimer;
-        const dy = (Math.random() - 0.5) * screenShakeTimer;
-        ctx.translate(dx, dy);
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 1. Digital Grid Background
-      ctx.strokeStyle = "rgba(0, 240, 255, 0.06)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < canvas.width; x += 25) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-      }
-      for (let y = 0; y < canvas.height; y += 25) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-      }
-
-      // 2. Shockwaves
-      gridSplashes.forEach(s => {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, s.alpha);
-        ctx.strokeStyle = s.color;
-        ctx.shadowColor = s.color;
-        ctx.shadowBlur = 10;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      });
-
-      // 3. Flying Nodes
-      flyingItems.forEach(item => {
-        ctx.save();
-        ctx.translate(item.x, item.y);
-        ctx.rotate(item.rotation);
-        drawAINodeShape(ctx, item);
-        ctx.restore();
-      });
-
-      // 4. Sliced Halves
-      slicedHalves.forEach(half => {
         ctx.save();
         ctx.translate(half.x, half.y);
         ctx.rotate(half.rotation);
-        drawHalvedAINode(ctx, half.node, half.side);
+        drawHalvedFruit(ctx, half.node, half.side);
         ctx.restore();
-      });
 
-      // 5. Particles
-      particles.forEach(p => {
+        if (half.y > canvas.height + 80) slicedHalves.splice(i, 1);
+      }
+
+      // 4. Draw Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        if (!isPaused && !gameOver) {
+          p.x += p.vx; p.y += p.vy;
+          p.vy += 0.15;
+          p.alpha -= 0.025;
+        }
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.alpha);
         ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.strokeStyle = '#0B132B'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
         ctx.restore();
-      });
 
-      // 6. Laser Energy Blade Trail
+        if (p.alpha <= 0) particles.splice(i, 1);
+      }
+
+      // 5. Draw Blade Trail
       if (bladePath.length > 1) {
         ctx.save();
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        for (let i = 1; i < bladePath.length; i++) {
-          const p1 = bladePath[i - 1];
-          const p2 = bladePath[i];
-          const alpha = i / bladePath.length;
-
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.lineWidth = alpha * 9;
-          ctx.strokeStyle = '#FFFFFF';
-          ctx.shadowColor = '#00F0FF';
-          ctx.shadowBlur = 16;
-          ctx.globalAlpha = alpha;
-          ctx.stroke();
+        ctx.strokeStyle = '#0B132B';
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.beginPath();
+        for (let i = 0; i < bladePath.length; i++) {
+          const pt = bladePath[i];
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
         }
+        ctx.stroke();
+
+        ctx.strokeStyle = '#FF7A00';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
         ctx.restore();
       }
 
-      // 7. Floating Texts
-      floatingTexts.forEach(ft => {
+      // Age blade trail points
+      const now = Date.now();
+      bladePath = bladePath.filter(pt => now - pt.time < 120);
+
+      // 6. Draw Floating Texts
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        if (!isPaused && !gameOver) {
+          ft.y += ft.vy;
+          ft.alpha -= 0.018;
+        }
         ctx.save();
         ctx.globalAlpha = Math.max(0, ft.alpha);
         ctx.fillStyle = ft.color;
-        ctx.shadowColor = ft.color;
-        ctx.shadowBlur = 8;
-        ctx.font = `900 ${Math.round(14 * ft.scale)}px sans-serif`;
+        ctx.strokeStyle = '#0B132B';
+        ctx.lineWidth = 3;
+        ctx.font = `900 ${Math.round(15 * ft.scale)}px sans-serif`;
         ctx.textAlign = 'center';
+        ctx.strokeText(ft.text, ft.x, ft.y);
         ctx.fillText(ft.text, ft.x, ft.y);
         ctx.restore();
-      });
+
+        if (ft.alpha <= 0) floatingTexts.splice(i, 1);
+      }
 
       ctx.restore();
+      requestAnimationFrame(updateAndDraw);
     }
 
-    function gameLoop() {
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    function addBladePoint(e) {
-      if (!isGameStarted || isPaused || gameOver) return;
-
+    // Touch / Pointer Gesture Handling
+    function handlePointerMove(e) {
+      if (isPaused || gameOver || !isGameStarted) return;
       const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-      const x = (clientX - rect.left) * (canvas.width / rect.width);
-      const y = (clientY - rect.top) * (canvas.height / rect.height);
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
 
       bladePath.push({ x, y, time: Date.now() });
-
-      if (bladePath.length > 1 && Math.random() < 0.3) {
-        playSound('slash');
-      }
     }
 
-    let isSwiping = false;
+    canvas.addEventListener('pointerdown', (e) => {
+      bladePath = [];
+      handlePointerMove(e);
+      canvas.addEventListener('pointermove', handlePointerMove);
+    });
 
-    canvas.addEventListener('mousedown', e => { isSwiping = true; addBladePoint(e); });
-    canvas.addEventListener('mousemove', e => { if (isSwiping) addBladePoint(e); });
-    window.addEventListener('mouseup', () => isSwiping = false);
+    window.addEventListener('pointerup', () => {
+      canvas.removeEventListener('pointermove', handlePointerMove);
+    });
 
-    canvas.addEventListener('touchstart', e => { isSwiping = true; addBladePoint(e); }, { passive: true });
-    canvas.addEventListener('touchmove', e => { if (isSwiping) addBladePoint(e); }, { passive: true });
-    window.addEventListener('touchend', () => isSwiping = false);
+    canvas.addEventListener('touchmove', handlePointerMove, { passive: true });
 
-    // Boot Up Engine Loop
-    window.onload = function() {
-      gameLoop();
-    };
+    // Initialize
+    updateAndDraw();
   </script>
 </body>
 </html>
