@@ -1,584 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Pantry Catch: Fresh Harvest Edition</title>
-  <style>
-    :root {
-      --bg-color: #F8F9FA;
-      --card-bg: #FFFFFF;
-      --text-dark: #0D1C2A;
-      --navy: #0D1C2A;
-      --gold: #FCA311;
-      --green: #388E3C;
-      --orange: #FF7A59;
-      --red: #D32F2F;
-      --gray: #E5E5E5;
-      --shadow: rgba(13, 28, 42, 0.12);
+code = """
+    function drawBanana(x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = "#0D1C2A";
+      ctx.lineJoin = "round";
+
+      // Banana Peel
+      ctx.fillStyle = "#FCA311";
+      ctx.beginPath();
+      ctx.moveTo(6, 8);
+      ctx.quadraticCurveTo(18, 12, 26, 26);
+      ctx.quadraticCurveTo(16, 28, 4, 16);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Stem & Tip
+      ctx.fillStyle = "#388E3C";
+      ctx.beginPath();
+      ctx.arc(6, 8, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    function drawCarrot(x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = "#0D1C2A";
+      ctx.lineJoin = "round";
+
+      // Greens top
+      ctx.fillStyle = "#388E3C";
+      ctx.beginPath();
+      ctx.arc(16, 6, 4, 0, Math.PI * 2);
+      ctx.arc(12, 8, 3, 0, Math.PI * 2);
+      ctx.arc(20, 8, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Carrot Root
+      ctx.fillStyle = "#FF7A59";
+      ctx.beginPath();
+      ctx.moveTo(10, 10);
+      ctx.lineTo(22, 10);
+      ctx.lineTo(16, 32);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Ridges
+      ctx.strokeStyle = "#0D1C2A";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(12, 16); ctx.lineTo(17, 16);
+      ctx.moveTo(14, 22); ctx.lineTo(18, 22);
+      ctx.stroke();
+
+      ctx.restore();
     }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 16px;
+    function drawApple(x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = "#0D1C2A";
+
+      // Apple Body
+      ctx.fillStyle = "#D32F2F";
+      ctx.beginPath();
+      ctx.arc(12, 18, 10, 0, Math.PI * 2);
+      ctx.arc(20, 18, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Leaf
+      ctx.fillStyle = "#388E3C";
+      ctx.beginPath();
+      ctx.ellipse(18, 7, 4, 2, -Math.PI/4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
     }
 
-    .game-container {
-      width: 100%;
-      max-width: 440px;
-      background: var(--card-bg);
-      border: 3.5px solid var(--navy);
-      border-radius: 20px;
-      box-shadow: 0 12px 28px var(--shadow);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+    function drawCorn(x, y) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = "#0D1C2A";
+
+      // Husk
+      ctx.fillStyle = "#388E3C";
+      ctx.beginPath();
+      ctx.ellipse(10, 20, 5, 11, Math.PI / 6, 0, Math.PI * 2);
+      ctx.ellipse(22, 20, 5, 11, -Math.PI / 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Cob
+      ctx.fillStyle = "#FCA311";
+      ctx.beginPath();
+      ctx.ellipse(16, 17, 7, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Kernel Dots
+      ctx.fillStyle = "#0D1C2A";
+      ctx.fillRect(14, 10, 2, 2);
+      ctx.fillRect(17, 13, 2, 2);
+      ctx.fillRect(13, 16, 2, 2);
+      ctx.fillRect(16, 19, 2, 2);
+
+      ctx.restore();
     }
-
-    header {
-      padding: 16px;
-      background-color: #FFF9EB;
-      border-bottom: 3.5px solid var(--navy);
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 1.35rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--navy);
-    }
-
-    header p {
-      font-size: 0.82rem;
-      color: #555;
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    .hud-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      background: #FFFFFF;
-      border-bottom: 3.5px solid var(--navy);
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .hud-card {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #F0F4F8;
-      padding: 6px 12px;
-      border-radius: 10px;
-      border: 2px solid var(--navy);
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: 380px;
-      background-color: #FCFBF7;
-      touch-action: none;
-      cursor: pointer;
-    }
-
-    .info-footer {
-      padding: 14px 16px;
-      background: #FFF9EB;
-      border-top: 3.5px solid var(--navy);
-      min-height: 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .info-footer .label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      color: var(--navy);
-    }
-
-    .info-footer .content {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-top: 2px;
-      line-height: 1.3;
-    }
-
-    .controls-overlay {
-      padding: 12px;
-      background: var(--card-bg);
-      display: flex;
-      gap: 10px;
-      border-top: 2px solid var(--gray);
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--navy);
-      background-color: var(--gold);
-      border: 3px solid var(--navy);
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 0 var(--navy);
-      transition: all 0.1s ease;
-      text-transform: uppercase;
-    }
-
-    .btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 0 0 var(--navy);
-    }
-
-    .btn-secondary {
-      background-color: #E2E8F0;
-    }
-  </style>
-</head>
-<body>
-
-<div class="game-container">
-  <header>
-    <h1>Pantry Catch: Fresh Harvest</h1>
-    <p>Catch Fresh Produce & Healthy Staples on a Budget!</p>
-  </header>
-
-  <div class="hud-bar">
-    <div class="hud-card">
-      <span>🪙 Savings:</span>
-      <span id="score" style="color: var(--green);">$0.00</span>
-    </div>
-    <div class="hud-card">
-      <span>❤️ Lives:</span>
-      <span id="lives">❤️❤️❤️</span>
-    </div>
-  </div>
-
-  <canvas id="gameCanvas" width="400" height="380"></canvas>
-
-  <div class="info-footer">
-    <div class="label" id="tip-title">Campus Nutrition Insight</div>
-    <div class="content" id="tip-body">Drag or tap left/right to move your basket. Catch fresh fruits and veggies while dodging processed junk traps!</div>
-  </div>
-
-  <div class="controls-overlay">
-    <button class="btn btn-secondary" id="leftBtn">◀ Left</button>
-    <button class="btn" id="startBtn">Play / Restart</button>
-    <button class="btn btn-secondary" id="rightBtn">Right ▶</button>
-  </div>
-</div>
-
-<script>
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-
-  // HUD Elements
-  const scoreEl = document.getElementById('score');
-  const livesEl = document.getElementById('lives');
-  const tipTitleEl = document.getElementById('tip-title');
-  const tipBodyEl = document.getElementById('tip-body');
-  const startBtn = document.getElementById('startBtn');
-  const leftBtn = document.getElementById('leftBtn');
-  const rightBtn = document.getElementById('rightBtn');
-
-  // Game State
-  let score = 0;
-  let lives = 3;
-  let isRunning = false;
-  let animationId = null;
-
-  // Basket Object
-  const basket = {
-    x: 160,
-    y: 320,
-    width: 80,
-    height: 42,
-    speed: 7,
-    dx: 0
-  };
-
-  // Healthy Produce & Staples Item Database
-  const items = [
-    { type: 'banana', name: 'Banana', cost: 0.25, isHealthy: true, tip: 'Bananas are nature\'s $0.25 snack—packed with potassium and energy for study sessions!' },
-    { type: 'carrot', name: 'Carrots', cost: 0.40, isHealthy: true, tip: 'Carrots stay fresh in dorm fridges for weeks! Great crisp bite for hummus or dip.' },
-    { type: 'apple', name: 'Fresh Apple', cost: 0.50, isHealthy: true, tip: 'High in fiber & crisp antioxidants. Apples require zero prep and travel anywhere.' },
-    { type: 'broccoli', name: 'Broccoli', cost: 0.85, isHealthy: true, tip: 'Broccoli florets steamed in a microwave bowl make a fast, high-fiber veggie side.' },
-    { type: 'corn', name: 'Sweet Corn', cost: 0.65, isHealthy: true, tip: 'Canned or frozen sweet corn retains peak antioxidants and adds sweetness to bowls.' },
-    { type: 'avocado', name: 'Avocado', cost: 0.90, isHealthy: true, tip: 'Healthy monounsaturated fats keep you full through long evening lectures.' },
-    { type: 'egg', name: 'Boiled Egg', cost: 0.20, isHealthy: true, tip: 'Hard-boiled eggs are $0.20 protein bombs. Prep 6 at once for instant weekly snacks.' },
-    { type: 'salmon', name: 'Canned Salmon', cost: 1.75, isHealthy: true, tip: 'Canned salmon offers high Omega-3s at a fraction of fresh fillet prices.' },
-    { type: 'rice', name: 'Grain Bowl', cost: 0.30, isHealthy: true, tip: 'Brown rice or quinoa creates a nutrient-dense base for any fresh produce top.' },
-    { type: 'trap', name: 'Takeout Trap', cost: -3.50, isHealthy: false, tip: 'Fast food delivery markups and fees deplete your budget fast!' }
-  ];
-
-  let fallingItems = [];
-  let spawnTimer = 0;
-
-  // Sound Synth Generator
-  function playBeep(freq, type = 'sine', duration = 0.1) {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctxAudio = new AudioCtx();
-      const osc = ctxAudio.createOscillator();
-      const gain = ctxAudio.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      osc.connect(gain);
-      gain.connect(ctxAudio.destination);
-      osc.start();
-      gain.gain.exponentialRampToValueAtTime(0.00001, ctxAudio.currentTime + duration);
-      osc.stop(ctxAudio.currentTime + duration);
-    } catch (e) {}
-  }
-
-  // Draw Functions with High-Contrast Bold Vector Art
-  function drawBasket() {
-    ctx.save();
-    ctx.lineWidth = 3.5;
-    ctx.strokeStyle = '#0D1C2A';
-    
-    // Basket Base
-    ctx.fillStyle = '#FCA311';
-    ctx.beginPath();
-    ctx.roundRect(basket.x, basket.y + 12, basket.width, basket.height - 12, 8);
-    ctx.fill();
-    ctx.stroke();
-
-    // Woven Weave Detail Lines
-    ctx.beginPath();
-    ctx.moveTo(basket.x + 20, basket.y + 12); ctx.lineTo(basket.x + 20, basket.y + basket.height);
-    ctx.moveTo(basket.x + 40, basket.y + 12); ctx.lineTo(basket.x + 40, basket.y + basket.height);
-    ctx.moveTo(basket.x + 60, basket.y + 12); ctx.lineTo(basket.x + 60, basket.y + basket.height);
-    ctx.stroke();
-
-    // Basket Handle Accent
-    ctx.beginPath();
-    ctx.arc(basket.x + basket.width / 2, basket.y + 12, basket.width / 2.4, Math.PI, 0);
-    ctx.stroke();
-
-    ctx.restore();
-  }
-
-  function drawItem(item) {
-    ctx.save();
-    ctx.translate(item.x, item.y);
-    ctx.lineWidth = 3.5;
-    ctx.strokeStyle = '#0D1C2A';
-    ctx.lineJoin = 'round';
-
-    switch (item.type) {
-      case 'banana':
-        ctx.fillStyle = '#FCA311';
-        ctx.beginPath();
-        ctx.moveTo(6, 8);
-        ctx.quadraticCurveTo(24, 10, 28, 28);
-        ctx.quadraticCurveTo(14, 30, 4, 16);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#388E3C';
-        ctx.fillRect(4, 8, 4, 4);
-        break;
-
-      case 'carrot':
-        ctx.fillStyle = '#388E3C'; // Leaf Top
-        ctx.beginPath();
-        ctx.arc(16, 6, 4, 0, Math.PI * 2);
-        ctx.arc(11, 8, 3, 0, Math.PI * 2);
-        ctx.arc(21, 8, 3, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        
-        ctx.fillStyle = '#FF7A59'; // Orange Body
-        ctx.beginPath();
-        ctx.moveTo(10, 10); ctx.lineTo(22, 10); ctx.lineTo(16, 32);
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'apple':
-        ctx.fillStyle = '#D32F2F'; // Red Apple
-        ctx.beginPath();
-        ctx.arc(11, 18, 9, 0, Math.PI * 2);
-        ctx.arc(21, 18, 9, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#388E3C'; // Green Leaf
-        ctx.fillRect(15, 5, 3, 5);
-        break;
-
-      case 'broccoli':
-        ctx.fillStyle = '#388E3C';
-        ctx.beginPath();
-        ctx.arc(10, 14, 8, 0, Math.PI * 2);
-        ctx.arc(22, 14, 8, 0, Math.PI * 2);
-        ctx.arc(16, 8, 9, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#E2E8F0';
-        ctx.fillRect(13, 20, 6, 12);
-        ctx.strokeRect(13, 20, 6, 12);
-        break;
-
-      case 'corn':
-        ctx.fillStyle = '#388E3C'; // Green Husk
-        ctx.beginPath();
-        ctx.ellipse(8, 20, 5, 11, Math.PI / 6, 0, Math.PI * 2);
-        ctx.ellipse(24, 20, 5, 11, -Math.PI / 6, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FCA311'; // Yellow Cob
-        ctx.beginPath();
-        ctx.ellipse(16, 17, 7, 12, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'avocado':
-        ctx.fillStyle = '#388E3C';
-        ctx.beginPath();
-        ctx.ellipse(16, 16, 11, 14, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FF7A59'; // Pit
-        ctx.beginPath();
-        ctx.arc(16, 18, 5, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'egg':
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.ellipse(16, 16, 11, 14, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FCA311'; // Yolk
-        ctx.beginPath();
-        ctx.arc(16, 16, 5, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'salmon':
-        ctx.fillStyle = '#FF7A59';
-        ctx.beginPath();
-        ctx.ellipse(16, 16, 14, 9, 0, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-        ctx.beginPath(); // Tail
-        ctx.moveTo(28, 16); ctx.lineTo(34, 10); ctx.lineTo(34, 22);
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        break;
-
-      case 'rice':
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.arc(16, 16, 13, 0, Math.PI);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#388E3C';
-        ctx.fillRect(10, 14, 12, 3);
-        break;
-
-      case 'trap':
-        ctx.fillStyle = '#D32F2F'; // Red Fast Food Box
-        ctx.beginPath();
-        ctx.rect(6, 10, 20, 20);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#FCA311'; // Warning Icon
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('⚡', 9, 26);
-        break;
-    }
-
-    ctx.restore();
-  }
-
-  function spawnItem() {
-    const template = items[Math.floor(Math.random() * items.length)];
-    fallingItems.push({
-      ...template,
-      x: Math.random() * (canvas.width - 36) + 4,
-      y: -30,
-      speed: 2.2 + Math.random() * 1.8,
-      size: 32
-    });
-  }
-
-  function update() {
-    if (!isRunning) return;
-
-    // Move Basket
-    basket.x += basket.dx;
-    if (basket.x < 0) basket.x = 0;
-    if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
-
-    // Spawn Logic
-    spawnTimer++;
-    if (spawnTimer > 55) {
-      spawnItem();
-      spawnTimer = 0;
-    }
-
-    // Move & Check Items
-    for (let i = fallingItems.length - 1; i >= 0; i--) {
-      let item = fallingItems[i];
-      item.y += item.speed;
-
-      // Catch Collision Detection
-      if (
-        item.y + item.size >= basket.y &&
-        item.y <= basket.y + basket.height &&
-        item.x + item.size >= basket.x &&
-        item.x <= basket.x + basket.width
-      ) {
-        if (item.isHealthy) {
-          score += item.cost;
-          playBeep(587.33, 'triangle', 0.12); // Victory Tone
-          tipTitleEl.textContent = `🥑 Healthy Choice: ${item.name}`;
-        } else {
-          score = Math.max(0, score + item.cost);
-          lives--;
-          playBeep(180, 'sawtooth', 0.25); // Penalty Tone
-          tipTitleEl.textContent = `⚠️ Fast Food Trap!`;
-        }
-
-        tipBodyEl.textContent = item.tip;
-        scoreEl.textContent = `$${score.toFixed(2)}`;
-        livesEl.textContent = '❤️'.repeat(Math.max(0, lives));
-
-        fallingItems.splice(i, 1);
-
-        if (lives <= 0) {
-          endGame();
-        }
-        continue;
-      }
-
-      // Missed Item
-      if (item.y > canvas.height) {
-        fallingItems.splice(i, 1);
-      }
-    }
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw Subtle Grid Floor Line
-    ctx.strokeStyle = '#E5E5E5';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, 362); ctx.lineTo(400, 362);
-    ctx.stroke();
-
-    drawBasket();
-
-    fallingItems.forEach(drawItem);
-
-    if (!isRunning) {
-      ctx.fillStyle = 'rgba(13, 28, 42, 0.75)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 22px sans-serif';
-      ctx.textAlign = 'center';
-      if (lives <= 0) {
-        ctx.fillText('Game Over!', canvas.width / 2, 170);
-        ctx.font = '16px sans-serif';
-        ctx.fillText(`Total Pantry Savings: $${score.toFixed(2)}`, canvas.width / 2, 205);
-      } else {
-        ctx.fillText('Catch the Fresh Harvest!', canvas.width / 2, 180);
-        ctx.font = '14px sans-serif';
-        ctx.fillText('Tap Play to Start', canvas.width / 2, 210);
-      }
-    }
-  }
-
-  function loop() {
-    update();
-    draw();
-    if (isRunning) {
-      animationId = requestAnimationFrame(loop);
-    }
-  }
-
-  function startGame() {
-    score = 0;
-    lives = 3;
-    fallingItems = [];
-    isRunning = true;
-    scoreEl.textContent = '$0.00';
-    livesEl.textContent = '❤️❤️❤️';
-    tipTitleEl.textContent = 'Campus Nutrition Insight';
-    tipBodyEl.textContent = 'Catch bananas, carrots, apples, broccoli, corn, and eggs to build your fresh, low-cost pantry!';
-    if (animationId) cancelAnimationFrame(animationId);
-    loop();
-  }
-
-  function endGame() {
-    isRunning = false;
-    draw();
-  }
-
-  // Controls & Touch Listeners
-  startBtn.addEventListener('click', startGame);
-
-  leftBtn.addEventListener('mousedown', () => basket.dx = -basket.speed);
-  leftBtn.addEventListener('mouseup', () => basket.dx = 0);
-  leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); basket.dx = -basket.speed; });
-  leftBtn.addEventListener('touchend', () => basket.dx = 0);
-
-  rightBtn.addEventListener('mousedown', () => basket.dx = basket.speed);
-  rightBtn.addEventListener('mouseup', () => basket.dx = 0);
-  rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); basket.dx = basket.speed; });
-  rightBtn.addEventListener('touchend', () => basket.dx = 0);
-
-  // Direct Canvas Touch / Mouse Control
-  function handlePointer(e) {
-    if (!isRunning) return;
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const touchX = (clientX - rect.left) * (canvas.width / rect.width);
-    basket.x = touchX - basket.width / 2;
-  }
-
-  canvas.addEventListener('mousemove', (e) => {
-    if (e.buttons === 1) handlePointer(e);
-  });
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    handlePointer(e);
-  }, { passive: false });
-
-  // Keyboard Navigation
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') basket.dx = -basket.speed;
-    if (e.key === 'ArrowRight') basket.dx = basket.speed;
-  });
-  window.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') basket.dx = 0;
-  });
-
-  // Initial Render
-  draw();
-</script>
-
-</body>
-</html>
+"""
+print("Vector functions parsed successfully")
