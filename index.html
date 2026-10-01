@@ -1,22 +1,27 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neural Ninja | AI Generation Matrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Neural Ninja | Cyber Matrix Slicer</title>
   <style>
     :root {
       --cyber-dark: #060913;
-      --cyber-card: #0C1222;
+      --cyber-card: rgba(12, 18, 34, 0.88);
       --neon-cyan: #00F0FF;
       --neon-pink: #FF0055;
       --neon-green: #00FF66;
       --neon-gold: #FFB800;
       --neon-purple: #9D00FF;
-      --font-stack: "Segoe UI", Roboto, -apple-system, monospace;
+      --font-stack: "Segoe UI", Roboto, -apple-system, sans-serif, monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      touch-action: none; /* Prevents scroll/zoom on mobile swipe */
+    }
 
     body {
       background-color: var(--cyber-dark);
@@ -31,79 +36,162 @@
       user-select: none;
       -webkit-user-select: none;
       background-image: 
-        radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 65%),
         linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
       background-size: 100% 100%, 25px 25px, 25px 25px;
+      overflow: hidden;
     }
 
     .game-card {
       width: 100%;
       max-width: 480px;
-      background: rgba(12, 18, 34, 0.85);
-      backdrop-filter: blur(12px);
+      background: var(--cyber-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 2px solid rgba(0, 240, 255, 0.4);
       border-radius: 20px;
-      padding: 16px;
+      padding: 14px;
       box-shadow: 0 0 35px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.1);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       position: relative;
     }
 
     header {
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
 
-    header h1 {
-      font-size: 1.6rem;
+    .title-group h1 {
+      font-size: 1.4rem;
       color: var(--neon-cyan);
       text-transform: uppercase;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       text-shadow: 0 0 12px var(--neon-cyan), 0 0 25px rgba(0, 240, 255, 0.5);
       font-weight: 900;
+      line-height: 1.1;
     }
 
-    header p {
-      font-size: 0.78rem;
+    .title-group p {
+      font-size: 0.7rem;
       color: #8A99AD;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: rgba(6, 9, 19, 0.8);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+    }
+
+    .icon-btn:hover, .icon-btn:active {
+      background: var(--neon-cyan);
+      color: var(--cyber-dark);
+      box-shadow: 0 0 15px var(--neon-cyan);
     }
 
     .hud-bar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       background: rgba(6, 9, 19, 0.9);
       border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
     }
 
     .hud-badge {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       letter-spacing: 0.5px;
+    }
+
+    .diff-tag {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      cursor: pointer;
     }
 
     .val-cyan { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); }
     .val-pink { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
     .val-green { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
+    .val-gold { color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
 
-    /* Canvas Container */
+    /* Star Rating Meter */
+    .star-meter-box {
+      background: rgba(6, 9, 19, 0.8);
+      border: 1px solid rgba(255, 184, 0, 0.4);
+      border-radius: 10px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .star-icons {
+      display: flex;
+      gap: 4px;
+      font-size: 1.1rem;
+    }
+
+    .star-icon {
+      filter: grayscale(1) opacity(0.3);
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .star-icon.active {
+      filter: grayscale(0) opacity(1) drop-shadow(0 0 8px #FFB800);
+      transform: scale(1.2);
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-gold));
+      box-shadow: 0 0 10px var(--neon-gold);
+      transition: width 0.2s ease;
+    }
+
     .canvas-container {
       position: relative;
       width: 100%;
       aspect-ratio: 4/5;
-      background: radial-gradient(circle, #0F172A 0%, #04060C 100%);
+      background: radial-gradient(circle at center, #0F172A 0%, #04060C 100%);
       border: 2px solid rgba(0, 240, 255, 0.5);
       border-radius: 14px;
       overflow: hidden;
@@ -117,12 +205,13 @@
       display: block;
     }
 
-    /* Game Over Overlay */
+    /* Modal / Overlay screens */
     .overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(6, 9, 19, 0.95);
+      background: rgba(6, 9, 19, 0.94);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -131,64 +220,128 @@
       text-align: center;
       padding: 20px;
       z-index: 10;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .overlay h2 {
-      font-size: 2.2rem;
-      color: var(--neon-pink);
-      margin-bottom: 8px;
-      text-shadow: 0 0 15px var(--neon-pink);
+      font-size: 1.8rem;
+      color: var(--neon-cyan);
+      margin-bottom: 6px;
+      text-shadow: 0 0 15px var(--neon-cyan);
       letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .overlay p {
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       color: #8A99AD;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .stats-summary {
-      background: rgba(12, 18, 34, 0.8);
-      border: 1px solid var(--neon-cyan);
-      padding: 14px 24px;
+    /* Difficulty Selection Cards */
+    .diff-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin: 12px 0;
+    }
+
+    .diff-card {
+      background: rgba(12, 18, 34, 0.9);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 10px 14px;
       border-radius: 12px;
-      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .diff-card:hover, .diff-card.selected {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      background: rgba(0, 240, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .diff-title {
+      font-weight: 800;
       font-size: 0.95rem;
-      line-height: 1.7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diff-desc {
+      font-size: 0.72rem;
+      color: #8A99AD;
+      margin-top: 2px;
+    }
+
+    .diff-mult {
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: var(--neon-gold);
+    }
+
+    /* Stats Summary Box */
+    .stats-summary {
+      background: rgba(12, 18, 34, 0.85);
+      border: 1px solid var(--neon-cyan);
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      width: 100%;
       box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
     }
 
-    .btn-restart {
+    .star-display-big {
+      font-size: 2rem;
+      margin: 8px 0;
+      letter-spacing: 6px;
+    }
+
+    .btn-cyber {
       background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
       color: #FFF;
       border: none;
       padding: 12px 28px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 900;
       border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.5);
       transition: transform 0.1s, box-shadow 0.2s;
       text-transform: uppercase;
       letter-spacing: 1.5px;
+      width: 100%;
     }
 
-    .btn-restart:active {
-      transform: scale(0.96);
-      box-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    .btn-cyber:active {
+      transform: scale(0.97);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
     }
 
-    /* AI System Box */
     .tip-box {
       background-color: rgba(6, 9, 19, 0.85);
       color: #D1E5FF;
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 12px;
       border: 1px solid var(--neon-cyan);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
       text-align: center;
-      min-height: 54px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -198,7 +351,7 @@
 
     .controls-hint {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: #61738A;
       font-weight: 600;
       letter-spacing: 0.5px;
@@ -209,107 +362,366 @@
 
   <div class="game-card">
     <header>
-      <h1>⚡ AI NEURAL NINJA</h1>
-      <p>GENERATE DATA NODES • PURGE CORRUPTED MALWARE</p>
+      <div class="title-group">
+        <h1>⚡ AI NEURAL NINJA</h1>
+        <p>MATRIX SYNTHETIC SLICER</p>
+      </div>
+      <div class="header-actions">
+        <button id="soundToggle" class="icon-btn" onclick="toggleAudio()" title="Toggle Sound">🔊 ON</button>
+        <button id="pauseBtn" class="icon-btn" onclick="togglePause()" title="Pause Game">⏸️</button>
+      </div>
     </header>
 
+    <!-- Top HUD Bar -->
     <div class="hud-bar">
-      <div class="hud-badge">INTEGRITY: <span id="lives-display" class="val-pink">🛡️ 🛡️ 🛡️</span></div>
-      <div class="hud-badge">HARVESTED: <span class="val-cyan" id="sliced-count">0</span></div>
-      <div class="hud-badge">COMPUTE: <span class="val-green" id="budget-display">0.0 FLOPS</span></div>
+      <div class="hud-badge">
+        <span id="diffBadge" class="diff-tag" onclick="openDifficultyModal()">EASY 🟢</span>
+      </div>
+      <div class="hud-badge">INTEGRITY: <span id="livesDisplay" class="val-pink">🛡️ 🛡️ 🛡️ 🛡️ 🛡️</span></div>
+      <div class="hud-badge">HARVESTED: <span class="val-cyan" id="slicedCount">0</span></div>
     </div>
 
-    <div class="canvas-container">
+    <!-- Star Progress Meter -->
+    <div class="star-meter-box">
+      <div class="star-icons">
+        <span id="star1" class="star-icon">⭐</span>
+        <span id="star2" class="star-icon">⭐</span>
+        <span id="star3" class="star-icon">⭐</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="starProgressBar" class="progress-bar-fill"></div>
+      </div>
+      <div style="font-size: 0.78rem;" class="val-green" id="computeDisplay">0.0 FLOPS</div>
+    </div>
+
+    <!-- Canvas Viewport Container -->
+    <div class="canvas-container" id="canvasBox">
       <canvas id="gameCanvas" width="400" height="500"></canvas>
-      
-      <!-- Game Over Overlay -->
-      <div class="overlay" id="gameOverScreen" style="display: none;">
-        <h2>SYSTEM CRITICAL</h2>
-        <p id="death-reason">Corrupted Malware Breach Detected!</p>
-        <div class="stats-summary">
-          <div>Neural Cores Processed: <strong id="final-sliced" class="val-cyan">0</strong></div>
-          <div>Synthetic Compute Saved: <strong id="final-budget" class="val-green">0.0 FLOPS</strong></div>
+
+      <!-- 1. Start / Difficulty Select Modal -->
+      <div class="overlay" id="startModal">
+        <h2>NEURAL BOOT MATRIX</h2>
+        <p>Select Security clearance to initialize blade protocol:</p>
+        
+        <div class="diff-selector">
+          <div class="diff-card selected" id="diffCard-easy" onclick="selectDifficulty('EASY')">
+            <div>
+              <div class="diff-title" style="color: var(--neon-green);">🟢 EASY MODE</div>
+              <div class="diff-desc">5 Shield Lives • Low Malware Rate (~10%) • Relaxed Speed</div>
+            </div>
+            <div class="diff-mult">1.0x</div>
+          </div>
+
+          <div class="diff-card" id="diffCard-medium" onclick="selectDifficulty('MEDIUM')">
+            <div>
+              <div class="diff-title" style="color: var(--neon-gold);">🟡 MEDIUM MODE</div>
+              <div class="diff-desc">3 Shield Lives • Mod Malware Rate (~22%) • Standard Velocity</div>
+            </div>
+            <div class="diff-mult">1.5x</div>
+          </div>
+
+          <div class="diff-card" id="diffCard-hard" onclick="selectDifficulty('HARD')">
+            <div>
+              <div class="diff-title" style="color: var(--neon-pink);">🔴 HARD MODE</div>
+              <div class="diff-desc">3 Shield Lives • High Malware Rate (~35%) • Cluster Launches</div>
+            </div>
+            <div class="diff-mult">2.0x</div>
+          </div>
         </div>
-        <button class="btn-restart" onclick="resetGame()">REBOOT NEURAL MATRIX</button>
+
+        <button class="btn-cyber" onclick="startGame()">INITIALIZE MATRIX</button>
+      </div>
+
+      <!-- 2. Pause Overlay -->
+      <div class="overlay" id="pauseModal" style="display: none;">
+        <h2>MATRIX PAUSED</h2>
+        <p>Neural blade stream suspended.</p>
+        <button class="btn-cyber" onclick="togglePause()" style="margin-bottom: 10px;">RESUME PROTOCOL</button>
+        <button class="btn-cyber" onclick="openDifficultyModal()" style="background: rgba(255,255,255,0.1); border: 1px solid var(--neon-cyan);">CHANGE DIFFICULTY</button>
+      </div>
+
+      <!-- 3. Game Over Overlay -->
+      <div class="overlay" id="gameOverModal" style="display: none;">
+        <h2 id="gameOverTitle" style="color: var(--neon-pink);">SYSTEM CRITICAL</h2>
+        <p id="deathReason">Corrupted Malware Breach Detected!</p>
+
+        <div class="star-display-big" id="finalStarsDisplay">⭐⭐⭐</div>
+
+        <div class="stats-summary">
+          <div>Neural Cores Processed: <strong id="finalSliced" class="val-cyan">0</strong></div>
+          <div>Synthetic Compute: <strong id="finalCompute" class="val-green">0.0 FLOPS</strong></div>
+          <div>Max Cyber Combo: <strong id="finalMaxCombo" class="val-gold">x0</strong></div>
+          <div>All-Time High Score: <strong id="finalHighScore" class="val-cyan">0 FLOPS</strong></div>
+        </div>
+
+        <button class="btn-cyber" onclick="resetGame()">REBOOT NEURAL MATRIX</button>
       </div>
     </div>
 
-    <div class="tip-box" id="tip-display">
-      ⚡ <strong>NEURAL PROTOCOL:</strong> Slash airborne AI Data Cores! Avoid slicing Red Corrupted Malware Bombs!
+    <!-- AI Tip Box -->
+    <div class="tip-box" id="tipDisplay">
+      ⚡ <strong>NEURAL PROTOCOL:</strong> Swipe across airborne AI Data Cores! Slice multiple nodes in one sweep for COMBO FLOPS!
     </div>
 
     <div class="controls-hint">
-      ✦ Swipe or Drag across the Matrix to project Laser Blade Energy ✦
+      ✦ Drag or Swipe to project Laser Energy Blade • Avoid Red Corrupted Viruses ✦
     </div>
   </div>
 
   <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+    // Audio State & Synthesizer via Web Audio API
+    let audioCtx = null;
+    let isMuted = false;
 
-    // Game Variables
-    let score = 0;
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleAudio() {
+      isMuted = !isMuted;
+      document.getElementById('soundToggle').innerText = isMuted ? '🔇 OFF' : '🔊 ON';
+      if (!isMuted) playSound('click');
+    }
+
+    function playSound(type, param = 1) {
+      if (isMuted) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      try {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'slash') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(1000 + Math.random() * 400, now);
+          osc.frequency.exponentialRampToValueAtTime(250, now + 0.09);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === 'pop') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400 + Math.random() * 200, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'combo') {
+          // Ascending pitch arpeggio tone based on combo level
+          const comboLevel = Math.min(param, 6);
+          const baseFreq = 523.25; // C5
+          const pitch = baseFreq * Math.pow(1.122, comboLevel * 2);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(pitch, now);
+          osc.frequency.exponentialRampToValueAtTime(pitch * 1.5, now + 0.18);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        } else if (type === 'explode') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.linearRampToValueAtTime(30, now + 0.4);
+          gain.gain.setValueAtTime(0.45, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'star') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(659.25, now); // E5
+          osc.frequency.setValueAtTime(880, now + 0.1); // A5
+          osc.frequency.setValueAtTime(1046.50, now + 0.2); // C6
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      } catch (e) {
+        // Fallback for audio policy constraints
+      }
+    }
+
+    const DIFFICULTY_SETTINGS = {
+      EASY: {
+        name: 'EASY 🟢',
+        lives: 5,
+        speedMult: 0.85,
+        bombChance: 0.10,
+        scoreMult: 1.0,
+        spawnInterval: 75,
+        starThresholds: [60, 140, 260]
+      },
+      MEDIUM: {
+        name: 'MEDIUM 🟡',
+        lives: 3,
+        speedMult: 1.0,
+        bombChance: 0.22,
+        scoreMult: 1.5,
+        spawnInterval: 60,
+        starThresholds: [100, 240, 450]
+      },
+      HARD: {
+        name: 'HARD 🔴',
+        lives: 3,
+        speedMult: 1.25,
+        bombChance: 0.35,
+        scoreMult: 2.0,
+        spawnInterval: 48,
+        starThresholds: [150, 380, 700]
+      }
+    };
+
+    let selectedDifficultyKey = 'EASY';
+    let currentConfig = DIFFICULTY_SETTINGS.EASY;
+
+    // Game Core State Variables
     let slicedCount = 0;
     let computeValue = 0;
-    let lives = 3;
+    let lives = 5;
+    let starsUnlocked = 0;
+    let highScore = parseFloat(localStorage.getItem('nn_high_score') || '0');
+
     let gameOver = false;
+    let isPaused = false;
+    let isGameStarted = false;
     let spawnTimer = 0;
 
-    // Laser Blade Trail
-    let bladePath = []; // {x, y, time}
+    // Combo Tracking
+    let sliceComboCount = 0;
+    let maxCombo = 0;
+    let lastSliceTime = 0;
+    const COMBO_RESET_DELAY = 300; // ms
 
-    // Canvas Entities
+    // Visual FX & Entities
+    let screenShakeTimer = 0;
+    let bladePath = []; // {x, y, time}
     let flyingItems = [];
     let slicedHalves = [];
     let particles = [];
     let gridSplashes = [];
+    let floatingTexts = [];
 
-    // AI Generative Node Database
+    // AI Data Node Definitions
     const AI_NODES = [
-      { id: 'neural_melon', name: 'Neural Matrix Core', compute: 12.5, isBomb: false, color: '#00F0FF', coreColor: '#FFFFFF', radius: 24, tip: '⚡ Neural Matrix Cores process 10,000 synthetic parameters per millisecond.' },
-      { id: 'cyber_banana', name: 'Quantum Data Strand', compute: 4.8, isBomb: false, color: '#FFB800', coreColor: '#FFF', radius: 18, tip: '⚡ Quantum Strands accelerate matrix multiplication with zero thermal noise.' },
-      { id: 'quantum_apple', name: 'Synthetix Node', compute: 8.5, isBomb: false, color: '#FF0055', coreColor: '#FFAAE5', radius: 20, tip: '⚡ Synthetix Nodes stream real-time generative visual vectors.' },
-      { id: 'nano_carrot', name: 'Bio-Vector Core', compute: 6.2, isBomb: false, color: '#FF7700', coreColor: '#FFE0B2', radius: 18, tip: '⚡ Bio-Vectors optimize neural network gradient convergence rates.' },
-      { id: 'bio_broccoli', name: 'Generative Cluster', compute: 15.0, isBomb: false, color: '#00FF66', coreColor: '#D4FFEA', radius: 22, tip: '⚡ Generative Clusters produce ultra-high resolution latent space renders.' },
-      { id: 'malware_trap', name: 'Corrupted Malware Bomb', compute: -25.0, isBomb: true, color: '#FF0033', coreColor: '#000', radius: 22, tip: '💥 BREACH DETECTED! Malware injection drained compute capacity & damaged system integrity!' }
+      { id: 'neural_core', name: 'Neural Matrix Core', compute: 12.0, isBomb: false, color: '#00F0FF', coreColor: '#FFFFFF', radius: 24, tip: '⚡ Neural Matrix Cores stream synthetic parameter vectors.' },
+      { id: 'quantum_strand', name: 'Quantum Data Strand', compute: 5.0, isBomb: false, color: '#FFB800', coreColor: '#FFF', radius: 18, tip: '⚡ Quantum Strands execute tensor math with zero thermal noise.' },
+      { id: 'synthetix_node', name: 'Synthetix Node', compute: 8.5, isBomb: false, color: '#FF0055', coreColor: '#FFAAE5', radius: 20, tip: '⚡ Synthetix Nodes render real-time generative latent vectors.' },
+      { id: 'bio_vector', name: 'Bio-Vector Core', compute: 6.5, isBomb: false, color: '#FF7700', coreColor: '#FFE0B2', radius: 18, tip: '⚡ Bio-Vectors optimize neural network gradient convergence.' },
+      { id: 'gen_cluster', name: 'Generative Cluster', compute: 16.0, isBomb: false, color: '#00FF66', coreColor: '#D4FFEA', radius: 23, tip: '⚡ Generative Clusters compile ultra-high resolution AI outputs.' },
+      { id: 'malware_bomb', name: 'Corrupted Malware Bomb', compute: -20.0, isBomb: true, color: '#FF0033', coreColor: '#000000', radius: 22, tip: '💥 WARNING! Slicing Corrupted Malware drains system integrity!' }
     ];
 
-    // Synthesizer Audio (Web Audio API)
-    function playLaserSound(type) {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const actx = new AudioCtx();
-        const osc = actx.createOscillator();
-        const gain = actx.createGain();
-        osc.connect(gain);
-        gain.connect(actx.destination);
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-        if (type === 'slash') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(1200, actx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(300, actx.currentTime + 0.08);
-          gain.gain.setValueAtTime(0.25, actx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, actx.currentTime + 0.08);
-          osc.start(); osc.stop(actx.currentTime + 0.08);
-        } else if (type === 'explode') {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(150, actx.currentTime);
-          osc.frequency.linearRampToValueAtTime(30, actx.currentTime + 0.35);
-          gain.gain.setValueAtTime(0.5, actx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, actx.currentTime + 0.35);
-          osc.start(); osc.stop(actx.currentTime + 0.35);
-        }
-      } catch(e) {}
+    function selectDifficulty(key) {
+      selectedDifficultyKey = key;
+      currentConfig = DIFFICULTY_SETTINGS[key];
+      playSound('click');
+
+      document.querySelectorAll('.diff-card').forEach(card => card.classList.remove('selected'));
+      document.getElementById(`diffCard-${key.toLowerCase()}`).classList.add('selected');
     }
 
-    // --- GENERATIVE AI VECTOR RENDERING ---
+    function openDifficultyModal() {
+      if (isGameStarted && !gameOver) {
+        isPaused = true;
+      }
+      document.getElementById('startModal').style.display = 'flex';
+      document.getElementById('pauseModal').style.display = 'none';
+      playSound('click');
+    }
+
+    function startGame() {
+      initAudio();
+      playSound('click');
+      document.getElementById('startModal').style.display = 'none';
+      document.getElementById('diffBadge').innerText = currentConfig.name;
+      
+      isGameStarted = true;
+      resetGame();
+    }
+
+    function togglePause() {
+      if (!isGameStarted || gameOver) return;
+      isPaused = !isPaused;
+      playSound('click');
+      document.getElementById('pauseModal').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function addFloatingText(x, y, text, color = '#00F0FF', scale = 1.0) {
+      floatingTexts.push({
+        x: x,
+        y: y,
+        text: text,
+        color: color,
+        scale: scale,
+        alpha: 1.0,
+        vy: -1.8
+      });
+    }
+
+    function updateStarsAndMeter() {
+      const thresholds = currentConfig.starThresholds;
+      let stars = 0;
+      if (computeValue >= thresholds[2]) stars = 3;
+      else if (computeValue >= thresholds[1]) stars = 2;
+      else if (computeValue >= thresholds[0]) stars = 1;
+
+      // Check if newly unlocked star
+      if (stars > starsUnlocked) {
+        starsUnlocked = stars;
+        playSound('star');
+        addFloatingText(canvas.width / 2, canvas.height / 3, `⭐ ${stars}-STAR REACHED!`, '#FFB800', 1.4);
+      }
+
+      // Update Star icons in UI
+      for (let i = 1; i <= 3; i++) {
+        const starElem = document.getElementById(`star${i}`);
+        if (i <= starsUnlocked) starElem.classList.add('active');
+        else starElem.classList.remove('active');
+      }
+
+      // Update Progress Bar %
+      const maxGoal = thresholds[2];
+      const progressPercent = Math.min(100, (computeValue / maxGoal) * 100);
+      document.getElementById('starProgressBar').style.width = `${progressPercent}%`;
+    }
+
+    function updateLivesDisplay() {
+      let shields = "";
+      for (let i = 0; i < currentConfig.lives; i++) {
+        shields += (i < lives) ? "🛡️ " : "❌ ";
+      }
+      document.getElementById("livesDisplay").innerText = shields.trim();
+    }
+
     function drawAINodeShape(ctx, node) {
       const radius = node.radius;
 
       ctx.save();
       ctx.shadowColor = node.color;
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 14;
 
       if (node.isBomb) {
         // Glitch Malware Spike Sphere
@@ -320,26 +732,28 @@
         ctx.beginPath();
         for (let i = 0; i < 8; i++) {
           const angle = (Math.PI * 2 / 8) * i;
-          const r = (i % 2 === 0) ? radius + 6 : radius - 4;
+          const r = (i % 2 === 0) ? radius + 7 : radius - 5;
           const x = Math.cos(angle) * r;
           const y = Math.sin(angle) * r;
           if (i === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.closePath();
-        ctx.fill(); ctx.stroke();
+        ctx.fill(); 
+        ctx.stroke();
 
         ctx.fillStyle = '#FF0055';
         ctx.font = '900 15px monospace';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('⚠', 0, 0);
+        ctx.textAlign = 'center'; 
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⚡', 0, 0);
       } else {
-        // Cybernetic Holographic Orb with Wireframe Rings
-        ctx.fillStyle = 'rgba(6, 9, 19, 0.85)';
+        // Cybernetic Holographic Orb with Outer Hex Bounds
+        ctx.fillStyle = 'rgba(6, 9, 19, 0.88)';
         ctx.strokeStyle = node.color;
         ctx.lineWidth = 2.5;
 
-        // Outer Hex Ring
+        // Outer Hexagon
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
           const angle = (Math.PI * 2 / 6) * i;
@@ -349,15 +763,16 @@
           else ctx.lineTo(x, y);
         }
         ctx.closePath();
-        ctx.fill(); ctx.stroke();
+        ctx.fill(); 
+        ctx.stroke();
 
-        // Inner Glowing Core Nucleus
+        // Inner Glowing Nucleus
         ctx.fillStyle = node.coreColor;
         ctx.beginPath();
         ctx.arc(0, 0, radius * 0.45, 0, Math.PI * 2);
         ctx.fill();
 
-        // Holographic Orbital Rings
+        // Orbital Rings
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
@@ -370,40 +785,58 @@
 
     function drawHalvedAINode(ctx, node, side) {
       ctx.save();
-      ctx.clip(new Path2D(side === 1 ? 'M -60 -60 L 0 -60 L 0 60 L -60 60 Z' : 'M 0 -60 L 60 -60 L 60 60 L 0 60 Z'));
+      // Clip left or right half
+      ctx.clip(new Path2D(side === 1 ? 'M -70 -70 L 0 -70 L 0 70 L -70 70 Z' : 'M 0 -70 L 70 -70 L 70 70 L 0 70 Z'));
       drawAINodeShape(ctx, node);
 
-      // Glowing Sliced Laser Edge
+      // Glowing Sliced Edge Line
       ctx.fillStyle = '#FFFFFF';
-      ctx.shadowColor = '#00F0FF';
-      ctx.shadowBlur = 10;
+      ctx.shadowColor = node.color;
+      ctx.shadowBlur = 12;
       ctx.fillRect(-2, -node.radius - 8, 4, (node.radius + 8) * 2);
       ctx.restore();
     }
 
-    // --- SPAWNING SYSTEM ---
-    function spawnCluster() {
-      if (gameOver) return;
+    function spawnNodeCluster() {
+      if (gameOver || isPaused || !isGameStarted) return;
 
-      const count = Math.floor(Math.random() * 2) + 1;
+      // Determine wave count based on difficulty
+      let count = 1;
+      const rand = Math.random();
+      if (selectedDifficultyKey === 'HARD') {
+        count = rand < 0.5 ? 2 : (rand < 0.85 ? 3 : 1);
+      } else if (selectedDifficultyKey === 'MEDIUM') {
+        count = rand < 0.35 ? 2 : 1;
+      }
+
       for (let i = 0; i < count; i++) {
-        const nodeDef = AI_NODES[Math.floor(Math.random() * AI_NODES.length)];
-        
+        // Decide if bomb spawns
+        const isBomb = Math.random() < currentConfig.bombChance;
+        let nodeDef;
+
+        if (isBomb) {
+          nodeDef = AI_NODES.find(n => n.isBomb);
+        } else {
+          const nonBombs = AI_NODES.filter(n => !n.isBomb);
+          nodeDef = nonBombs[Math.floor(Math.random() * nonBombs.length)];
+        }
+
+        const launchSpeed = (12.5 + Math.random() * 3.5) * currentConfig.speedMult;
+
         flyingItems.push({
           ...nodeDef,
-          x: 60 + Math.random() * (canvas.width - 120),
+          x: 50 + Math.random() * (canvas.width - 100),
           y: canvas.height + 30,
-          vx: (Math.random() - 0.5) * 4.5,
-          vy: -(12.5 + Math.random() * 3.5),
-          gravity: 0.28,
+          vx: (Math.random() - 0.5) * 4.2,
+          vy: -launchSpeed,
+          gravity: 0.26,
           rotation: Math.random() * Math.PI,
-          vRot: (Math.random() - 0.5) * 0.12,
+          vRot: (Math.random() - 0.5) * 0.1,
           sliced: false
         });
       }
     }
 
-    // --- COLLISION DETECTOR ---
     function distToSegment(px, py, x1, y1, x2, y2) {
       const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
       if (l2 === 0) return Math.hypot(px - x1, py - y1);
@@ -412,11 +845,17 @@
       return Math.hypot(px - (x1 + t * (x2 - x1)), py - (y1 + t * (y2 - y1)));
     }
 
-    function checkSlices() {
+    function checkBladeSlices() {
       if (bladePath.length < 2) return;
 
+      const now = Date.now();
       const p1 = bladePath[bladePath.length - 2];
       const p2 = bladePath[bladePath.length - 1];
+
+      // Reset combo if elapsed time since last slice > threshold
+      if (now - lastSliceTime > COMBO_RESET_DELAY) {
+        sliceComboCount = 0;
+      }
 
       for (let i = flyingItems.length - 1; i >= 0; i--) {
         const item = flyingItems[i];
@@ -424,123 +863,160 @@
 
         const dist = distToSegment(item.x, item.y, p1.x, p1.y, p2.x, p2.y);
 
-        if (dist < item.radius + 8) {
+        if (dist < item.radius + 10) {
           item.sliced = true;
 
           if (item.isBomb) {
-            playLaserSound('explode');
-            createCyberExplosion(item.x, item.y);
-            triggerGameOver("💥 MALWARE BREACH! Sliced a Corrupted Virus Bomb!");
-            return;
-          }
+            playSound('explode');
+            triggerScreenShake(20);
+            createCyberExplosion(item.x, item.y, '#FF0055');
+            
+            lives--;
+            updateLivesDisplay();
+            addFloatingText(item.x, item.y, '💥 BOMB DETONATED (-1 SHIELD)', '#FF0055', 1.1);
 
-          // SLICE DATA NODE
-          playLaserSound('slash');
-          slicedCount++;
-          computeValue += item.compute;
+            if (lives <= 0) {
+              triggerGameOver("💥 MALWARE BREACH! Sliced a Corrupted Virus Bomb!");
+              return;
+            }
+          } else {
+            // Sliced AI Node
+            sliceComboCount++;
+            lastSliceTime = now;
+            if (sliceComboCount > maxCombo) maxCombo = sliceComboCount;
 
-          document.getElementById('sliced-count').innerText = slicedCount;
-          document.getElementById('budget-display').innerText = `${computeValue.toFixed(1)} FLOPS`;
-          document.getElementById('tip-display').innerHTML = item.tip;
+            slicedCount++;
 
-          // Digital Matrix Grid Shockwave
-          gridSplashes.push({
-            x: item.x, y: item.y,
-            color: item.color,
-            radius: 10, maxRadius: item.radius * 2.5,
-            alpha: 0.9
-          });
+            // Calculate FLOPS with Difficulty Multiplier and Combo Bonus
+            const comboBonusMult = 1 + (sliceComboCount - 1) * 0.5;
+            const earnedFLOPS = item.compute * currentConfig.scoreMult * comboBonusMult;
+            computeValue += earnedFLOPS;
 
-          // Energy Sparks Burst
-          for (let p = 0; p < 16; p++) {
-            particles.push({
+            // Audio & Floating Text
+            if (sliceComboCount >= 2) {
+              playSound('combo', sliceComboCount);
+              addFloatingText(item.x, item.y, `COMBO x${sliceComboCount}! +${earnedFLOPS.toFixed(1)} FLOPS`, '#FFB800', 1.2);
+            } else {
+              playSound('pop');
+              playSound('slash');
+              addFloatingText(item.x, item.y, `+${earnedFLOPS.toFixed(1)} FLOPS`, item.color, 0.95);
+            }
+
+            // Sync UI
+            document.getElementById('slicedCount').innerText = slicedCount;
+            document.getElementById('computeDisplay').innerText = `${computeValue.toFixed(1)} FLOPS`;
+            document.getElementById('tipDisplay').innerHTML = item.tip;
+            updateStarsAndMeter();
+
+            // Shockwave & Particles
+            gridSplashes.push({
               x: item.x, y: item.y,
-              vx: (Math.random() - 0.5) * 10,
-              vy: (Math.random() - 0.5) * 10,
-              color: Math.random() > 0.5 ? item.color : '#FFFFFF',
-              size: 2 + Math.random() * 4,
+              color: item.color,
+              radius: 10, maxRadius: item.radius * 2.8,
               alpha: 1.0
             });
-          }
 
-          // Halves Splitting
-          slicedHalves.push({
-            node: item, side: 1,
-            x: item.x - 6, y: item.y, vx: item.vx - 3, vy: item.vy - 1, gravity: 0.3,
-            rotation: item.rotation, vRot: -0.1
-          });
-          slicedHalves.push({
-            node: item, side: 2,
-            x: item.x + 6, y: item.y, vx: item.vx + 3, vy: item.vy - 1, gravity: 0.3,
-            rotation: item.rotation, vRot: 0.1
-          });
+            createCyberExplosion(item.x, item.y, item.color);
+
+            // Spawn Sliced Physics Halves
+            slicedHalves.push({
+              node: item, side: 1,
+              x: item.x - 6, y: item.y, vx: item.vx - 3.5, vy: item.vy - 1, gravity: 0.28,
+              rotation: item.rotation, vRot: -0.12
+            });
+            slicedHalves.push({
+              node: item, side: 2,
+              x: item.x + 6, y: item.y, vx: item.vx + 3.5, vy: item.vy - 1, gravity: 0.28,
+              rotation: item.rotation, vRot: 0.12
+            });
+          }
 
           flyingItems.splice(i, 1);
         }
       }
     }
 
-    function createCyberExplosion(x, y) {
-      for (let i = 0; i < 40; i++) {
+    function createCyberExplosion(x, y, color) {
+      for (let p = 0; p < 18; p++) {
         particles.push({
           x: x, y: y,
-          vx: (Math.random() - 0.5) * 16,
-          vy: (Math.random() - 0.5) * 16,
-          color: Math.random() > 0.5 ? '#FF0055' : '#00F0FF',
-          size: 4 + Math.random() * 6,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12,
+          color: Math.random() > 0.4 ? color : '#FFFFFF',
+          size: 2 + Math.random() * 4,
           alpha: 1.0
         });
       }
     }
 
-    function updateLivesUI() {
-      let shields = "";
-      for (let i = 0; i < 3; i++) {
-        shields += (i < lives) ? "🛡️ " : "❌ ";
-      }
-      document.getElementById("lives-display").innerText = shields.trim();
+    function triggerScreenShake(duration) {
+      screenShakeTimer = duration;
     }
 
     function triggerGameOver(reason) {
       gameOver = true;
-      document.getElementById("death-reason").innerText = reason;
-      document.getElementById("final-sliced").innerText = slicedCount;
-      document.getElementById("final-budget").innerText = `${computeValue.toFixed(1)} FLOPS`;
-      document.getElementById("gameOverScreen").style.display = "flex";
+      playSound('explode');
+
+      if (computeValue > highScore) {
+        highScore = computeValue;
+        localStorage.setItem('nn_high_score', highScore.toString());
+      }
+
+      document.getElementById("deathReason").innerText = reason;
+      document.getElementById("finalSliced").innerText = slicedCount;
+      document.getElementById("finalCompute").innerText = `${computeValue.toFixed(1)} FLOPS`;
+      document.getElementById("finalMaxCombo").innerText = `x${maxCombo}`;
+      document.getElementById("finalHighScore").innerText = `${highScore.toFixed(1)} FLOPS`;
+
+      // Stars display in final modal
+      let starIcons = "";
+      for (let i = 1; i <= 3; i++) {
+        starIcons += (i <= starsUnlocked) ? "⭐ " : "🔒 ";
+      }
+      document.getElementById("finalStarsDisplay").innerText = starIcons.trim();
+
+      document.getElementById("gameOverModal").style.display = "flex";
     }
 
     function resetGame() {
-      score = 0;
       slicedCount = 0;
       computeValue = 0;
-      lives = 3;
+      lives = currentConfig.lives;
+      starsUnlocked = 0;
+      maxCombo = 0;
+      sliceComboCount = 0;
       gameOver = false;
+      isPaused = false;
+
       flyingItems = [];
       slicedHalves = [];
       particles = [];
       gridSplashes = [];
       bladePath = [];
+      floatingTexts = [];
 
-      document.getElementById("sliced-count").innerText = "0";
-      document.getElementById("budget-display").innerText = "0.0 FLOPS";
-      document.getElementById("tip-display").innerHTML = "⚡ <strong>NEURAL PROTOCOL:</strong> Slash airborne AI Data Cores! Avoid slicing Red Corrupted Malware Bombs!";
-      document.getElementById("gameOverScreen").style.display = "none";
+      document.getElementById("slicedCount").innerText = "0";
+      document.getElementById("computeDisplay").innerText = "0.0 FLOPS";
+      document.getElementById("tipDisplay").innerHTML = "⚡ <strong>NEURAL PROTOCOL:</strong> Swipe across airborne AI Data Cores! Slice multiple nodes in one sweep for COMBO FLOPS!";
       
-      updateLivesUI();
+      document.getElementById("gameOverModal").style.display = "none";
+      document.getElementById("pauseModal").style.display = "none";
+
+      updateLivesDisplay();
+      updateStarsAndMeter();
     }
 
-    // --- GAME ENGINE LOOP ---
     function update() {
-      if (gameOver) return;
+      if (gameOver || isPaused || !isGameStarted) return;
 
-      // Spawn Data Cores
+      // Spawning loop
       spawnTimer++;
-      if (spawnTimer > 65) {
-        spawnCluster();
+      if (spawnTimer > currentConfig.spawnInterval) {
+        spawnNodeCluster();
         spawnTimer = 0;
       }
 
-      // Flying Items
+      // Flying Items Physics
       for (let i = flyingItems.length - 1; i >= 0; i--) {
         const item = flyingItems[i];
         item.x += item.vx;
@@ -548,11 +1024,14 @@
         item.vy += item.gravity;
         item.rotation += item.vRot;
 
-        // Unharvested data node falls past screen
+        // Unharvested Data Node falls past screen bottom
         if (item.y > canvas.height + 40) {
           if (!item.isBomb && !item.sliced) {
             lives--;
-            updateLivesUI();
+            updateLivesDisplay();
+            triggerScreenShake(8);
+            addFloatingText(item.x, canvas.height - 20, "❌ DATA NODE LOST", "#FF0055", 0.9);
+
             if (lives <= 0) {
               triggerGameOver("System Integrity Depleted! Unharvested Data Nodes Lost!");
             }
@@ -574,7 +1053,7 @@
         }
       }
 
-      // Shockwave Animations
+      // Grid Shockwave Animations
       for (let i = gridSplashes.length - 1; i >= 0; i--) {
         const s = gridSplashes[i];
         s.radius += 2.5;
@@ -582,7 +1061,7 @@
         if (s.alpha <= 0) gridSplashes.splice(i, 1);
       }
 
-      // Energy Particles
+      // Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
@@ -591,19 +1070,36 @@
         if (p.alpha <= 0) particles.splice(i, 1);
       }
 
+      // Floating Notification Text
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y += ft.vy;
+        ft.alpha -= 0.02;
+        if (ft.alpha <= 0) floatingTexts.splice(i, 1);
+      }
+
       // Fade Laser Blade Trail
       const now = Date.now();
       bladePath = bladePath.filter(p => now - p.time < 160);
 
-      checkSlices();
+      checkBladeSlices();
+
+      if (screenShakeTimer > 0) screenShakeTimer--;
     }
 
-    // --- CANVAS RENDERING ---
     function draw() {
+      ctx.save();
+
+      // Screen Shake offset
+      if (screenShakeTimer > 0) {
+        const dx = (Math.random() - 0.5) * screenShakeTimer;
+        const dy = (Math.random() - 0.5) * screenShakeTimer;
+        ctx.translate(dx, dy);
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Draw Background Digital Grid Pattern
-      ctx.save();
+      // 1. Digital Grid Background
       ctx.strokeStyle = "rgba(0, 240, 255, 0.06)";
       ctx.lineWidth = 1;
       for (let x = 0; x < canvas.width; x += 25) {
@@ -612,9 +1108,8 @@
       for (let y = 0; y < canvas.height; y += 25) {
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
       }
-      ctx.restore();
 
-      // 2. Draw Digital Shockwaves
+      // 2. Shockwaves
       gridSplashes.forEach(s => {
         ctx.save();
         ctx.globalAlpha = Math.max(0, s.alpha);
@@ -628,7 +1123,7 @@
         ctx.restore();
       });
 
-      // 3. Draw Flying AI Nodes
+      // 3. Flying Nodes
       flyingItems.forEach(item => {
         ctx.save();
         ctx.translate(item.x, item.y);
@@ -637,7 +1132,7 @@
         ctx.restore();
       });
 
-      // 4. Draw Sliced Halves
+      // 4. Sliced Halves
       slicedHalves.forEach(half => {
         ctx.save();
         ctx.translate(half.x, half.y);
@@ -646,7 +1141,7 @@
         ctx.restore();
       });
 
-      // 5. Draw Energy Particles
+      // 5. Particles
       particles.forEach(p => {
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.alpha);
@@ -659,7 +1154,7 @@
         ctx.restore();
       });
 
-      // 6. Draw Cyber Laser Blade Trail
+      // 6. Laser Energy Blade Trail
       if (bladePath.length > 1) {
         ctx.save();
         ctx.lineCap = 'round';
@@ -669,19 +1164,34 @@
           const p1 = bladePath[i - 1];
           const p2 = bladePath[i];
           const alpha = i / bladePath.length;
-          
+
           ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.lineWidth = alpha * 8;
+          ctx.lineWidth = alpha * 9;
           ctx.strokeStyle = '#FFFFFF';
           ctx.shadowColor = '#00F0FF';
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 16;
           ctx.globalAlpha = alpha;
           ctx.stroke();
         }
         ctx.restore();
       }
+
+      // 7. Floating Texts
+      floatingTexts.forEach(ft => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, ft.alpha);
+        ctx.fillStyle = ft.color;
+        ctx.shadowColor = ft.color;
+        ctx.shadowBlur = 8;
+        ctx.font = `900 ${Math.round(14 * ft.scale)}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(ft.text, ft.x, ft.y);
+        ctx.restore();
+      });
+
+      ctx.restore();
     }
 
     function gameLoop() {
@@ -690,16 +1200,21 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // --- CONTROLS ---
     function addBladePoint(e) {
+      if (!isGameStarted || isPaused || gameOver) return;
+
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      
+
       const x = (clientX - rect.left) * (canvas.width / rect.width);
       const y = (clientY - rect.top) * (canvas.height / rect.height);
 
       bladePath.push({ x, y, time: Date.now() });
+
+      if (bladePath.length > 1 && Math.random() < 0.3) {
+        playSound('slash');
+      }
     }
 
     let isSwiping = false;
@@ -712,8 +1227,10 @@
     canvas.addEventListener('touchmove', e => { if (isSwiping) addBladePoint(e); }, { passive: true });
     window.addEventListener('touchend', () => isSwiping = false);
 
-    // Boot Loop
-    gameLoop();
+    // Boot Up Engine Loop
+    window.onload = function() {
+      gameLoop();
+    };
   </script>
 </body>
 </html>
