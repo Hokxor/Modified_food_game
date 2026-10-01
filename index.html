@@ -1,719 +1,1025 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neural Ninja | AI Generation Matrix</title>
+
+  <title>Pattern Pantry Rush | Precision Food Catch</title>
+
   <style>
+
     :root {
-      --cyber-dark: #060913;
-      --cyber-card: #0C1222;
-      --neon-cyan: #00F0FF;
-      --neon-pink: #FF0055;
-      --neon-green: #00FF66;
-      --neon-gold: #FFB800;
-      --neon-purple: #9D00FF;
-      --font-stack: "Segoe UI", Roboto, -apple-system, monospace;
+
+      --color-navy: #001C2A;
+
+      --color-orange: #FCA911;
+
+      --color-green: #18803C;
+
+      --color-yellow: #F59E0B;
+
+      --color-salmon: #FF7A59;
+
+      --color-soft-blue: #C9E2E9;
+
+      --color-white: #FFFFFF;
+
+      --color-red: #D32F2F;
+
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
     }
+
+
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+
+
     body {
-      background-color: var(--cyber-dark);
-      color: #E2F1FF;
+
+      background-color: var(--color-navy);
+
+      color: var(--color-white);
+
       font-family: var(--font-stack);
+
       min-height: 100vh;
+
       display: flex;
+
       flex-direction: column;
+
       align-items: center;
+
       justify-content: center;
-      padding: 12px;
-      user-select: none;
-      -webkit-user-select: none;
-      background-image: 
-        radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 25px 25px, 25px 25px;
+
+      padding: 15px;
+
+      background-image: radial-gradient(rgba(201, 226, 233, 0.1) 1px, transparent 1px);
+
+      background-size: 20px 20px;
+
     }
+
+
 
     .game-card {
+
       width: 100%;
+
       max-width: 480px;
-      background: rgba(12, 18, 34, 0.85);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(0, 240, 255, 0.4);
+
+      background: var(--color-white);
+
+      border: 4px solid var(--color-navy);
+
       border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.1);
+
+      padding: 20px;
+
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+
+      color: var(--color-navy);
+
       display: flex;
+
       flex-direction: column;
-      gap: 12px;
-      position: relative;
+
+      gap: 15px;
+
     }
+
+
 
     header {
+
       text-align: center;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+
+      border-bottom: 3px dashed var(--color-navy);
+
       padding-bottom: 10px;
+
     }
+
+
 
     header h1 {
-      font-size: 1.6rem;
-      color: var(--neon-cyan);
+
+      font-size: 1.5rem;
+
+      color: var(--color-navy);
+
       text-transform: uppercase;
-      letter-spacing: 3px;
-      text-shadow: 0 0 12px var(--neon-cyan), 0 0 25px rgba(0, 240, 255, 0.5);
-      font-weight: 900;
+
+      letter-spacing: 1px;
+
     }
+
+
 
     header p {
-      font-size: 0.78rem;
-      color: #8A99AD;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+
+      font-size: 0.85rem;
+
+      color: #555;
+
+      font-weight: bold;
+
     }
+
+
 
     .hud-bar {
+
       display: flex;
+
       justify-content: space-between;
-      background: rgba(6, 9, 19, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 8px 14px;
+
+      background: var(--color-navy);
+
+      color: var(--color-white);
+
+      padding: 10px 12px;
+
       border-radius: 12px;
+
       font-weight: bold;
+
       font-size: 0.85rem;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+
     }
+
+
 
     .hud-badge {
+
       display: flex;
+
       align-items: center;
-      gap: 6px;
-      letter-spacing: 0.5px;
+
+      gap: 4px;
+
     }
 
-    .val-cyan { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); }
-    .val-pink { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
-    .val-green { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
 
-    /* Canvas Container */
+
+    .val-orange { color: var(--color-orange); }
+
+    .val-green { color: #4ADE80; }
+
+
+
+    /* Canvas Container & Overlays */
+
     .canvas-container {
+
       position: relative;
+
       width: 100%;
+
       aspect-ratio: 4/5;
-      background: radial-gradient(circle, #0F172A 0%, #04060C 100%);
-      border: 2px solid rgba(0, 240, 255, 0.5);
-      border-radius: 14px;
+
+      background-color: var(--color-soft-blue);
+
+      border: 3px solid var(--color-navy);
+
+      border-radius: 12px;
+
       overflow: hidden;
-      cursor: crosshair;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 240, 255, 0.15);
+
     }
+
+
 
     canvas {
+
       width: 100%;
+
       height: 100%;
+
       display: block;
+
     }
 
-    /* Game Over Overlay */
+
+
+    /* Game Over Modal Screen */
+
     .overlay {
+
       position: absolute;
+
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(6, 9, 19, 0.95);
-      backdrop-filter: blur(10px);
+
+      background: rgba(0, 28, 42, 0.92);
+
       display: flex;
+
       flex-direction: column;
+
       align-items: center;
+
       justify-content: center;
-      color: #FFF;
+
+      color: var(--color-white);
+
       text-align: center;
+
       padding: 20px;
+
       z-index: 10;
+
     }
+
+
 
     .overlay h2 {
-      font-size: 2.2rem;
-      color: var(--neon-pink);
+
+      font-size: 2rem;
+
+      color: var(--color-red);
+
       margin-bottom: 8px;
-      text-shadow: 0 0 15px var(--neon-pink);
-      letter-spacing: 2px;
+
     }
+
+
 
     .overlay p {
-      font-size: 0.88rem;
-      color: #8A99AD;
-      margin-bottom: 16px;
+
+      font-size: 0.9rem;
+
+      color: var(--color-soft-blue);
+
+      margin-bottom: 15px;
+
     }
+
+
 
     .stats-summary {
-      background: rgba(12, 18, 34, 0.8);
-      border: 1px solid var(--neon-cyan);
-      padding: 14px 24px;
-      border-radius: 12px;
+
+      background: rgba(255, 255, 255, 0.1);
+
+      padding: 12px 20px;
+
+      border-radius: 10px;
+
       margin-bottom: 20px;
+
       font-size: 0.95rem;
-      line-height: 1.7;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+
     }
+
+
 
     .btn-restart {
-      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-      color: #FFF;
+
+      background: var(--color-orange);
+
+      color: var(--color-navy);
+
       border: none;
-      padding: 12px 28px;
+
+      padding: 12px 24px;
+
       font-size: 1rem;
-      font-weight: 900;
-      border-radius: 12px;
+
+      font-weight: bold;
+
+      border-radius: 10px;
+
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
-      transition: transform 0.1s, box-shadow 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
+
+      transition: transform 0.1s;
+
     }
+
+
 
     .btn-restart:active {
-      transform: scale(0.96);
-      box-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+
+      transform: scale(0.95);
+
     }
 
-    /* AI System Box */
+
+
+    /* Cooking Tip Box */
+
     .tip-box {
-      background-color: rgba(6, 9, 19, 0.85);
-      color: #D1E5FF;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--neon-cyan);
-      font-size: 0.82rem;
-      font-weight: 600;
+
+      background-color: var(--color-orange);
+
+      color: var(--color-navy);
+
+      padding: 12px;
+
+      border-radius: 10px;
+
+      border: 2px solid var(--color-navy);
+
+      font-size: 0.85rem;
+
+      font-weight: bold;
+
       text-align: center;
-      min-height: 54px;
+
+      min-height: 52px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
-      line-height: 1.35;
-      box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.08);
+
     }
+
+
 
     .controls-hint {
+
       text-align: center;
+
       font-size: 0.75rem;
-      color: #61738A;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+
+      color: #666;
+
+      font-weight: bold;
+
     }
+
   </style>
+
 </head>
+
 <body>
 
+
+
   <div class="game-card">
+
     <header>
-      <h1>⚡ AI NEURAL NINJA</h1>
-      <p>GENERATE DATA NODES • PURGE CORRUPTED MALWARE</p>
+
+      <h1>Pattern Pantry Catch</h1>
+
+      <p>Precision Food Matching Challenge</p>
+
     </header>
 
+
+
     <div class="hud-bar">
-      <div class="hud-badge">INTEGRITY: <span id="lives-display" class="val-pink">🛡️ 🛡️ 🛡️</span></div>
-      <div class="hud-badge">HARVESTED: <span class="val-cyan" id="sliced-count">0</span></div>
-      <div class="hud-badge">COMPUTE: <span class="val-green" id="budget-display">0.0 FLOPS</span></div>
+
+      <div class="hud-badge">Lives: <span id="lives-display">❤️ ❤️ ❤️</span></div>
+
+      <div class="hud-badge">Target: <span class="val-orange" id="target-item">Broccoli 🥦</span></div>
+
+      <div class="hud-badge">Score: <span class="val-green" id="score">0</span></div>
+
     </div>
+
+
 
     <div class="canvas-container">
+
       <canvas id="gameCanvas" width="400" height="500"></canvas>
+
       
+
       <!-- Game Over Overlay -->
+
       <div class="overlay" id="gameOverScreen" style="display: none;">
-        <h2>SYSTEM CRITICAL</h2>
-        <p id="death-reason">Corrupted Malware Breach Detected!</p>
+
+        <h2>GAME OVER!</h2>
+
+        <p>You took 3 damages from catching wrong ingredients.</p>
+
         <div class="stats-summary">
-          <div>Neural Cores Processed: <strong id="final-sliced" class="val-cyan">0</strong></div>
-          <div>Synthetic Compute Saved: <strong id="final-budget" class="val-green">0.0 FLOPS</strong></div>
+
+          <div>Final Score: <strong id="final-score" style="color: var(--color-orange);">0</strong></div>
+
+          <div>Budget Saved: <strong id="final-budget" style="color: #4ADE80;">$0.00</strong></div>
+
         </div>
-        <button class="btn-restart" onclick="resetGame()">REBOOT NEURAL MATRIX</button>
+
+        <button class="btn-restart" onclick="resetGame()">PLAY AGAIN</button>
+
       </div>
+
     </div>
+
+
 
     <div class="tip-box" id="tip-display">
-      ⚡ <strong>NEURAL PROTOCOL:</strong> Slash airborne AI Data Cores! Avoid slicing Red Corrupted Malware Bombs!
+
+      ⚠️ <strong>Rule:</strong> Catch ONLY the target food shown above! Unmatched food causes damage!
+
     </div>
+
+
 
     <div class="controls-hint">
-      ✦ Swipe or Drag across the Matrix to project Laser Blade Energy ✦
+
+      Touch/Drag screen or use ⬅️ ➡️ arrow keys to position your bowl!
+
     </div>
+
   </div>
 
+
+
   <script>
+
     const canvas = document.getElementById("gameCanvas");
+
     const ctx = canvas.getContext("2d");
 
-    // Game Variables
+
+
     let score = 0;
-    let slicedCount = 0;
-    let computeValue = 0;
+
+    let budgetSaved = 0;
+
     let lives = 3;
+
     let gameOver = false;
-    let spawnTimer = 0;
 
-    // Laser Blade Trail
-    let bladePath = []; // {x, y, time}
+    let spawnInterval = null;
 
-    // Canvas Entities
-    let flyingItems = [];
-    let slicedHalves = [];
-    let particles = [];
-    let gridSplashes = [];
+    
 
-    // AI Generative Node Database
-    const AI_NODES = [
-      { id: 'neural_melon', name: 'Neural Matrix Core', compute: 12.5, isBomb: false, color: '#00F0FF', coreColor: '#FFFFFF', radius: 24, tip: '⚡ Neural Matrix Cores process 10,000 synthetic parameters per millisecond.' },
-      { id: 'cyber_banana', name: 'Quantum Data Strand', compute: 4.8, isBomb: false, color: '#FFB800', coreColor: '#FFF', radius: 18, tip: '⚡ Quantum Strands accelerate matrix multiplication with zero thermal noise.' },
-      { id: 'quantum_apple', name: 'Synthetix Node', compute: 8.5, isBomb: false, color: '#FF0055', coreColor: '#FFAAE5', radius: 20, tip: '⚡ Synthetix Nodes stream real-time generative visual vectors.' },
-      { id: 'nano_carrot', name: 'Bio-Vector Core', compute: 6.2, isBomb: false, color: '#FF7700', coreColor: '#FFE0B2', radius: 18, tip: '⚡ Bio-Vectors optimize neural network gradient convergence rates.' },
-      { id: 'bio_broccoli', name: 'Generative Cluster', compute: 15.0, isBomb: false, color: '#00FF66', coreColor: '#D4FFEA', radius: 22, tip: '⚡ Generative Clusters produce ultra-high resolution latent space renders.' },
-      { id: 'malware_trap', name: 'Corrupted Malware Bomb', compute: -25.0, isBomb: true, color: '#FF0033', coreColor: '#000', radius: 22, tip: '💥 BREACH DETECTED! Malware injection drained compute capacity & damaged system integrity!' }
+    // Basket Player
+
+    const player = {
+
+      x: 160,
+
+      y: 430,
+
+      width: 80,
+
+      height: 35,
+
+      speed: 8,
+
+      dx: 0
+
+    };
+
+
+
+    // Recipe Target Goals
+
+    const recipeTargets = [
+
+      { name: "Broccoli 🥦", type: "broccoli", tip: "💡 Broccoli is packed with Vitamin C and fiber. Buy frozen to prevent spoilage!" },
+
+      { name: "Salmon 🐟", type: "salmon", tip: "💡 Canned or frozen salmon gives you essential Omega-3s at half the fresh market price." },
+
+      { name: "Rice Bowl 🍚", type: "rice", tip: "💡 Whole grain rice bought in 5lb bags costs less than $0.15 per serving!" },
+
+      { name: "Boiled Egg 🥚", type: "egg", tip: "💡 Eggs are the cheapest high-quality protein source for dorm cooking." }
+
     ];
 
-    // Synthesizer Audio (Web Audio API)
-    function playLaserSound(type) {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const actx = new AudioCtx();
-        const osc = actx.createOscillator();
-        const gain = actx.createGain();
-        osc.connect(gain);
-        gain.connect(actx.destination);
 
-        if (type === 'slash') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(1200, actx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(300, actx.currentTime + 0.08);
-          gain.gain.setValueAtTime(0.25, actx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, actx.currentTime + 0.08);
-          osc.start(); osc.stop(actx.currentTime + 0.08);
-        } else if (type === 'explode') {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(150, actx.currentTime);
-          osc.frequency.linearRampToValueAtTime(30, actx.currentTime + 0.35);
-          gain.gain.setValueAtTime(0.5, actx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, actx.currentTime + 0.35);
-          osc.start(); osc.stop(actx.currentTime + 0.35);
-        }
-      } catch(e) {}
-    }
 
-    // --- GENERATIVE AI VECTOR RENDERING ---
-    function drawAINodeShape(ctx, node) {
-      const radius = node.radius;
+    let currentTargetIdx = 0;
+
+    let fallingItems = [];
+
+
+
+    // --- VECTOR DRAWING FUNCTIONS ---
+
+    function drawBroccoli(x, y) {
 
       ctx.save();
-      ctx.shadowColor = node.color;
-      ctx.shadowBlur = 12;
 
-      if (node.isBomb) {
-        // Glitch Malware Spike Sphere
-        ctx.fillStyle = '#060913';
-        ctx.strokeStyle = '#FF0055';
-        ctx.lineWidth = 3;
+      ctx.lineWidth = 3;
 
-        ctx.beginPath();
-        for (let i = 0; i < 8; i++) {
-          const angle = (Math.PI * 2 / 8) * i;
-          const r = (i % 2 === 0) ? radius + 6 : radius - 4;
-          const x = Math.cos(angle) * r;
-          const y = Math.sin(angle) * r;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#001C2A";
 
-        ctx.fillStyle = '#FF0055';
-        ctx.font = '900 15px monospace';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('⚠', 0, 0);
-      } else {
-        // Cybernetic Holographic Orb with Wireframe Rings
-        ctx.fillStyle = 'rgba(6, 9, 19, 0.85)';
-        ctx.strokeStyle = node.color;
-        ctx.lineWidth = 2.5;
+      
 
-        // Outer Hex Ring
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI * 2 / 6) * i;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#C9E2E9";
 
-        // Inner Glowing Core Nucleus
-        ctx.fillStyle = node.coreColor;
-        ctx.beginPath();
-        ctx.arc(0, 0, radius * 0.45, 0, Math.PI * 2);
-        ctx.fill();
+      ctx.fillRect(x + 10, y + 15, 10, 12);
 
-        // Holographic Orbital Rings
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, radius * 0.8, radius * 0.25, Math.PI / 3, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+      ctx.strokeRect(x + 10, y + 15, 10, 12);
+
+
+
+      ctx.fillStyle = "#18803C";
+
+      ctx.beginPath();
+
+      ctx.arc(x + 7, y + 12, 9, 0, Math.PI * 2);
+
+      ctx.arc(x + 15, y + 6, 11, 0, Math.PI * 2);
+
+      ctx.arc(x + 23, y + 12, 9, 0, Math.PI * 2);
+
+      ctx.fill();
+
+      ctx.stroke();
 
       ctx.restore();
+
     }
 
-    function drawHalvedAINode(ctx, node, side) {
+
+
+    function drawSalmon(x, y) {
+
       ctx.save();
-      ctx.clip(new Path2D(side === 1 ? 'M -60 -60 L 0 -60 L 0 60 L -60 60 Z' : 'M 0 -60 L 60 -60 L 60 60 L 0 60 Z'));
-      drawAINodeShape(ctx, node);
 
-      // Glowing Sliced Laser Edge
-      ctx.fillStyle = '#FFFFFF';
-      ctx.shadowColor = '#00F0FF';
-      ctx.shadowBlur = 10;
-      ctx.fillRect(-2, -node.radius - 8, 4, (node.radius + 8) * 2);
+      ctx.lineWidth = 3;
+
+      ctx.strokeStyle = "#001C2A";
+
+      ctx.fillStyle = "#FF7A59";
+
+
+
+      ctx.beginPath();
+
+      ctx.ellipse(x + 15, y + 12, 16, 10, Math.PI / 6, 0, Math.PI * 2);
+
+      ctx.fill();
+
+      ctx.stroke();
+
+
+
+      ctx.strokeStyle = "#FFFFFF";
+
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+
+      ctx.moveTo(x + 8, y + 8);
+
+      ctx.lineTo(x + 18, y + 16);
+
+      ctx.moveTo(x + 14, y + 6);
+
+      ctx.lineTo(x + 24, y + 14);
+
+      ctx.stroke();
+
       ctx.restore();
+
     }
 
-    // --- SPAWNING SYSTEM ---
-    function spawnCluster() {
+
+
+    function drawRiceBowl(x, y) {
+
+      ctx.save();
+
+      ctx.lineWidth = 3;
+
+      ctx.strokeStyle = "#001C2A";
+
+      
+
+      ctx.fillStyle = "#FFFFFF";
+
+      ctx.beginPath();
+
+      ctx.arc(x + 15, y + 12, 12, Math.PI, 0);
+
+      ctx.fill();
+
+      ctx.stroke();
+
+
+
+      ctx.fillStyle = "#001C2A";
+
+      ctx.beginPath();
+
+      ctx.arc(x + 15, y + 12, 14, 0, Math.PI);
+
+      ctx.fill();
+
+      ctx.stroke();
+
+      ctx.restore();
+
+    }
+
+
+
+    function drawEgg(x, y) {
+
+      ctx.save();
+
+      ctx.lineWidth = 3;
+
+      ctx.strokeStyle = "#001C2A";
+
+      
+
+      ctx.fillStyle = "#FFFFFF";
+
+      ctx.beginPath();
+
+      ctx.ellipse(x + 15, y + 12, 13, 10, 0, 0, Math.PI * 2);
+
+      ctx.fill();
+
+      ctx.stroke();
+
+
+
+      ctx.fillStyle = "#F59E0B";
+
+      ctx.beginPath();
+
+      ctx.arc(x + 15, y + 12, 5, 0, Math.PI * 2);
+
+      ctx.fill();
+
+      ctx.stroke();
+
+      ctx.restore();
+
+    }
+
+
+
+    function drawTrap(x, y) {
+
+      ctx.save();
+
+      ctx.lineWidth = 3;
+
+      ctx.strokeStyle = "#001C2A";
+
+      ctx.fillStyle = "#FCA911";
+
+      ctx.fillRect(x + 5, y + 5, 20, 20);
+
+      ctx.strokeRect(x + 5, y + 5, 20, 20);
+
+      
+
+      ctx.fillStyle = "#001C2A";
+
+      ctx.font = "bold 12px sans-serif";
+
+      ctx.fillText("$15", x + 6, y + 19);
+
+      ctx.restore();
+
+    }
+
+
+
+    // --- GAME ENGINE ---
+
+    function spawnItem() {
+
       if (gameOver) return;
 
-      const count = Math.floor(Math.random() * 2) + 1;
-      for (let i = 0; i < count; i++) {
-        const nodeDef = AI_NODES[Math.floor(Math.random() * AI_NODES.length)];
-        
-        flyingItems.push({
-          ...nodeDef,
-          x: 60 + Math.random() * (canvas.width - 120),
-          y: canvas.height + 30,
-          vx: (Math.random() - 0.5) * 4.5,
-          vy: -(12.5 + Math.random() * 3.5),
-          gravity: 0.28,
-          rotation: Math.random() * Math.PI,
-          vRot: (Math.random() - 0.5) * 0.12,
-          sliced: false
-        });
-      }
+
+
+      const types = ["broccoli", "salmon", "rice", "egg", "trap"];
+
+      const selectedType = types[Math.floor(Math.random() * types.length)];
+
+      
+
+      fallingItems.push({
+
+        x: Math.random() * (canvas.width - 40),
+
+        y: -30,
+
+        type: selectedType,
+
+        speed: 2.5 + Math.random() * 2
+
+      });
+
     }
 
-    // --- COLLISION DETECTOR ---
-    function distToSegment(px, py, x1, y1, x2, y2) {
-      const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
-      if (l2 === 0) return Math.hypot(px - x1, py - y1);
-      let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
-      t = Math.max(0, Math.min(1, t));
-      return Math.hypot(px - (x1 + t * (x2 - x1)), py - (y1 + t * (y2 - y1)));
-    }
 
-    function checkSlices() {
-      if (bladePath.length < 2) return;
-
-      const p1 = bladePath[bladePath.length - 2];
-      const p2 = bladePath[bladePath.length - 1];
-
-      for (let i = flyingItems.length - 1; i >= 0; i--) {
-        const item = flyingItems[i];
-        if (item.sliced) continue;
-
-        const dist = distToSegment(item.x, item.y, p1.x, p1.y, p2.x, p2.y);
-
-        if (dist < item.radius + 8) {
-          item.sliced = true;
-
-          if (item.isBomb) {
-            playLaserSound('explode');
-            createCyberExplosion(item.x, item.y);
-            triggerGameOver("💥 MALWARE BREACH! Sliced a Corrupted Virus Bomb!");
-            return;
-          }
-
-          // SLICE DATA NODE
-          playLaserSound('slash');
-          slicedCount++;
-          computeValue += item.compute;
-
-          document.getElementById('sliced-count').innerText = slicedCount;
-          document.getElementById('budget-display').innerText = `${computeValue.toFixed(1)} FLOPS`;
-          document.getElementById('tip-display').innerHTML = item.tip;
-
-          // Digital Matrix Grid Shockwave
-          gridSplashes.push({
-            x: item.x, y: item.y,
-            color: item.color,
-            radius: 10, maxRadius: item.radius * 2.5,
-            alpha: 0.9
-          });
-
-          // Energy Sparks Burst
-          for (let p = 0; p < 16; p++) {
-            particles.push({
-              x: item.x, y: item.y,
-              vx: (Math.random() - 0.5) * 10,
-              vy: (Math.random() - 0.5) * 10,
-              color: Math.random() > 0.5 ? item.color : '#FFFFFF',
-              size: 2 + Math.random() * 4,
-              alpha: 1.0
-            });
-          }
-
-          // Halves Splitting
-          slicedHalves.push({
-            node: item, side: 1,
-            x: item.x - 6, y: item.y, vx: item.vx - 3, vy: item.vy - 1, gravity: 0.3,
-            rotation: item.rotation, vRot: -0.1
-          });
-          slicedHalves.push({
-            node: item, side: 2,
-            x: item.x + 6, y: item.y, vx: item.vx + 3, vy: item.vy - 1, gravity: 0.3,
-            rotation: item.rotation, vRot: 0.1
-          });
-
-          flyingItems.splice(i, 1);
-        }
-      }
-    }
-
-    function createCyberExplosion(x, y) {
-      for (let i = 0; i < 40; i++) {
-        particles.push({
-          x: x, y: y,
-          vx: (Math.random() - 0.5) * 16,
-          vy: (Math.random() - 0.5) * 16,
-          color: Math.random() > 0.5 ? '#FF0055' : '#00F0FF',
-          size: 4 + Math.random() * 6,
-          alpha: 1.0
-        });
-      }
-    }
 
     function updateLivesUI() {
-      let shields = "";
+
+      let hearts = "";
+
       for (let i = 0; i < 3; i++) {
-        shields += (i < lives) ? "🛡️ " : "❌ ";
+
+        hearts += (i < lives) ? "❤️ " : "🖤 ";
+
       }
-      document.getElementById("lives-display").innerText = shields.trim();
+
+      document.getElementById("lives-display").innerText = hearts.trim();
+
     }
 
-    function triggerGameOver(reason) {
+
+
+    function triggerGameOver() {
+
       gameOver = true;
-      document.getElementById("death-reason").innerText = reason;
-      document.getElementById("final-sliced").innerText = slicedCount;
-      document.getElementById("final-budget").innerText = `${computeValue.toFixed(1)} FLOPS`;
+
+      document.getElementById("final-score").innerText = score;
+
+      document.getElementById("final-budget").innerText = `$${budgetSaved.toFixed(2)}`;
+
       document.getElementById("gameOverScreen").style.display = "flex";
+
+      document.getElementById("tip-display").innerHTML = "❌ <strong>Game Over!</strong> You ran out of lives.";
+
     }
+
+
 
     function resetGame() {
-      score = 0;
-      slicedCount = 0;
-      computeValue = 0;
-      lives = 3;
-      gameOver = false;
-      flyingItems = [];
-      slicedHalves = [];
-      particles = [];
-      gridSplashes = [];
-      bladePath = [];
 
-      document.getElementById("sliced-count").innerText = "0";
-      document.getElementById("budget-display").innerText = "0.0 FLOPS";
-      document.getElementById("tip-display").innerHTML = "⚡ <strong>NEURAL PROTOCOL:</strong> Slash airborne AI Data Cores! Avoid slicing Red Corrupted Malware Bombs!";
+      score = 0;
+
+      budgetSaved = 0;
+
+      lives = 3;
+
+      gameOver = false;
+
+      fallingItems = [];
+
+      currentTargetIdx = 0;
+
+
+
+      document.getElementById("score").innerText = "0";
+
+      document.getElementById("target-item").innerText = recipeTargets[0].name;
+
+      document.getElementById("tip-display").innerHTML = "⚡ <strong>New Game Started:</strong> Catch the exact target food shown!";
+
       document.getElementById("gameOverScreen").style.display = "none";
+
       
+
       updateLivesUI();
+
     }
 
-    // --- GAME ENGINE LOOP ---
+
+
     function update() {
+
       if (gameOver) return;
 
-      // Spawn Data Cores
-      spawnTimer++;
-      if (spawnTimer > 65) {
-        spawnCluster();
-        spawnTimer = 0;
-      }
 
-      // Flying Items
-      for (let i = flyingItems.length - 1; i >= 0; i--) {
-        const item = flyingItems[i];
-        item.x += item.vx;
-        item.y += item.vy;
-        item.vy += item.gravity;
-        item.rotation += item.vRot;
 
-        // Unharvested data node falls past screen
-        if (item.y > canvas.height + 40) {
-          if (!item.isBomb && !item.sliced) {
+      // Player Movement
+
+      player.x += player.dx;
+
+      if (player.x < 0) player.x = 0;
+
+      if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+
+
+      // Item Movement & Collision
+
+      for (let i = fallingItems.length - 1; i >= 0; i--) {
+
+        const item = fallingItems[i];
+
+        item.y += item.speed;
+
+
+
+        // Collision Check
+
+        if (
+
+          item.y + 25 >= player.y &&
+
+          item.x + 25 >= player.x &&
+
+          item.x <= player.x + player.width
+
+        ) {
+
+          const currentTarget = recipeTargets[currentTargetIdx];
+
+
+
+          if (item.type === currentTarget.type) {
+
+            // MATCHED TARGET!
+
+            score += 150;
+
+            budgetSaved += 3.50;
+
+            document.getElementById("tip-display").innerHTML = currentTarget.tip;
+
+
+
+            // Rotate Target Goal
+
+            currentTargetIdx = (currentTargetIdx + 1) % recipeTargets.length;
+
+            document.getElementById("target-item").innerText = recipeTargets[currentTargetIdx].name;
+
+          } else {
+
+            // UNMATCHED ITEM / TRAP CAUGHT -> DAMAGE DEALT!
+
             lives--;
-            updateLivesUI();
-            if (lives <= 0) {
-              triggerGameOver("System Integrity Depleted! Unharvested Data Nodes Lost!");
+
+            score = Math.max(0, score - 50); // Lose points
+
+
+
+            if (item.type === "trap") {
+
+              budgetSaved = Math.max(0, budgetSaved - 5.00);
+
+              document.getElementById("tip-display").innerHTML = "💸 <strong>DAMAGE!</strong> Hit a $15 Delivery Trap! -1 Life & -$5.00!";
+
+            } else {
+
+              document.getElementById("tip-display").innerHTML = `⚠️ <strong>DAMAGE!</strong> Wrong food caught! Needed ${currentTarget.name}. -1 Life!`;
+
             }
+
+
+
+            updateLivesUI();
+
+
+
+            if (lives <= 0) {
+
+              triggerGameOver();
+
+            }
+
           }
-          flyingItems.splice(i, 1);
+
+
+
+          document.getElementById("score").innerText = score;
+
+
+
+          fallingItems.splice(i, 1);
+
+          continue;
+
         }
+
+
+
+        // Remove offscreen items safely without penalty
+
+        if (item.y > canvas.height) fallingItems.splice(i, 1);
+
       }
 
-      // Sliced Halves Physics
-      for (let i = slicedHalves.length - 1; i >= 0; i--) {
-        const half = slicedHalves[i];
-        half.x += half.vx;
-        half.y += half.vy;
-        half.vy += half.gravity;
-        half.rotation += half.vRot;
-
-        if (half.y > canvas.height + 50) {
-          slicedHalves.splice(i, 1);
-        }
-      }
-
-      // Shockwave Animations
-      for (let i = gridSplashes.length - 1; i >= 0; i--) {
-        const s = gridSplashes[i];
-        s.radius += 2.5;
-        s.alpha -= 0.04;
-        if (s.alpha <= 0) gridSplashes.splice(i, 1);
-      }
-
-      // Energy Particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.03;
-        if (p.alpha <= 0) particles.splice(i, 1);
-      }
-
-      // Fade Laser Blade Trail
-      const now = Date.now();
-      bladePath = bladePath.filter(p => now - p.time < 160);
-
-      checkSlices();
     }
 
-    // --- CANVAS RENDERING ---
+
+
     function draw() {
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Draw Background Digital Grid Pattern
+
+
+      // Draw Player Basket
+
       ctx.save();
-      ctx.strokeStyle = "rgba(0, 240, 255, 0.06)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < canvas.width; x += 25) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-      }
-      for (let y = 0; y < canvas.height; y += 25) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-      }
+
+      ctx.fillStyle = "#001C2A";
+
+      ctx.strokeStyle = (lives === 1) ? "#D32F2F" : "#FCA911"; // Red highlight on last life
+
+      ctx.lineWidth = 3;
+
+      ctx.beginPath();
+
+      ctx.roundRect(player.x, player.y, player.width, player.height, [0, 0, 15, 15]);
+
+      ctx.fill();
+
+      ctx.stroke();
+
       ctx.restore();
 
-      // 2. Draw Digital Shockwaves
-      gridSplashes.forEach(s => {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, s.alpha);
-        ctx.strokeStyle = s.color;
-        ctx.shadowColor = s.color;
-        ctx.shadowBlur = 10;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
+
+
+      // Draw Falling Vector Items
+
+      fallingItems.forEach(item => {
+
+        if (item.type === "broccoli") drawBroccoli(item.x, item.y);
+
+        else if (item.type === "salmon") drawSalmon(item.x, item.y);
+
+        else if (item.type === "rice") drawRiceBowl(item.x, item.y);
+
+        else if (item.type === "egg") drawEgg(item.x, item.y);
+
+        else if (item.type === "trap") drawTrap(item.x, item.y);
+
       });
 
-      // 3. Draw Flying AI Nodes
-      flyingItems.forEach(item => {
-        ctx.save();
-        ctx.translate(item.x, item.y);
-        ctx.rotate(item.rotation);
-        drawAINodeShape(ctx, item);
-        ctx.restore();
-      });
-
-      // 4. Draw Sliced Halves
-      slicedHalves.forEach(half => {
-        ctx.save();
-        ctx.translate(half.x, half.y);
-        ctx.rotate(half.rotation);
-        drawHalvedAINode(ctx, half.node, half.side);
-        ctx.restore();
-      });
-
-      // 5. Draw Energy Particles
-      particles.forEach(p => {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
-
-      // 6. Draw Cyber Laser Blade Trail
-      if (bladePath.length > 1) {
-        ctx.save();
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        for (let i = 1; i < bladePath.length; i++) {
-          const p1 = bladePath[i - 1];
-          const p2 = bladePath[i];
-          const alpha = i / bladePath.length;
-          
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.lineWidth = alpha * 8;
-          ctx.strokeStyle = '#FFFFFF';
-          ctx.shadowColor = '#00F0FF';
-          ctx.shadowBlur = 15;
-          ctx.globalAlpha = alpha;
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
     }
+
+
 
     function gameLoop() {
+
       update();
+
       draw();
+
       requestAnimationFrame(gameLoop);
+
     }
+
+
 
     // --- CONTROLS ---
-    function addBladePoint(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      
-      const x = (clientX - rect.left) * (canvas.width / rect.width);
-      const y = (clientY - rect.top) * (canvas.height / rect.height);
 
-      bladePath.push({ x, y, time: Date.now() });
+    document.addEventListener("keydown", e => {
+
+      if (e.key === "ArrowLeft") player.dx = -player.speed;
+
+      if (e.key === "ArrowRight") player.dx = player.speed;
+
+    });
+
+
+
+    document.addEventListener("keyup", e => {
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
+
+    });
+
+
+
+    // Touch / Mouse Dragging
+
+    let isDragging = false;
+
+    canvas.addEventListener("mousedown", e => { isDragging = true; movePlayerTo(e); });
+
+    canvas.addEventListener("mousemove", e => { if (isDragging) movePlayerTo(e); });
+
+    document.addEventListener("mouseup", () => isDragging = false);
+
+
+
+    canvas.addEventListener("touchstart", e => { movePlayerTo(e.touches[0]); });
+
+    canvas.addEventListener("touchmove", e => { movePlayerTo(e.touches[0]); });
+
+
+
+    function movePlayerTo(e) {
+
+      if (gameOver) return;
+
+      const rect = canvas.getBoundingClientRect();
+
+      const scaleX = canvas.width / rect.width;
+
+      const mouseX = (e.clientX - rect.left) * scaleX;
+
+      player.x = mouseX - player.width / 2;
+
     }
 
-    let isSwiping = false;
 
-    canvas.addEventListener('mousedown', e => { isSwiping = true; addBladePoint(e); });
-    canvas.addEventListener('mousemove', e => { if (isSwiping) addBladePoint(e); });
-    window.addEventListener('mouseup', () => isSwiping = false);
 
-    canvas.addEventListener('touchstart', e => { isSwiping = true; addBladePoint(e); }, { passive: true });
-    canvas.addEventListener('touchmove', e => { if (isSwiping) addBladePoint(e); }, { passive: true });
-    window.addEventListener('touchend', () => isSwiping = false);
+    // Start Spawners & Loop
 
-    // Boot Loop
+    spawnInterval = setInterval(spawnItem, 800);
+
     gameLoop();
+
   </script>
+
 </body>
-</html>
+
+</html> 
