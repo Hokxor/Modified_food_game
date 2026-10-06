@@ -1,52 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Neural Ninja |  Generation Matrix</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Neural Ninja: Healthy Harvest</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Full Screen White Flash Screen (Triggers on Bomb Slice) -->
-  <div id="flashOverlay" class="flash-overlay"></div>
-
-  <div class="game-card">
     <header>
-      <h1>⚡ NEURAL NINJA</h1>
-      <p>GENERATE DATA NODES • PURGE CORRUPTED MALWARE</p>
+        <h1>AI Neural Ninja</h1>
+        <p>Interactive Blade Trail & Shape Customizer</p>
     </header>
 
-    <div class="hud-bar">
-      <div class="hud-badge">INTEGRITY: <span id="lives-display" class="val-pink">🛡️ 🛡️ 🛡️</span></div>
-      <div class="hud-badge">HARVESTED: <span class="val-cyan" id="sliced-count">0</span></div>
-      <div class="hud-badge">COMPUTE: <span class="val-green" id="budget-display">0.0 FLOPS</span></div>
-    </div>
-
-    <div class="canvas-container">
-      <canvas id="gameCanvas" width="400" height="500"></canvas>
-
-      <!-- Game Over Overlay -->
-      <div class="overlay" id="gameOverScreen" style="display: none;">
-        <h2>FAILED GAME</h2>
-        <p id="death-reason">Corrupted Malware Breach Detected!</p>
-        <div class="stats-summary">
-          <div>Neural Cores Processed: <strong id="final-sliced" class="val-cyan">0</strong></div>
-          <div>Synthetic Compute Saved: <strong id="final-budget" class="val-green">0.0 FLOPS</strong></div>
+    <div class="game-container">
+        <!-- Top HUD Panel -->
+        <div class="top-hud">
+            <div class="hud-item">HEALTH: <span id="health-val" class="hud-value">100%</span></div>
+            <div class="hud-item">COMPUTE: <span id="score-val" class="hud-value">0 FLOPS</span></div>
+            <div class="hud-item">COMBO: <span id="combo-val" class="hud-value">x1</span></div>
         </div>
-        <button class="btn-restart" onclick="resetGame()">Try Again</button>
-      </div>
+
+        <!-- Custom Blade Control Toolbar -->
+        <div class="blade-controls">
+            <div class="control-group">
+                <label for="color-select">Trail Color:</label>
+                <select id="color-select">
+                    <option value="rainbow">🌈 Rainbow Shift</option>
+                    <option value="cyan">⚡ Cyber Cyan</option>
+                    <option value="emerald" selected>🥦 Emerald Harvest</option>
+                    <option value="pink">💖 Neon Pink</option>
+                    <option value="amber">🍊 Solar Amber</option>
+                    <option value="fire">🔥 Plasma Flame</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="shape-select">Blade Shape:</label>
+                <select id="shape-select">
+                    <option value="laser">✨ Glowing Laser</option>
+                    <option value="ribbon" selected>🎗️ Polygon Ribbon</option>
+                    <option value="lightning">⚡ Electric Lightning</option>
+                    <option value="stars">⭐ Star Burst Trail</option>
+                    <option value="triangles">🔺 Geometric Triangles</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Game Canvas -->
+        <canvas id="gameCanvas" width="800" height="480"></canvas>
+
+        <!-- Start Game Overlay -->
+        <div id="start-screen" class="overlay">
+            <h2>NEURAL NINJA: HARVEST</h2>
+            <p>Click, hold, and drag across the screen to project laser blades! Slice healthy food & data cores while avoiding red malware bombs.</p>
+            <button class="btn-start" id="start-btn">START MATRIX</button>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="gameover-screen" class="overlay hidden">
+            <h2 class="alert-text">SYSTEM CRITICAL</h2>
+            <p>Your integrity dropped to 0%. Final compute harvested: <strong id="final-score" class="highlight-score">0 FLOPS</strong></p>
+            <button class="btn-start" id="restart-btn">TRY AGAIN</button>
+        </div>
     </div>
 
-    <div class="tip-box" id="tip-display">
-      ⚡ <strong>NEURAL PROTOCOL:</strong> Slash airborne AI Data Cores! Avoid slicing Red Corrupted Malware Bombs!
-    </div>
-
-    <div class="controls-hint">
-      ✦ Swipe or Drag across the Matrix to project Laser Blade Energy ✦
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
